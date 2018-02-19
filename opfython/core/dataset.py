@@ -3,8 +3,8 @@
 
 import numpy as np
 
-import opfython.core.sample as Sample
-from opfython.utils.exception import ArgumentException
+from .sample import Sample
+from ..utils.exception import ArgumentException
 
 
 class Dataset(object):
@@ -19,7 +19,7 @@ class Dataset(object):
             n_samples: number of samples.
             n_classes: number of classes.
             n_features: number of features.
-            sample: list of samples.
+            samples: list of samples.
     """
 
     def __init__(self, **kwargs):
@@ -36,6 +36,7 @@ class Dataset(object):
         self.n_samples = None
         self.n_classes = None
         self.n_features = None
+        self.samples = None
 
         # Check if arguments are supplied
         if 'n_samples' not in kwargs:
@@ -51,4 +52,5 @@ class Dataset(object):
         self.n_features = kwargs['n_features']
 
         # Create the feature vector based on number of features
-        self.sample = [Sample.Sample(n_features=self.n_features) for _ in range(self.n_samples)]
+        self.samples = [Sample(n_features=self.n_features)
+                        for _ in range(self.n_samples)]

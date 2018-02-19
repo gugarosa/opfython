@@ -3,7 +3,7 @@
 
 import numpy as np
 
-from opfython.utils.exception import ArgumentException
+from ..utils.exception import ArgumentException
 
 
 class Sample(object):
@@ -14,7 +14,7 @@ class Sample(object):
 
         # Properties
             label: integer identifier of sample's label.
-            feature: [n_features] vector to hold features' values.
+            features: [n_features] vector to hold features' values.
     """
 
     def __init__(self, **kwargs):
@@ -27,7 +27,7 @@ class Sample(object):
 
         # Define all class variables as 'None'
         self.label = None
-        self.feature = None
+        self.features = None
 
         # Check if arguments are supplied
         if 'n_features' not in kwargs:
@@ -40,4 +40,4 @@ class Sample(object):
         self.label = -1
 
         # Create the feature vector based on number of features
-        self.feature = np.zeros(__n_features)
+        self.features = np.zeros(__n_features)
