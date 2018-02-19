@@ -8,12 +8,12 @@ from ..utils.exception import ArgumentException
 
 
 class Dataset(object):
-    """ A dataset class to hold multiple instances of samples
+    """ A dataset class to hold multiple instances of samples.
 
         # Arguments
-            n_samples: number of samples
-            n_classes: number of classes
-            n_features: number of features
+            n_samples: number of samples.
+            n_classes: number of classes.
+            n_features: number of features.
 
         # Properties
             n_samples: number of samples.

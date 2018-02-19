@@ -7,7 +7,7 @@ from ..utils.exception import ArgumentException
 
 
 class Sample(object):
-    """ A sample class for all the input data
+    """ A Sample class for all the input data.
 
         # Arguments
             n_features: number of features.

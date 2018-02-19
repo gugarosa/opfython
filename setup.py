@@ -3,7 +3,7 @@ from setuptools import find_packages
 
 
 setup(name='opfython',
-      version='1.0.0',
+      version='1.0.6',
       description='Optimum-Path Forest for Python',
       author='Gustavo Rosa',
       author_email='gth.rosa@uol.com.br',
