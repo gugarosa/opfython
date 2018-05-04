@@ -5,7 +5,7 @@ from setuptools import find_packages
 setup(name='opfython',
       version='1.0.6',
       description='Optimum-Path Forest for Python',
-      author='Gustavo Rosa',
+      author='Recogna Laboratory',
       author_email='gth.rosa@uol.com.br',
       url='https://github.com/gugarosa/opfython',
       #download_url='https://github.com/gugarosa/opfython/tarball/1.0.0',
