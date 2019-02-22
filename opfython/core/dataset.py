@@ -17,6 +17,7 @@ class Dataset:
 
     Methods:
         _create_samples(n_samples, n_features, verbose): A method that creates a list of samples.
+        populate_samples(labels, features): Populates the samples property.
 
     """
 
@@ -58,7 +59,7 @@ class Dataset:
             n_samples (int): Amount of samples.
             n_features (int): Number of features.
             verbose (int): Verbosity level.
-            
+
         Returns:
             A list of samples.
 
@@ -77,12 +78,21 @@ class Dataset:
 
         return samples
 
-    def populate_samples(self, ids, labels, features):
-        """
+    def populate_samples(self, labels, features):
+        """Populates the samples property.
+
+        Args:
+            labels (list): A list of labels.
+            features (list): A list of numpy arrays holding the features.
+
         """
 
+        # We zip everything together and get one by one
         for sample, label, feature_array in zip(self.samples, labels, features):
+            # We replace the label for the loaded one
             sample.label = label
+
+            # Also replacing the features array
             sample.features = feature_array
 
     @property
