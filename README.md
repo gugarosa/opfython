@@ -30,7 +30,7 @@ First of all. We have examples. Yes, they are commented. Just browse to `example
 
 Or if you wish to learn even more, please take a minute:
 
-NALP is based on the following structure, and you should pay attention to its tree:
+OPFython is based on the following structure, and you should pay attention to its tree:
 
 ```
 - opfython
