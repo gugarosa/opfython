@@ -1,4 +1,4 @@
-# OPFython: A python-inspired Optimum-Path Forest classifier
+# OPFython: An Optimum-Path Forest classifier
 
 ## Welcome to OPFython.
 Have you ever wanted to classify data into labels? If yes, OPFython is for you! This package is an innovative way of dealing with an optimum-path forest classifier. From bottom to top, from samples and datasets to the actual classifier, we will foster all research related to this newly trend.
