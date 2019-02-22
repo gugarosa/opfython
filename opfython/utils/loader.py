@@ -64,7 +64,7 @@ def load_json(json_path):
         json_path (str): A path to the .json file.
 
     Returns:
-        A Panda's dataframe object (NOT WORKING).
+        A Panda's dataframe object.
 
     """
 
@@ -90,7 +90,7 @@ def load_json(json_path):
 
 
 def parse_df(data):
-    """Parses a data in OPF file format that was pre-loaded (.csv or .txt).
+    """Parses a data in OPF file format that was pre-loaded (.csv, .txt or .json).
 
     Args:
         data (df): A dataframe holding the data in OPF file format.
@@ -101,10 +101,10 @@ def parse_df(data):
     """
 
     # First column should be the ids
-    ids = list(data[0])
+    ids = list(data.iloc[:, 0])
 
     # Second column should hold the labels
-    labels = list(data[1])
+    labels = list(data.iloc[:, 1])
 
     # From third columns, we should have the features
     features = list(data.iloc[:, 2:].values)

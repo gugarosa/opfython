@@ -65,7 +65,7 @@ class Dataset:
 
         """
 
-        logger.debug('Running private method: create_samples().')
+        logger.debug('Running private method: _create_samples().')
 
         # Creating an agents list
         samples = []
@@ -86,6 +86,8 @@ class Dataset:
             features (list): A list of numpy arrays holding the features.
 
         """
+
+        logger.debug('Running public method: populate_samples().')
 
         # We zip everything together and get one by one
         for sample, label, feature_array in zip(self.samples, labels, features):

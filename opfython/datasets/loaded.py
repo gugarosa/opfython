@@ -10,10 +10,6 @@ logger = l.get_logger(__name__)
 class Loaded(Dataset):
     """A dataset child that can load external data.
 
-    Properties:
-
-    Methods:
-
     """
 
     def __init__(self, file_path=None):
@@ -49,7 +45,7 @@ class Loaded(Dataset):
         n_samples = ids[-1]
 
         # The maximum number of classes equal the biggest label
-        n_classes = np.argmax(labels)
+        n_classes = np.amax(labels)
 
         # Also the first shape of features array holds its amount
         n_features = features[0].shape[0]

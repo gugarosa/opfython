@@ -1,13 +1,19 @@
 {
-	"data": [{
+	"data": [
+		{
             "id": 1,
 			"label": 1,
-			"features": [1.0, 2.0]
+			"features": [2.5, 1.0]
 		},
 		{
             "id": 2,
 			"label": 1,
-			"features": [1.0, 2.0]
+			"features": [2.0, 1.85]
+		},
+		{
+            "id": 3,
+			"label": 2,
+			"features": [1.0, 2.90]
 		}
 	]
 }
