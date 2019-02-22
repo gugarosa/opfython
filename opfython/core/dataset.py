@@ -1,56 +1,107 @@
-""" This is the dataset's structure and its basic functions module.
-"""
-
 import numpy as np
 
-from .sample import Sample
-from ..utils.exception import ArgumentException
+import opfython.utils.logging as l
+from opfython.core.sample import Sample
+
+logger = l.get_logger(__name__)
 
 
-class Dataset(object):
-    """ A dataset class to hold multiple instances of samples.
+class Dataset:
+    """A dataset class to hold multiple instances of samples.
 
-        # Arguments
-            n_samples: number of samples.
-            n_classes: number of classes.
-            n_features: number of features.
+    Properties:
+        n_samples (int): number of samples.
+        n_classes (int): number of classes.
+        n_features (int): number of features.
+        samples (np.array): A list of samples.
 
-        # Properties
-            n_samples: number of samples.
-            n_classes: number of classes.
-            n_features: number of features.
-            samples: list of samples.
     """
 
-    def __init__(self, **kwargs):
-        # These properties should be set by the user via keyword arguments.
-        allowed_kwargs = {'n_samples',
-                          'n_classes',
-                          'n_features'
-                          }
-        for kwarg in kwargs:
-            if kwarg not in allowed_kwargs:
-                raise TypeError('Keyword argument not understood:', kwarg)
+    def __init__(self, n_samples=1, n_classes=1, n_features=10, verbose=0):
+        """Initialization method.
 
-        # Define all class variables as 'None'
-        self.n_samples = None
-        self.n_classes = None
-        self.n_features = None
-        self.samples = None
+        Args:
+            n_samples (int): number of samples.
+            n_classes (int): number of classes.
+            n_features (int): number of features.
+            verbose (int): Verbosity level.
 
-        # Check if arguments are supplied
-        if 'n_samples' not in kwargs:
-            raise ArgumentException('n_samples')
-        if 'n_classes' not in kwargs:
-            raise ArgumentException('n_classes')
-        if 'n_features' not in kwargs:
-            raise ArgumentException('n_features')
+        """
 
-        # Apply arguments to class variables
-        self.n_samples = kwargs['n_samples']
-        self.n_classes = kwargs['n_classes']
-        self.n_features = kwargs['n_features']
+        logger.info('Creating class: Dataset.')
 
-        # Create the feature vector based on number of features
-        self.samples = [Sample(n_features=self.n_features)
-                        for _ in range(self.n_samples)]
+        # Number of samples
+        self._n_samples = n_samples
+
+        # Number of classes
+        self._n_classes = n_classes
+
+        # Number of features
+        self._n_features = n_features
+
+        # Creating the samples array
+        self._samples = self._create_samples(n_samples, n_features, verbose)
+
+        # We will log some important information
+        logger.debug(
+            f'Samples: {self._n_samples} | Classes: {self._n_classes} | Features: {self._n_features}.')
+
+        logger.info('Class created.')
+
+    def _create_samples(self, n_samples, n_features, verbose):
+        """Creates a samples list.
+
+        Args:
+            n_samples (int): Amount of samples.
+            n_features (int): Number of features.
+            verbose (int): Verbosity level.
+            
+        Returns:
+            A list of samples.
+
+        """
+
+        logger.debug('Running private method: create_samples().')
+
+        # Creating an agents list
+        samples = []
+
+        # Iterate through number of agents
+        for _ in range(n_samples):
+            # Appends new agent to list
+            samples.append(
+                Sample(n_features=n_features, verbose=verbose))
+
+        return samples
+
+    @property
+    def n_samples(self):
+        """The amount of sampln_samples.
+        """
+
+        return self._n_samples
+
+    @property
+    def n_classes(self):
+        """The amount of classes.
+        """
+
+        return self._n_classes
+
+    @property
+    def n_features(self):
+        """The amount of features.
+        """
+
+        return self._n_features
+
+    @property
+    def samples(self):
+        """A list of samples.
+        """
+
+        return self._samples
+
+    @samples.setter
+    def samples(self, samples):
+        self._samples = samples
