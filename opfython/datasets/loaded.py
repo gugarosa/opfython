@@ -1,5 +1,7 @@
 import opfython.utils.logging as l
+import opfython.utils.loader as loader
 from opfython.core.dataset import Dataset
+import numpy as np
 
 logger = l.get_logger(__name__)
 
@@ -17,6 +19,7 @@ class Loaded(Dataset):
         """Initialization method.
 
         Args:
+            file_path (str): A string holding the file's path (.txt or .json).
 
         """
 
@@ -25,34 +28,34 @@ class Loaded(Dataset):
         # Getting file extension
         extension = file_path.split('.')[-1]
 
-        if extension == 'txt':
-            txt = self.load_txt(file_path)
-        else:
-            json = self.load_json(file_path)
+        # Check if extension is .txt
+        if extension == 'csv':
+            # If yes, call the method that actually loads txt
+            data = loader.load_csv(file_path)
+        
+        #
+        ids, labels, features = self._parse_data(data)
+
+        n_samples = ids[-1]
+        n_classes = np.argmax(labels)
+        n_features = features[0].shape[0]
+
+        print(n_samples, n_classes, n_features)
 
         # Override its parent class with the receiving hyperparams
-        # super(Loaded, self).__init__()
+        super(Loaded, self).__init__(n_samples=n_samples, n_classes=n_classes, n_features=n_features)
+
+        #
+        self.populate_samples(ids, labels, features)
 
         logger.info('Class overrided.')
 
-    def load_txt(self, txt_path):
+    def _parse_data(self, data):
         """
         """
 
-        try:
-            f = open(txt_path, "r")
+        ids = list(data[0])
+        labels = list(data[1])
+        features = list(data.iloc[:, 2:].values)
 
-            txt = f.read()
-
-            return txt
-
-        except FileNotFoundError:
-            logger.error('File not found.')
-
-    def load_json(self, json_path):
-        """
-        """
-
-        json = None
-
-        return json
+        return ids, labels, features

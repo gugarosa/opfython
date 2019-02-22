@@ -77,6 +77,14 @@ class Dataset:
 
         return samples
 
+    def populate_samples(self, ids, labels, features):
+        """
+        """
+
+        for sample, label, feature_array in zip(self.samples, labels, features):
+            sample.label = label
+            sample.features = feature_array
+
     @property
     def n_samples(self):
         """The amount of sampln_samples.
