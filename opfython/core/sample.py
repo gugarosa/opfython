@@ -1,43 +1,67 @@
-""" This is the sample's structure and its basic functions module.
-"""
-
 import numpy as np
 
-from ..utils.exception import ArgumentException
+import opfython.utils.logging as l
 
+logger = l.get_logger(__name__)
 
-class Sample(object):
-    """ A Sample class for all the input data.
+class Sample:
+    """ A sample class for all the input data (atomic level).
 
-        # Arguments
-            n_features: number of features.
+    Properties:
+        label (int): Integer holding the label's identifier.
+        features (np.array): A numpy array to hold 'n' features.
 
-        # Properties
-            label: integer identifier of sample's label.
-            features: [n_features] vector to hold features' values.
     """
 
-    def __init__(self, **kwargs):
-        # These properties should be set by the user via keyword arguments.
-        allowed_kwargs = {'n_features'
-                          }
-        for kwarg in kwargs:
-            if kwarg not in allowed_kwargs:
-                raise TypeError('Keyword argument not understood:', kwarg)
+    def __init__(self, label=1, features=None):
+        """Initialization method.
 
-        # Define all class variables as 'None'
-        self.label = None
-        self.features = None
+        Args:
+            label (int): Integer holding the label's identifier.
+            features (np.array): A numpy array to hold 'n' features.
 
-        # Check if arguments are supplied
-        if 'n_features' not in kwargs:
-            raise ArgumentException('n_features')
+        """
 
-        # Apply arguments to class variables
-        __n_features = kwargs['n_features']
+        logger.info('Creating class: Sample.')
 
-        # Instanciate the class label as -1
-        self.label = -1
+        # Initially, a sample needs its label and the features that represent it
+        self._label = label
+        self._features = features
 
-        # Create the feature vector based on number of features
-        self.features = np.zeros(__n_features)
+        # Then, we calculate its shape
+        self._shape = features.shape
+
+         # We will log some important information
+        logger.debug(
+            f'Label: {self._label} | Features: {self._features} | Shape: {self._shape}')
+
+        logger.info('Class created.')
+
+    @property
+    def label(self):
+        """An integer that holds the sample's label.
+        """
+
+        return self._label
+
+    @label.setter
+    def label(self, label):
+        self._label = label
+
+    @property
+    def features(self):
+        """An array encoding sample's features.
+        """
+
+        return self._features
+
+    @features.setter
+    def features(self, features):
+        self._features = features
+
+    @property
+    def shape(self):
+        """A tuple that contains the sample's shape.
+        """
+
+        return self._shape
