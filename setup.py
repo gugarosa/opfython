@@ -1,15 +1,12 @@
-from setuptools import setup
-from setuptools import find_packages
-
+from setuptools import find_packages, setup
 
 setup(name='opfython',
-      version='1.0.6',
-      description='Optimum-Path Forest for Python',
+      version='1.0.0',
+      description='A Python-inspired Optimum-Path Forest',
       author='Recogna Laboratory',
       author_email='gth.rosa@uol.com.br',
       url='https://github.com/gugarosa/opfython',
-      #download_url='https://github.com/gugarosa/opfython/tarball/1.0.0',
-      license='Apache-2.0',
+      license='MIT',
       install_requires=['numpy>=1.13.3'
                         'pylint>=1.7.4',
                         'pytest>=3.2.3',

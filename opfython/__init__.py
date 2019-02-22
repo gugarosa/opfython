@@ -2,7 +2,5 @@
     of several modules and sub-modules.
 """
 
-from . import core
-from . import utils
 
-__version__ = '1.0.6'
+__version__ = '1.0.0'
