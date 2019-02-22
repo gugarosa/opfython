@@ -15,6 +15,9 @@ class Dataset:
         n_features (int): number of features.
         samples (np.array): A list of samples.
 
+    Methods:
+        _create_samples(n_samples, n_features, verbose): A method that creates a list of samples.
+
     """
 
     def __init__(self, n_samples=1, n_classes=1, n_features=10, verbose=0):
