@@ -37,6 +37,8 @@ class Loaded(Dataset):
         elif extension == 'json':
             # If yes, call the method that actually loads json
             data = loader.load_json(file_path)
+        else:
+            raise Exception
 
         # Parsing dataframe
         ids, labels, features = loader.parse_df(data)

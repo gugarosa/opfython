@@ -1,5 +1,9 @@
 # OPFython: An Optimum-Path Forest classifier
 
+[![Latest release](https://img.shields.io/github/release/gugarosa/opfython.svg)](https://github.com/gugarosa/opfython/releases)
+[![License](https://img.shields.io/github/license/gugarosa/opfython.svg)](https://github.com/gugarosa/opfython/blob/master/LICENSE)
+[![Open issues](https://img.shields.io/github/issues/gugarosa/opfython.svg)](https://github.com/gugarosa/opfython/issues)
+
 ## Welcome to OPFython.
 Have you ever wanted to classify data into labels? If yes, OPFython is for you! This package is an innovative way of dealing with an optimum-path forest classifier. From bottom to top, from samples and datasets to the actual classifier, we will foster all research related to this newly trend.
 
@@ -37,22 +41,45 @@ OPFython is based on the following structure, and you should pay attention to it
     - core
         - dataset
         - sample
+    - datasets
+        - loaded
     - math
+        - distribution
+        - random
     - utils
+        - loader
+        - logging
 ```
 
 ### Core
 
 Core is the core. Essentially, it is the parent of everything. You should find parent classes defining the basic of our structure. They should provide variables and methods that will help to construct other modules. It is composed by the following classes:
 
-1. Dataset
+```dataset```: A dataset is composed by a number of samples. It will serve as the basis for building OPF's graph.
 
-2. Sample
+```sample```: This defines a Sample. Basically, a sample contains a label and a features vector.
+
+### Datasets
+
+Because we need data, right? Datasets are composed by classes and methods that allow to instanciate pre-loaded data. One can see them as a wrapper for loading raw data and creating a Dataset object. 
+
+```loaded```: A loaded dataset already parses the input data from a OPF file and creates an Dataset object.
 
 ### Math
 
+Just because we are computing stuff, it does not means that we do not need math. Math is the mathematical package, containing low level math implementations. From random numbers to distributions generation, you can find your needs on this module.
+
+```distribution```: Package used to handle distributions generation.
+
+```random```: Package used to handle random numbers generation.
+
 ### Utils
 
+This is an utilities package. Common things shared across the application should be implemented here. It is better to implement once and use as you wish than re-implementing the same thing over and over again.
+
+```loader```: Module that is responsible for loading files in OPF file format (.csv, .txt or .json).
+
+```logging```: Logging tools to track the progress of the optimization task.
 
 ---
 
@@ -86,6 +113,6 @@ No specific additional commands needed.
 
 ## Support
 
-We know that we do our best, but it's inevitable to acknowlodge that we make mistakes. If you every need to report a bug, report a problem, talk to us, please do so! We will be avaliable at our bests at this repository or recogna@fc.unesp.br.
+We know that we do our best, but it's inevitable to acknowlodge that we make mistakes. If you every need to report a bug, report a problem, talk to us, please do so! We will be avaliable at our bests at this repository or recogna@unesp.br.
 
 ---
