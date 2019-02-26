@@ -79,7 +79,7 @@ This is an utilities package. Common things shared across the application should
 
 ```loader```: Module that is responsible for loading files in OPF file format (.csv, .txt or .json).
 
-```logging```: Logging tools to track the progress of the optimization task.
+```logging```: Logging tools to track the progress of an OPFython task.
 
 ---
 
