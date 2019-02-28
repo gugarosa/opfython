@@ -1,8 +1,8 @@
 import numpy as np
-
 import opfython.utils.logging as l
 
 logger = l.get_logger(__name__)
+
 
 class Sample:
     """A sample class for all the input data (atomic level).

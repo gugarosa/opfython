@@ -1,7 +1,25 @@
 import numpy as np
+import opfython.utils.logging as l
+
+logger = l.get_logger(__name__)
+
 
 class Heap:
+    """
+
+    Properties:
+
+    Methods:
+
+    """
+
     def __init__(self, size=1):
+        """Initialization method.
+
+        Args:
+
+        """
+
         self._size = size
         self._cost = [0] * size
         self._color = ['WHITE'] * size
@@ -76,5 +94,3 @@ class Heap:
             self.go_down(0)
             return pixel
         return False
-
-

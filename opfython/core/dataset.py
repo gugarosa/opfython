@@ -1,5 +1,4 @@
 import numpy as np
-
 import opfython.utils.logging as l
 from opfython.core.sample import Sample
 
@@ -52,6 +51,38 @@ class Dataset:
 
         logger.info('Class created.')
 
+    @property
+    def n_samples(self):
+        """The amount of sampln_samples.
+        """
+
+        return self._n_samples
+
+    @property
+    def n_classes(self):
+        """The amount of classes.
+        """
+
+        return self._n_classes
+
+    @property
+    def n_features(self):
+        """The amount of features.
+        """
+
+        return self._n_features
+
+    @property
+    def samples(self):
+        """A list of samples.
+        """
+
+        return self._samples
+
+    @samples.setter
+    def samples(self, samples):
+        self._samples = samples
+
     def _create_samples(self, n_samples, n_features, verbose):
         """Creates a samples list.
 
@@ -96,35 +127,3 @@ class Dataset:
 
             # Also replacing the features array
             sample.features = feature_array
-
-    @property
-    def n_samples(self):
-        """The amount of sampln_samples.
-        """
-
-        return self._n_samples
-
-    @property
-    def n_classes(self):
-        """The amount of classes.
-        """
-
-        return self._n_classes
-
-    @property
-    def n_features(self):
-        """The amount of features.
-        """
-
-        return self._n_features
-
-    @property
-    def samples(self):
-        """A list of samples.
-        """
-
-        return self._samples
-
-    @samples.setter
-    def samples(self, samples):
-        self._samples = samples
