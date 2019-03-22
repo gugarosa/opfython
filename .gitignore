@@ -1,8 +1,9 @@
-# MacOS
-*.DS_Store
+# Mac OS Files
+**/*.DS_Store
+.vscode/
 
-# Visual Studio Code
-.vscode
+# Ubuntu's editor temp files
+**/*.*~
 
 # Logs
 opfython.log.*

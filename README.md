@@ -5,6 +5,7 @@
 [![License](https://img.shields.io/github/license/gugarosa/opfython.svg)](https://github.com/gugarosa/opfython/blob/master/LICENSE)
 
 ## Welcome to OPFython.
+
 Have you ever wanted to classify data into labels? If yes, OPFython is for you! This package is an innovative way of dealing with an optimum-path forest classifier. From bottom to top, from samples and datasets to the actual classifier, we will foster all research related to this newly trend.
 
 Use OPFython if you need a library or wish to:
@@ -13,9 +14,9 @@ Use OPFython if you need a library or wish to:
 * Mix-and-match different strategies to solve your problem.
 * Because it is cool to classify things.
 
-Read the docs at [opfython.recogna.tech](http://opfython.recogna.tech).
+Read the docs at [opfython.readthedocs.io](https://opfython.readthedocs.io).
 
-OPFython is compatible with: **Python 2.7-3.6**.
+OPFython is compatible with: **Python 3.6+** and **PyPy 3.5**.
 
 ---
 
