@@ -8,6 +8,3 @@ txt = l.load_txt('data/sample.txt')
 
 # Loading a .json file
 json = l.load_json('data/sample.json')
-
-print(csv)
-print(txt)

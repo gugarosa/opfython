@@ -9,11 +9,11 @@ def parse_df(data):
         data (df): Dataframe holding the data in OPF file format.
 
     Returns:
-        Lists holding ids, labels and features parsed from the data.
+        A dictionary holding indexes, labels and features from the data.
 
     """
 
-    logger.debug('Parsing data frame ...')
+    logger.debug('Parsing dataframe ...')
 
     # First column should be the idx
     idx = list(data.iloc[:, 0])
@@ -24,6 +24,13 @@ def parse_df(data):
     # From third columns, we should have the features
     features = list(data.iloc[:, 2:].values)
 
-    logger.debug(f'Parsed samples: {len(idx)}.')
+    # Creating a dictionary of parsed samples
+    data = {
+        'idx': idx,
+        'labels': labels,
+        'features': features
+    }
 
-    return idx, labels, features
+    logger.debug(f'Dataframe parsed.')
+
+    return data
