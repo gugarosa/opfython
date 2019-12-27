@@ -1,2 +1,2 @@
-"""Core package for all common opfython modules.
+"""A core package for all common opfython modules.
 """

@@ -6,7 +6,7 @@ import opfython.utils.logging as l
 logger = l.get_logger(__name__)
 
 
-class Node():
+class Node:
     """A Node class is used as the lowest structure level in the OPF workflow.
 
     """
