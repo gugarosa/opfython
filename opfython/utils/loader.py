@@ -1,8 +1,6 @@
 import json as j
-import sys
 
 import pandas as pd
-from pandas.io.json import json_normalize
 
 import opfython.utils.logging as l
 
@@ -13,27 +11,35 @@ def load_csv(csv_path):
     """Loads a CSV file into a dataframe object.
 
     Args:
-        csv_path (str): a string holding the .csv's path
+        csv_path (str): String holding the .csv's path.
 
     Returns:
         A Panda's dataframe object.
 
     """
 
+    logger.debug(f'Loading file: {csv_path} ...')
+
+    # Tries to invoke a function
     try:
-        # Tries to read .csv file into a dataframe
+        # Reads the .csv file into a dataframe
         csv = pd.read_csv(csv_path, header=None)
 
+    # If the file is not found
     except FileNotFoundError as e:
-        # If file is not found, handle the exception and exit
+        # Handles the exception and logs an error
         logger.error(e)
-        raise
+
+        return None
+
+    logger.debug(f'File loaded.')
 
     return csv
 
 
 def load_txt(txt_path):
     """Loads a .txt file into Pandas's dataframe.
+
     Please make sure the .txt is uniform along all rows and columns.
 
     Args:
@@ -44,38 +50,53 @@ def load_txt(txt_path):
 
     """
 
+    logger.debug(f'Loading file: {txt_path} ...')
+
+    # Tries to invoke a function
     try:
-        # Tries to read .txt file into a dataframe
+        # Reads the .txt file into a dataframe
         txt = pd.read_csv(txt_path, sep=' ', header=None)
 
+    # If the file is not found
     except FileNotFoundError as e:
-        # If file is not found, handle the exception and exit
+        # Handles the exception and logs an error
         logger.error(e)
-        raise
+
+        return None
+
+    logger.debug(f'File loaded.')
 
     return txt
 
 
 def load_json(json_path):
     """Loads a .json file into Pandas's dataframe.
+
     Please make sure the .json is uniform along all keys and items.
 
     Args:
-        json_path (str): A path to the .json file.
+        json_path (str): Path to the .json file.
 
     Returns:
         A Panda's dataframe object.
 
     """
 
+    logger.debug(f'Loading file: {json_path} ...')
+
+    # Tries to invoke a function
     try:
-        # Tries to read .txt file into a dataframe
+        # Reads the .json file into a dataframe
         json = pd.read_json(json_path, orient='split')
 
-    except FileNotFoundError as e:
-        # If file is not found, handle the exception and exit
+    # If the file is not found
+    except Exception as e:
+        # Handles the exception and logs an error
         logger.error(e)
-        raise
+
+        return None
+
+    logger.debug(f'File loaded.')
 
     # Expand features nested column
     features = json['features'].apply(pd.Series)
@@ -87,26 +108,3 @@ def load_json(json_path):
     json = pd.concat([json, features], axis=1)
 
     return json
-
-
-def parse_df(data):
-    """Parses a data in OPF file format that was pre-loaded (.csv, .txt or .json).
-
-    Args:
-        data (df): A dataframe holding the data in OPF file format.
-
-    Returns:
-        Lists holding ids, labels and features parsed from the data.
-
-    """
-
-    # First column should be the ids
-    ids = list(data.iloc[:, 0])
-
-    # Second column should hold the labels
-    labels = list(data.iloc[:, 1])
-
-    # From third columns, we should have the features
-    features = list(data.iloc[:, 2:].values)
-
-    return ids, labels, features
