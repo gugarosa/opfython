@@ -1,4 +1,5 @@
 import numpy as np
+import opfython.utils.constants as c
 import opfython.utils.logging as l
 
 from opfython.core.heap import Heap
@@ -50,7 +51,7 @@ class OPF:
                         n_proto += 1
 
             for i in range(subgraph.n_nodes):
-                if not h.color[i] == 'BLACK':
+                if not h.color[i] == c.BLACK:
                     if not p == i:
                         weight = 1
                         if weight < path[i]:
