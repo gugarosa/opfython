@@ -20,20 +20,20 @@ class Heap:
 
         """
 
-        self._size = size
-        self._cost = [0] * size
-        self._color = ['WHITE'] * size
-        self._pixel = [-1] * size
-        self._pos = [-1] * size
-        self._last = -1
+        self.size = size
+        self.cost = [0] * size
+        self.color = ['WHITE'] * size
+        self.pixel = [-1] * size
+        self.pos = [-1] * size
+        self.last = -1
 
     def is_full(self):
-        if self._last == self._size - 1:
+        if self.last == self.size - 1:
             return True
         return False
 
     def is_empty(self):
-        if self._last == -1:
+        if self.last == -1:
             return True
         return False
 
@@ -49,10 +49,10 @@ class Heap:
     def go_up(self, i):
         j = self.heap_dad(i)
 
-        while ((i > 0) & (self._cost[self._pixel[j]] > self._cost[self._pixel[i]])):
-            self._pixel[j], self._pixel[i] = self._pixel[i], self._pixel[j]
-            self._pos[self._pixel[i]] = i
-            self._pos[self._pixel[j]] = j
+        while ((i > 0) & (self.cost[self.pixel[j]] > self.cost[self.pixel[i]])):
+            self.pixel[j], self.pixel[i] = self.pixel[i], self.pixel[j]
+            self.pos[self.pixel[i]] = i
+            self.pos[self.pixel[j]] = j
             i = j
             j = self.heap_dad(i)
 
@@ -61,36 +61,47 @@ class Heap:
         left = self.heap_left_son(i)
         right = self.heap_right_son(i)
 
-        if ((left <= self._last) & (self._cost[self._pixel[left]] < self._cost[self._pixel[i]])):
+        if ((left <= self.last) & (self.cost[self.pixel[left]] < self.cost[self.pixel[i]])):
             j = left
-        if ((right <= self._last) & (self._cost[self._pixel[right]] < self._cost[self._pixel[j]])):
+        if ((right <= self.last) & (self.cost[self.pixel[right]] < self.cost[self.pixel[j]])):
             j = right
 
         if j is not i:
-            self._pixel[j], self._pixel[i] = self._pixel[i], self._pixel[j]
-            self._pos[self._pixel[i]] = i
-            self._pos[self._pixel[j]] = j
+            self.pixel[j], self.pixel[i] = self.pixel[i], self.pixel[j]
+            self.pos[self.pixel[i]] = i
+            self.pos[self.pixel[j]] = j
             self.go_down(j)
 
     def insert(self, pixel):
         if not self.is_full():
-            self._last += 1
-            self._pixel[self._last] = pixel
-            self._color[pixel] = 'GRAY'
-            self._pos[pixel] = self._last
-            self.go_up(self._last)
+            self.last += 1
+            self.pixel[self.last] = pixel
+            self.color[pixel] = 'GRAY'
+            self.pos[pixel] = self.last
+            self.go_up(self.last)
             return True
         return False
 
     def remove(self):
         if not self.is_empty():
-            pixel = self._pixel[0]
-            self._pos[pixel] = -1
-            self._color[pixel] = 'BLACK'
-            self._pixel[0] = self._pixel[self._last]
-            self._pos[self._pixel[0]] = 0
-            self._pixel[self._last] = -1
-            self._last -= 1
+            pixel = self.pixel[0]
+            self.pos[pixel] = -1
+            self.color[pixel] = 'BLACK'
+            self.pixel[0] = self.pixel[self.last]
+            self.pos[self.pixel[0]] = 0
+            self.pixel[self.last] = -1
+            self.last -= 1
             self.go_down(0)
             return pixel
         return False
+
+    def update(self, p, color):
+        self.cost[p] = color
+
+        if self.color[p] == 'BLACK':
+            pass
+
+        if self.color[p] == 'WHITE':
+            self.insert(p)
+        else:
+            self.go_up(self.pos[p])

@@ -30,6 +30,14 @@ class Node:
         # And finally, its array of features
         self.features = features
 
+        self.status = 0
+
+        self.pred = 0
+
+        self.cost = 0.0
+
+        self.true_label = 0
+
     @property
     def idx(self):
         """int: Node's index.

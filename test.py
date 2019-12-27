@@ -1,18 +1,18 @@
-from opfython.core.heap import Heap
+import opfython.utils.loader as l
+import opfython.utils.parser as p
+from opfython.core.opf import OPF
+from opfython.core.subgraph import Subgraph
 
-size = 5
+# Loading a .txt file to a dataframe
+txt = l.load_txt('data/sample.txt')
 
-pathval = [0.0] * size
+# Parsing a pre-loaded dataframe
+data = p.parse_df(txt)
 
-H = Heap(size=size)
+# Creating a subgraph structure
+s = Subgraph(data)
 
-print(H._cost)
+#
+opf = OPF()
 
-pathval = [1.0] * size
-
-H.insert(1)
-H.remove()
-print(H._last)
-print(H._color)
-print(H._pos)
-print(H._pixel)
+opf._find_prototypes(s)

@@ -6,7 +6,7 @@ from opfython.core.node import Node
 logger = l.get_logger(__name__)
 
 
-class Subgraph():
+class Subgraph:
     """A Subgraph class is used as a collection of Nodes and the basic structure to work with OPF.
 
     """
