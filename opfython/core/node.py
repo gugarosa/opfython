@@ -1,6 +1,6 @@
 import numpy as np
-import opytimizer.utils.exception as e
 
+import opfython.utils.exception as e
 import opfython.utils.logging as l
 
 logger = l.get_logger(__name__)
