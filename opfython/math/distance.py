@@ -3,6 +3,30 @@ import numpy as np
 import opfython.utils.constants as c
 
 
+def bray_curtis_distance(x, y):
+    """Calculates the Bray Curtis Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Bray Curtis Distance between x and y.
+
+    """
+
+    # Calculating the auxiliary term
+    aux = x + y
+
+    # Gathering the conditional over the auxiliary term
+    cond = np.where(aux > 0, aux, 1)
+
+    # Calculating the bray curtis distance for each dimension
+    dist = np.fabs(x - y) / aux
+
+    return np.sum(dist)
+
+
 def canberra_distance(x, y):
     """Calculates the Canberra Distance.
 
@@ -141,15 +165,39 @@ def manhattan_distance(x, y):
     return np.sum(dist)
 
 
-def squared_cord_distance(x, y):
-    """Calculates the Squared-Cord Distance.
+def squared_chi_squared_distance(x, y):
+    """Calculates the Squared Chi-Squared Distance.
 
     Args:
         x (np.array): N-dimensional array.
         y (np.array): N-dimensional array.
 
     Returns:
-        The Squared-Cord Distance between x and y.
+        The Squared Chi-Squared Distance between x and y.
+
+    """
+
+    # Calculating the auxiliary term
+    aux = np.fabs(x + y)
+
+    # Gathering the conditional over the auxiliary term
+    cond = np.where(aux > 0, aux, 1)
+
+    # Calculating the squared chi-squared distance for each dimension
+    dist = ((x - y) ** 2) / cond
+
+    return np.sum(dist)
+
+
+def squared_cord_distance(x, y):
+    """Calculates the Squared Cord Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Squared Cord Distance between x and y.
 
     """
 
@@ -160,9 +208,9 @@ def squared_cord_distance(x, y):
     aux2 = np.sqrt(y)
 
     # Gathering the conditional over the auxiliary term
-    cond = np.where(aux1 >= 0 and aux2 >= 0, aux1 - aux2, 0)
+    cond = np.where((aux1 >= 0) & (aux2 >= 0), aux1 - aux2, 0)
 
-    # Calculating the squared-cord distance for each dimension
+    # Calculating the squared cord distance for each dimension
     dist = cond ** 2
 
     return np.sum(dist)

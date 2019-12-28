@@ -23,5 +23,5 @@ import opfython.math.distance as d
 x = np.asarray([2, 3, 4, 5])
 y = np.asarray([1, 2, 3, 1])
 
-dist = d.squared_cord_distance(x, y)
+dist = d.bray_curtis_distance(x, y)
 print(dist)
