@@ -1,20 +1,25 @@
 import numpy as np
+
 import opfython.utils.constants as c
 import opfython.utils.logging as l
-
 from opfython.core.heap import Heap
 
 logger = l.get_logger(__name__)
 
 class OPF:
-    """
+    """A basic class to define all common OPF-related methods.
+
     """
 
-    def __init__(self):
-        """
+    def __init__(self, subgraph):
+        """Initialization method.
+        
         """
 
         logger.info('Creating class: OPF.')
+
+        # Subgraph to be used within the OPF
+        self.g = subgraph
 
         logger.info('Class created.')
 
@@ -57,4 +62,3 @@ class OPF:
                         if weight < path[i]:
                             subgraph.nodes[i].pred = p
                             h.update(i, weight)
-
