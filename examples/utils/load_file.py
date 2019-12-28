@@ -1,4 +1,4 @@
-import opfython.utils.loader as l
+import opfython.stream.loader as l
 
 # Loading a .csv file
 csv = l.load_csv('data/sample.csv')

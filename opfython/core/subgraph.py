@@ -1,7 +1,7 @@
 import opfython.utils.exception as e
-import opfython.utils.loader as loader
+import opfython.stream.loader as loader
 import opfython.utils.logging as l
-import opfython.utils.parser as p
+import opfython.stream.parser as p
 from opfython.core.node import Node
 
 logger = l.get_logger(__name__)

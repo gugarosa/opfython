@@ -1,5 +1,5 @@
 import numpy as np
-import opfython.utils.loader as loader
+import opfython.stream.loader as loader
 import opfython.utils.logging as l
 from opfython.core.dataset import Dataset
 

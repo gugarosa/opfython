@@ -1,5 +1,5 @@
-import opfython.utils.loader as l
-import opfython.utils.parser as p
+import opfython.stream.loader as l
+import opfython.stream.parser as p
 from opfython.core.opf import OPF
 from opfython.core.subgraph import Subgraph
 
