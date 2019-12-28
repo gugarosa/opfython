@@ -3,16 +3,25 @@ import opfython.stream.parser as p
 from opfython.core.opf import OPF
 from opfython.core.subgraph import Subgraph
 
-# Loading a .txt file to a dataframe
-txt = l.load_txt('data/sample.txt')
+import numpy as np
+import opfython.math.distance as d
 
-# Parsing a pre-loaded dataframe
-data = p.parse_df(txt)
+# # Loading a .txt file to a dataframe
+# txt = l.load_txt('data/sample.txt')
 
-# Creating a subgraph structure
-s = Subgraph(data)
+# # Parsing a pre-loaded dataframe
+# data = p.parse_df(txt)
 
-#
-opf = OPF()
+# # Creating a subgraph structure
+# s = Subgraph(data)
 
-opf._find_prototypes(s)
+# #
+# opf = OPF()
+
+# opf._find_prototypes(s)
+
+x = np.asarray([2, 3, 4, 5])
+y = np.asarray([1, 2, 3, 1])
+
+dist = d.euclidean_distance(x, y)
+print(dist)

@@ -1,3 +1,7 @@
+# A constant value used to avoid division by zero, zero logarithms
+# and any possible mathematical error
+EPSILON = 1e-10
+
 # Defining color constants for the Heap structure
 # Note that these constants should not be modified
 WHITE = 0
@@ -11,3 +15,7 @@ NIL = -1
 # Defining constant to identify whether a node is
 # a prototype or not
 PROTOTYPE = 1
+
+# Defining constant to reflect the maximum arc weight
+# used to calculate the distance measures
+MAX_ARC_WEIGHT = 100000
