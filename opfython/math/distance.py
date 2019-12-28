@@ -22,7 +22,7 @@ def bray_curtis_distance(x, y):
     cond = np.where(aux > 0, aux, 1)
 
     # Calculating the bray curtis distance for each dimension
-    dist = np.fabs(x - y) / aux
+    dist = np.fabs(x - y) / cond
 
     return np.sum(dist)
 
