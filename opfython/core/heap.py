@@ -42,7 +42,11 @@ class Heap:
         logger.debug('Class created.')
 
     def is_full(self):
-        """
+        """Checks if the heap is full.
+
+        Returns:
+            A boolean indicating whether the heap is full.
+
         """
 
         # If last position equals to size - 1
@@ -54,7 +58,11 @@ class Heap:
         return False
 
     def is_empty(self):
-        """
+        """Checks if the heap is empty.
+
+        Returns:
+            A boolean indicating whether the heap is empty.
+
         """
 
         # If last position is equal to -1
@@ -66,21 +74,33 @@ class Heap:
         return False
 
     def dad(self, i):
-        """
+        """Gathers the position of the dad's node.
+
+        Returns:
+            The position of dad's node.
+
         """
 
         # Returns the dad's position
         return int(((i - 1) / 2))
 
     def left_son(self, i):
-        """
+        """Gathers the position of the left son's node.
+
+        Returns:
+            The position of left son's node.
+
         """
 
         # Returns the left son's position
         return int((2 * i + 1))
 
     def right_son(self, i):
-        """
+        """Gathers the position of the right son's node.
+
+        Returns:
+            The position of right son's node.
+
         """
 
         # Return the right son's position

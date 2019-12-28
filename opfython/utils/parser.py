@@ -15,22 +15,31 @@ def parse_df(data):
 
     logger.debug('Parsing dataframe ...')
 
-    # First column should be the idx
-    idx = list(data.iloc[:, 0])
+    # Tries to parse the dataframe
+    try:
+        # First column should be the idx
+        idx = list(data.iloc[:, 0])
 
-    # Second column should hold the labels
-    labels = list(data.iloc[:, 1])
+        # Second column should hold the labels
+        labels = list(data.iloc[:, 1])
 
-    # From third columns, we should have the features
-    features = list(data.iloc[:, 2:].values)
+        # From third columns, we should have the features
+        features = list(data.iloc[:, 2:].values)
 
-    # Creating a dictionary of parsed samples
-    data = {
-        'idx': idx,
-        'labels': labels,
-        'features': features
-    }
+        # Creating a dictionary of parsed samples
+        data = {
+            'idx': idx,
+            'labels': labels,
+            'features': features
+        }
 
-    logger.debug(f'Dataframe parsed.')
+        logger.debug(f'Dataframe parsed.')
 
-    return data
+        return data
+
+    # If dataframe could not be parsed
+    except AttributeError as e:
+        # Logs an error
+        logger.error(e)
+
+        return None

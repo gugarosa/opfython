@@ -1,6 +1,7 @@
-import opytimizer.utils.exception as e
-
+import opfython.utils.exception as e
+import opfython.utils.loader as loader
 import opfython.utils.logging as l
+import opfython.utils.parser as p
 from opfython.core.node import Node
 
 logger = l.get_logger(__name__)
@@ -11,7 +12,7 @@ class Subgraph:
 
     """
 
-    def __init__(self, data):
+    def __init__(self, data=None, from_file=None):
         """Initialization method.
 
         Args:
@@ -33,10 +34,21 @@ class Subgraph:
         # Whether the class is built or not
         self.built = False
 
-        # Now, we need to build this class up
-        self._build(data)
+        # Checks if data should be loaded from a file
+        if from_file:
+            # Loads the data
+            data = self._load(from_file)
 
-        logger.info('Class created.')
+        # Checks if data has been properly loaded
+        if data:
+            # Now, we need to build this class up
+            self._build(data)
+
+            logger.info('Class created.')
+
+        # If data could not be loaded
+        else:
+            logger.warn('Subgraph has not been properly created.')
 
     @property
     def n_nodes(self):
@@ -98,6 +110,45 @@ class Subgraph:
     @built.setter
     def built(self, built):
         self._built = built
+
+    def _load(self, file_path):
+        """Loads and parses a dataframe from a file.
+
+        Args:
+            file_path (str): File to be loaded.
+
+        Returns:
+            A parsed data dictionary.
+
+        """
+
+        # Getting file extension
+        extension = file_path.split('.')[-1]
+
+        # Check if extension is .csv
+        if extension == 'csv':
+            # If yes, call the method that actually loads csv
+            data = loader.load_csv(file_path)
+
+        # Check if extension is .txt
+        elif extension == 'txt':
+            # If yes, call the method that actually loads txt
+            data = loader.load_txt(file_path)
+
+        # Check if extension is .json
+        elif extension == 'json':
+            # If yes, call the method that actually loads json
+            data = loader.load_json(file_path)
+
+        # If extension is not recognized
+        else:
+            # Raises a ValueError exception
+            raise ValueError('File extension not recognized.')
+
+        # Parsing dataframe
+        data = p.parse_df(data)
+
+        return data
 
     def _build(self, data):
         """This method serves as the object building process.
