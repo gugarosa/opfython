@@ -48,7 +48,7 @@ class Subgraph:
 
         # If data could not be loaded
         else:
-            logger.warn('Subgraph has not been properly created.')
+            logger.error('Subgraph has not been properly created.')
 
     @property
     def n_nodes(self):
@@ -118,7 +118,7 @@ class Subgraph:
             file_path (str): File to be loaded.
 
         Returns:
-            A parsed data dictionary.
+            Arrays holding the features and labels.
 
         """
 
