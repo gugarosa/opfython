@@ -1,7 +1,7 @@
-import opfython.utils.exception as e
 import opfython.stream.loader as loader
-import opfython.utils.logging as l
 import opfython.stream.parser as p
+import opfython.utils.exception as e
+import opfython.utils.logging as l
 from opfython.core.node import Node
 
 logger = l.get_logger(__name__)
@@ -12,7 +12,7 @@ class Subgraph:
 
     """
 
-    def __init__(self, data=None, from_file=None):
+    def __init__(self, X=None, Y=None, from_file=None):
         """Initialization method.
 
         Args:
@@ -37,12 +37,12 @@ class Subgraph:
         # Checks if data should be loaded from a file
         if from_file:
             # Loads the data
-            data = self._load(from_file)
+            X, Y = self._load(from_file)
 
         # Checks if data has been properly loaded
-        if data:
+        if (X is not None) and (Y is not None):
             # Now, we need to build this class up
-            self._build(data)
+            self._build(X, Y)
 
             logger.info('Class created.')
 
@@ -145,28 +145,29 @@ class Subgraph:
             # Raises a ValueError exception
             raise ValueError('File extension not recognized.')
 
-        # Parsing dataframe
-        data = p.parse_df(data)
+        # Parsing array
+        X, Y = p.parse_array(data)
 
-        return data
+        return X, Y
 
-    def _build(self, data):
+    def _build(self, X, Y):
         """This method serves as the object building process.
 
         One can define several commands here that does not necessarily
         needs to be on its initialization.
 
         Args:
-            data (df): A pre-loaded dataframe in the OPF file format.
+            X (np.array): Features array.
+            Y (np.array): Labels array.
 
         """
 
         logger.debug('Running private method: build().')
 
         # Iterate over every possible sample
-        for idx, label, feature in zip(data['idx'], data['labels'], data['features']):
+        for i, (feature, label) in enumerate(zip(X, Y)):
             # Creates a Node structure
-            node = Node(idx, label, feature)
+            node = Node(i, label.item(), feature)
 
             # Appends the node to the list
             self.nodes.append(node)

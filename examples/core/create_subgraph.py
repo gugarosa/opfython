@@ -9,10 +9,10 @@ input_file = 'data/sample.txt'
 txt = l.load_txt(input_file)
 
 # Parsing a pre-loaded dataframe
-data = p.parse_df(txt)
+X, Y = p.parse_array(txt)
 
 # Creating a subgraph structure
-g = Subgraph(data)
+g = Subgraph(X, Y)
 
 # Subgraph can also be directly created from a file
 g = Subgraph(from_file=input_file)

@@ -2,44 +2,35 @@ import opfython.utils.logging as l
 
 logger = l.get_logger(__name__)
 
-def parse_df(data):
-    """Parses a data in OPF file format that was pre-loaded (.csv, .txt or .json).
+
+def parse_array(data):
+    """Parses data in OPF file format that was pre-loaded (.csv, .txt or .json).
 
     Args:
-        data (df): Dataframe holding the data in OPF file format.
+        data (np.array): Numpy array holding the data in OPF file format.
 
     Returns:
-        A dictionary holding indexes, labels and features from the data.
+        Arrays holding the features and labels.
 
     """
 
-    logger.debug('Parsing dataframe ...')
+    logger.debug('Parsing array ...')
 
     # Tries to parse the dataframe
     try:
-        # First column should be the idx
-        idx = list(data.iloc[:, 0])
-
-        # Second column should hold the labels
-        labels = list(data.iloc[:, 1])
+        # Second column should be the label
+        Y = data[:, 1]
 
         # From third columns, we should have the features
-        features = list(data.iloc[:, 2:].values)
+        X = data[:, 2:]
 
-        # Creating a dictionary of parsed samples
-        data = {
-            'idx': idx,
-            'labels': labels,
-            'features': features
-        }
+        logger.debug(f'Array parsed.')
 
-        logger.debug(f'Dataframe parsed.')
-
-        return data
+        return X, Y.astype(int)
 
     # If dataframe could not be parsed
-    except AttributeError as e:
+    except TypeError as e:
         # Logs an error
         logger.error(e)
 
-        return None
+        return None, None

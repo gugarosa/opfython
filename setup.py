@@ -14,7 +14,6 @@ setup(name='opfython',
       license='GPL-3.0',
       install_requires=['coverage>=4.5.2',
                         'numpy>=1.13.3',
-                        'pandas>=0.24.1',
                         'pylint>=1.7.4',
                         'pytest>=3.2.3'
                        ],
