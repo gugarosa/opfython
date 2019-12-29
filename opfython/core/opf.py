@@ -11,15 +11,15 @@ class OPF:
 
     """
 
-    def __init__(self, subgraph):
+    def __init__(self, pre_computed_distance=False):
         """Initialization method.
         
         """
 
         logger.info('Creating class: OPF.')
 
-        # Subgraph to be used within the OPF
-        self.g = subgraph
+        # Boolean that indicates whether to use pre-computed distance
+        self.pre_computed_distance = pre_computed_distance
 
         logger.info('Class created.')
 

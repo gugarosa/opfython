@@ -31,8 +31,8 @@ class Subgraph:
         # List of nodes
         self.nodes = []
 
-        # Whether the class is built or not
-        self.built = False
+        # Whether the subgraph is trained or not
+        self.trained = False
 
         # Checks if data should be loaded from a file
         if from_file:
@@ -100,16 +100,16 @@ class Subgraph:
         self._nodes = nodes
 
     @property
-    def built(self):
-        """bool: Indicate whether the function is built.
+    def trained(self):
+        """bool: Indicate whether the subgraph is trained.
 
         """
 
-        return self._built
+        return self._trained
 
-    @built.setter
-    def built(self, built):
-        self._built = built
+    @trained.setter
+    def trained(self, trained):
+        self._trained = trained
 
     def _load(self, file_path):
         """Loads and parses a dataframe from a file.
@@ -177,9 +177,6 @@ class Subgraph:
         # Calculates the number of features
         self.n_features = self.nodes[0].features.shape[0]
 
-        # Set built variable to 'True'
-        self.built = True
-
         # Logging attributes
         logger.debug(
-            f'Nodes: {self.n_nodes} | Features: {self.n_features} | Built: {self.built}')
+            f'Nodes: {self.n_nodes} | Features: {self.n_features} | Trained: {self.trained}')

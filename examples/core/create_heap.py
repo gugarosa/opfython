@@ -11,5 +11,3 @@ h.insert(1)
 
 # Removing the node
 n = h.remove()
-
-print(n)

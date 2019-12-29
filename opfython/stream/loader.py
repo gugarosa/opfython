@@ -1,4 +1,6 @@
+import numpy as np
 import pandas as pd
+import json as j
 
 import opfython.utils.logging as l
 
@@ -6,13 +8,15 @@ logger = l.get_logger(__name__)
 
 
 def load_csv(csv_path):
-    """Loads a CSV file into a dataframe object.
+    """Loads a CSV file into a numpy array.
+
+    Please make sure the .csv is uniform along all rows and columns.
 
     Args:
         csv_path (str): String holding the .csv's path.
 
     Returns:
-        A Panda's dataframe object.
+        A numpy array holding the loaded data.
 
     """
 
@@ -20,11 +24,11 @@ def load_csv(csv_path):
 
     # Tries to invoke a function
     try:
-        # Reads the .csv file into a dataframe
-        csv = pd.read_csv(csv_path, header=None)
+        # Reads the .csv file into a numpy array
+        csv = np.loadtxt(csv_path, delimiter=',')
 
     # If the file is not found
-    except FileNotFoundError as e:
+    except OSError as e:
         # Handles the exception and logs an error
         logger.error(e)
 
@@ -36,7 +40,7 @@ def load_csv(csv_path):
 
 
 def load_txt(txt_path):
-    """Loads a .txt file into Pandas's dataframe.
+    """Loads a .txt file into a numpy array.
 
     Please make sure the .txt is uniform along all rows and columns.
 
@@ -44,7 +48,7 @@ def load_txt(txt_path):
         txt_path (str): A path to the .txt file.
 
     Returns:
-        A Panda's dataframe object.
+        A numpy array holding the loaded data.
 
     """
 
@@ -52,11 +56,11 @@ def load_txt(txt_path):
 
     # Tries to invoke a function
     try:
-        # Reads the .txt file into a dataframe
-        txt = pd.read_csv(txt_path, sep=' ', header=None)
+        # Reads the .txt file into a numpy array
+        txt = np.loadtxt(txt_path, delimiter=' ')
 
     # If the file is not found
-    except FileNotFoundError as e:
+    except OSError as e:
         # Handles the exception and logs an error
         logger.error(e)
 
@@ -68,7 +72,7 @@ def load_txt(txt_path):
 
 
 def load_json(json_path):
-    """Loads a .json file into Pandas's dataframe.
+    """Loads a .json file into a numpy array.
 
     Please make sure the .json is uniform along all keys and items.
 
@@ -76,7 +80,7 @@ def load_json(json_path):
         json_path (str): Path to the .json file.
 
     Returns:
-        A Panda's dataframe object.
+        A numpy array holding the loaded data.
 
     """
 
@@ -84,8 +88,10 @@ def load_json(json_path):
 
     # Tries to invoke a function
     try:
-        # Reads the .json file into a dataframe
-        json = pd.read_json(json_path, orient='split')
+        # Opening .json as a file
+        with open(json_path) as f:
+            # Actually loading the file
+            json_file = j.load(f)
 
     # If the file is not found
     except Exception as e:
@@ -96,13 +102,21 @@ def load_json(json_path):
 
     logger.info(f'File loaded.')
 
-    # Expand features nested column
-    features = json['features'].apply(pd.Series)
+    # Creating a list to hold the parsed JSON
+    json = []
 
-    # Drop old features column
-    json = json.drop('features', 1)
+    # For every record in the JSON
+    for d in json_file['data']:
+        # Gathering meta informations
+        meta = np.asarray([d['id'], d['label']])
 
-    # Concate both into a single dataframe
-    json = pd.concat([json, features], axis=1)
+        # Gathering features
+        features = np.asarray(d['features'])
+
+        # Stacking and appending the whole record
+        json.append(np.hstack((meta, features)))
+
+    # Transforming the list into a numpy array
+    json = np.asarray(json)
 
     return json
