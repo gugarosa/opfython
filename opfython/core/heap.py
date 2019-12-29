@@ -15,6 +15,7 @@ class Heap:
 
         Args:
             size (int): Maximum size of the heap.
+            policy (str): Heap's policy (`min` or `max`).
 
         """
 
@@ -40,6 +41,9 @@ class Heap:
 
         # Last element identifier
         self.last = -1
+
+        # Logging attributes
+        logger.debug(f'Size: {self.size} | Policy: {self.policy}.')
 
         logger.debug('Class created.')
 

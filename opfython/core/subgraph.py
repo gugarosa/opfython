@@ -122,6 +122,8 @@ class Subgraph:
 
         """
 
+        logger.debug('Running private method: load().')
+
         # Getting file extension
         extension = file_path.split('.')[-1]
 
@@ -180,4 +182,4 @@ class Subgraph:
 
         # Logging attributes
         logger.debug(
-            f'Nodes: {self.n_nodes} | Features: {self.n_features} | Trained: {self.trained}')
+            f'Nodes: {self.n_nodes} | Features: {self.n_features} | Trained: {self.trained}.')
