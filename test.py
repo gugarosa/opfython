@@ -1,6 +1,6 @@
 import opfython.stream.loader as l
 import opfython.stream.parser as p
-from opfython.core.opf import OPF
+from opfython.models.supervised import SupervisedOPF
 from opfython.core.subgraph import Subgraph
 
 # Loading a .txt file to a numpy array
@@ -13,7 +13,10 @@ X, Y = p.parse_array(txt)
 g = Subgraph(X, Y)
 
 #
-opf = OPF()
+opf = SupervisedOPF()
 
 #
 opf._find_prototypes(g)
+
+for node in g.nodes:
+    print(node.status)

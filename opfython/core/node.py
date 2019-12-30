@@ -27,16 +27,23 @@ class Node:
         # We also need to set its label
         self.label = label
 
-        # And finally, its array of features
+        # Also its possible predicted label
+        self.predicted_label = 0
+
+        # Array of features
         self.features = features
 
-        self.status = 0
-
-        self.pred = 0
-
+        # Cost of the path
         self.cost = 0.0
 
-        self.true_label = 0
+        # Whether the node is a prototype or not
+        self.status = 0
+
+        # Identifier to the predecessor node
+        self.pred = 0
+
+        # Whether the node is relevant or not
+        self.relavant = 0
 
     @property
     def idx(self):
