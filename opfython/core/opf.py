@@ -10,6 +10,9 @@ logger = l.get_logger(__name__)
 class OPF:
     """A basic class to define all common OPF-related methods.
 
+    References:
+        J. P. Papa, A. X. Falcão and C. T. N. Suzuki. LibOPF: A library for the design of optimum-path forest classifiers (2015).
+        
     """
 
     def __init__(self, pre_computed_distance=False):
@@ -28,10 +31,13 @@ class OPF:
         # Initializing an empty subgraph
         self.g = None
 
+        # Distances matrix should be initialized as None
+        self.distances = None
+
         # If OPF should use a pre-computed distance
         if pre_computed_distance:
             # Apply the distances matrix
-            self.distances = 0
+            self.distances = self._read_distances()
 
         logger.info('Class created.')
 
@@ -39,7 +45,7 @@ class OPF:
         """
         """
         
-        pass
+        return 0
 
     def _find_prototypes(self, g):
         """Find prototype nodes using the Minimum Spanning Tree approach.
@@ -80,14 +86,14 @@ class OPF:
                         g.nodes[pred].status = c.PROTOTYPE
                         n_proto += 1
 
-            for i in range(g.n_nodes):
-                if not h.color[i] == c.BLACK:
-                    if not p == i:
+            for q in range(g.n_nodes):
+                if not h.color[q] == c.BLACK:
+                    if not p == q:
                         if self.pre_computed_distance:
                             weight = d.log_euclidean_distance(g.nodes[p].features, g.nodes[q].features)
                         else:
-                            weight = 1
+                            weight = self.distances[g.nodes[p].idx][g.nodes[q].idx]
 
-                        if weight < path[i]:
-                            g.nodes[i].pred = p
-                            h.update(i, weight)
+                        if weight < path[q]:
+                            g.nodes[q].pred = p
+                            h.update(q, weight)
