@@ -7,12 +7,13 @@ from opfython.core.heap import Heap
 
 logger = l.get_logger(__name__)
 
+
 class OPF:
     """A basic class to define all common OPF-related methods.
 
     References:
         J. P. Papa, A. X. Falcão and C. T. N. Suzuki. LibOPF: A library for the design of optimum-path forest classifiers (2015).
-        
+
     """
 
     def __init__(self, pre_computed_distance=False):
@@ -20,7 +21,7 @@ class OPF:
 
         Args:
             pre_computed_distance (bool): Whether OPF should use pre-computed distances or not.
-        
+
         """
 
         logger.info('Creating class: OPF.')
@@ -41,10 +42,17 @@ class OPF:
 
         logger.info('Class created.')
 
-    def _read_distances(self):
-        """
-        """
+    def _normalize_features(self):
+        """Normalizes the features using a Normal Distribution.
         
+        """
+
+        pass
+
+    def _read_distances(self):
+        """Reads the distance between nodes from a pre-defined file.
+        """
+
         return 0
 
     def _find_prototypes(self, g):
@@ -63,7 +71,6 @@ class OPF:
 
         #
         h = Heap(g.n_nodes)
-
 
         path[0] = 0
         g.nodes[0].pred = c.NIL
@@ -90,7 +97,8 @@ class OPF:
                 if not h.color[q] == c.BLACK:
                     if not p == q:
                         if self.pre_computed_distance:
-                            weight = d.log_euclidean_distance(g.nodes[p].features, g.nodes[q].features)
+                            weight = d.log_euclidean_distance(
+                                g.nodes[p].features, g.nodes[q].features)
                         else:
                             weight = self.distances[g.nodes[p].idx][g.nodes[q].idx]
 

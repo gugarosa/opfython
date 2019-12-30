@@ -30,7 +30,7 @@ class SupervisedOPF(OPF):
         logger.info('Class overrided.')
 
     def fit(self, X, Y):
-        """Fits new data in the classifier.
+        """Fits data in the classifier.
 
         Args:
             X (np.array): Array of features.
@@ -44,8 +44,15 @@ class SupervisedOPF(OPF):
         # Finding prototypes
         self._find_prototypes(self.g)
 
-    def predict(self):
-        """
+    def predict(self, X):
+        """Predicts new data using the pre-trained classifier.
+
+        Args:
+            X (np.array): Array of features.
+
+        Returns:
+            A list of predictions for each record of the data.
+
         """
 
         pass

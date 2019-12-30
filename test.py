@@ -1,7 +1,7 @@
 import opfython.stream.loader as l
 import opfython.stream.parser as p
-from opfython.models.supervised import SupervisedOPF
 from opfython.core.subgraph import Subgraph
+from opfython.models.supervised import SupervisedOPF
 
 # Loading a .txt file to a numpy array
 txt = l.load_txt('data/sample.txt')
