@@ -31,6 +31,9 @@ class Subgraph:
         # List of nodes
         self.nodes = []
 
+        # List of indexes of ordered nodes
+        self.idx_nodes = []
+
         # Whether the subgraph is trained or not
         self.trained = False
 

@@ -44,7 +44,7 @@ class OPF:
 
     def _normalize_features(self):
         """Normalizes the features using a Normal Distribution.
-        
+
         """
 
         pass
@@ -97,10 +97,10 @@ class OPF:
                 if not h.color[q] == c.BLACK:
                     if not p == q:
                         if self.pre_computed_distance:
+                            weight = self.distances[g.nodes[p].idx][g.nodes[q].idx]
+                        else:
                             weight = d.log_euclidean_distance(
                                 g.nodes[p].features, g.nodes[q].features)
-                        else:
-                            weight = self.distances[g.nodes[p].idx][g.nodes[q].idx]
 
                         if weight < path[q]:
                             g.nodes[q].pred = p
