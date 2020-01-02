@@ -9,14 +9,8 @@ txt = l.load_txt('data/sample.txt')
 # Parsing a pre-loaded numpy array
 X, Y = p.parse_array(txt)
 
-# Creating a subgraph structure
-g = Subgraph(X, Y)
-
 #
 opf = SupervisedOPF()
 
 #
-opf._find_prototypes(g)
-
-for node in g.nodes:
-    print(node.status)
+opf.fit(X, Y)

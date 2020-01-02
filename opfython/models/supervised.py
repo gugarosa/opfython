@@ -1,3 +1,6 @@
+import numpy as np
+
+import opfython.math.distance as d
 import opfython.utils.constants as c
 import opfython.utils.logging as l
 from opfython.core.heap import Heap
@@ -40,14 +43,14 @@ class SupervisedOPF(OPF):
 
         """
 
-        #
-        h = Heap()
-
         # Creating a subgraph
         self.g = Subgraph(X, Y)
 
         # Finding prototypes
         self._find_prototypes(self.g)
+
+        #
+        h = Heap(size=self.g.n_nodes)
 
         #
         costs = np.zeros(self.g.n_nodes)
@@ -65,7 +68,7 @@ class SupervisedOPF(OPF):
 
         i = 0
 
-        while is not h.empty():
+        while not h.is_empty():
             p = h.remove()
             self.g.idx_nodes.append(p)
             i += 1
@@ -75,10 +78,15 @@ class SupervisedOPF(OPF):
                 if not p == q:
                     if costs[p] < costs[q]:
                         if self.pre_computed_distance:
-                            weight = self.distances[g.nodes[p].idx][g.nodes[q].idx]
+                            weight = self.distances[self.g.nodes[p].idx][self.g.nodes[q].idx]
                         else:
                             weight = d.log_euclidean_distance(
-                                g.nodes[p].features, g.nodes[q].features)
+                                self.g.nodes[p].features, self.g.nodes[q].features)
+                        current_cost = np.maximum(costs[p], weight)
+                        if current_cost < costs[q]:
+                            self.g.nodes[q].pred = p
+                            self.g.nodes[q].predicted_label = self.g.nodes[p].predicted_label
+                            h.update(q, current_cost)
                             
 
     def predict(self, X):
