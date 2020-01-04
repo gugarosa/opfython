@@ -14,3 +14,5 @@ opf = SupervisedOPF()
 
 #
 opf.fit(X, Y)
+
+opf.predict(X)

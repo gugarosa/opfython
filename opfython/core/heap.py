@@ -1,8 +1,5 @@
 import opfython.utils.constants as c
 import opfython.utils.exception as e
-import opfython.utils.logging as l
-
-logger = l.get_logger(__name__)
 
 
 class Heap:
@@ -18,8 +15,6 @@ class Heap:
             policy (str): Heap's policy (`min` or `max`).
 
         """
-
-        logger.debug('Creating class: Heap.')
 
         # Maximum size of the heap
         self.size = size
@@ -41,11 +36,6 @@ class Heap:
 
         # Last element identifier
         self.last = -1
-
-        # Logging attributes
-        logger.debug(f'Size: {self.size} | Policy: {self.policy}.')
-
-        logger.debug('Class created.')
 
     @property
     def size(self):

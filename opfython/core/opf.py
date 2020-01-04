@@ -63,6 +63,8 @@ class OPF:
 
         """
 
+        logger.debug('Finding prototypes ...')
+
         #
         path = np.ones(g.n_nodes)
 
@@ -105,3 +107,5 @@ class OPF:
                         if weight < path[q]:
                             g.nodes[q].pred = p
                             h.update(q, weight)
+
+        logger.debug('Prototypes found.')

@@ -1,3 +1,4 @@
+import time
 import numpy as np
 
 import opfython.math.distance as d
@@ -43,6 +44,11 @@ class SupervisedOPF(OPF):
 
         """
 
+        logger.info('Fitting new classifier ...')
+
+        #
+        start = time.time()
+
         # Creating a subgraph
         self.g = Subgraph(X, Y)
 
@@ -80,13 +86,23 @@ class SupervisedOPF(OPF):
                         if self.pre_computed_distance:
                             weight = self.distances[self.g.nodes[p].idx][self.g.nodes[q].idx]
                         else:
-                            weight = d.log_euclidean_distance(
+                            weight = d.log_squared_euclidean_distance(
                                 self.g.nodes[p].features, self.g.nodes[q].features)
+                        
                         current_cost = np.maximum(costs[p], weight)
                         if current_cost < costs[q]:
                             self.g.nodes[q].pred = p
                             self.g.nodes[q].predicted_label = self.g.nodes[p].predicted_label
                             h.update(q, current_cost)
+
+        # Ending timer
+        end = time.time()
+
+        # Calculating training task time
+        train_time = end - start
+
+        logger.info('New classifier has been trained.')
+        logger.info(f'It took {train_time} seconds.')
                             
 
     def predict(self, X):
@@ -100,4 +116,39 @@ class SupervisedOPF(OPF):
 
         """
 
-        pass
+        for i in range(self.g.n_nodes):
+            j = 0
+            k = self.g.idx_nodes[j]
+            if self.pre_computed_distance:
+                weight = self.distances[self.g.nodes[k].idx][self.g.nodes[i].idx]
+            else:
+                weight = d.log_squared_euclidean_distance(
+                    self.g.nodes[k].features, self.g.nodes[i].features)
+
+            print(self.g.nodes[k].cost, weight)
+            
+            min_cost = np.maximum(self.g.nodes[k].cost, weight)
+
+            current_label = self.g.nodes[k].predicted_label
+
+            while (j < self.g.n_nodes - 1) & (min_cost > self.g.nodes[self.g.idx_nodes[j+1]].cost):
+                l = self.g.idx_nodes[j+1]
+
+                if self.pre_computed_distance:
+                    weight = self.distances[self.g.nodes[l].idx][self.g.nodes[i].idx]
+                else:
+                    weight = d.log_squared_euclidean_distance(
+                        self.g.nodes[l].features, self.g.nodes[i].features)
+
+                print(self.g.nodes[l].cost, weight)
+
+                temp_min_cost = np.maximum(self.g.nodes[l].cost, weight)
+
+                if (temp_min_cost < min_cost):
+                    min_cost = temp_min_cost
+                    current_label = self.g.nodes[l].predicted_label
+                j += 1
+                k = l
+            
+            self.g.nodes[i].predicted_label = current_label
+
