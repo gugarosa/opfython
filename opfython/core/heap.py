@@ -16,6 +16,8 @@ class Heap:
 
         """
 
+        size = 2 * size
+
         # Maximum size of the heap
         self.size = size
 

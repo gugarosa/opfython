@@ -22,6 +22,10 @@ NIL = -1
 # a prototype or not
 PROTOTYPE = 1
 
+# Defining constant to identify whether a node is
+# relevant or not
+RELEVANT = 1
+
 # Defining constant to reflect the maximum arc weight
 # used to calculate the distance measures
 MAX_ARC_WEIGHT = 100000

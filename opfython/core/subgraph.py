@@ -1,3 +1,5 @@
+import numpy as np
+
 import opfython.stream.loader as loader
 import opfython.stream.parser as p
 import opfython.utils.exception as e
@@ -45,7 +47,12 @@ class Subgraph:
             X, Y = self._load(from_file)
 
         # Checks if data has been properly loaded
-        if (X is not None) and (Y is not None):
+        if X is not None:
+            # Checks if labels are provided or not
+            if Y is None:
+                # If not, creates an empty numpy array
+                Y = np.zeros(len(X), dtype=int)
+
             # Now, we need to build this class up
             self._build(X, Y)
 
@@ -202,4 +209,4 @@ class Subgraph:
 
         # Logging attributes
         logger.debug(
-            f'Nodes: {self.n_nodes} | Features: {self.n_features} | Trained: {self.trained}.')
+            f'Nodes: {self.n_nodes} | Features: {self.n_features}.')

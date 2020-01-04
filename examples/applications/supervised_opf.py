@@ -4,7 +4,7 @@ from opfython.core.subgraph import Subgraph
 from opfython.models.supervised import SupervisedOPF
 
 # Loading a .txt file to a numpy array
-txt = l.load_txt('data/sample.txt')
+txt = l.load_txt('data/boat.txt')
 
 # Parsing a pre-loaded numpy array
 X, Y = p.parse_array(txt)
@@ -16,4 +16,6 @@ opf = SupervisedOPF()
 opf.fit(X, Y)
 
 # Predicts new data
-opf.predict(X)
+preds = opf.predict(X)
+
+print(preds)

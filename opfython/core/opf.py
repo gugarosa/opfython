@@ -110,8 +110,30 @@ class OPF:
 
         logger.debug('Prototypes found.')
 
-    def fit():
+    def fit(self, X, Y):
+        """Fits data in the classifier.
+
+        It should be directly implemented in OPF child classes.
+
+        Args:
+            X (np.array): Array of features.
+            Y (np.array): Array of labels.
+
+        """
+
         raise NotImplementedError
     
-    def predict():
+    def predict(self, X):
+        """Predicts new data using the pre-trained classifier.
+
+        It should be directly implemented in OPF child classes.
+
+        Args:
+            X (np.array): Array of features.
+
+        Returns:
+            A list of predictions for each record of the data.
+
+        """
+
         raise NotImplementedError
