@@ -121,6 +121,7 @@ class SupervisedOPF(OPF):
 
                         # If current cost is smaller than `q` node's cost
                         if current_cost < costs[q]:
+                            costs[q] = current_cost
                             # `q` node has `p` as its predecessor
                             self.g.nodes[q].pred = p
 
