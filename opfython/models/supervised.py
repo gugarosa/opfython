@@ -3,6 +3,7 @@ import numpy as np
 
 import opfython.math.distance as d
 import opfython.utils.constants as c
+import opfython.utils.exception as e
 import opfython.utils.logging as l
 from opfython.core.heap import Heap
 from opfython.core.opf import OPF
@@ -44,7 +45,7 @@ class SupervisedOPF(OPF):
 
         """
 
-        logger.info('Fitting new classifier ...')
+        logger.info('Fitting classifier ...')
 
         #
         start = time.time()
@@ -95,14 +96,16 @@ class SupervisedOPF(OPF):
                             self.g.nodes[q].predicted_label = self.g.nodes[p].predicted_label
                             h.update(q, current_cost)
 
+        self.g.trained = True
+
         # Ending timer
         end = time.time()
 
         # Calculating training task time
         train_time = end - start
 
-        logger.info('New classifier has been trained.')
-        logger.info(f'It took {train_time} seconds.')
+        logger.info('Classifier has been trained.')
+        logger.info(f'Training time: {train_time} seconds.')
                             
 
     def predict(self, X):
@@ -116,6 +119,16 @@ class SupervisedOPF(OPF):
 
         """
 
+        if not self.g:
+            raise e.BuildError('Subgraph has not been properly created')
+        
+        if not self.g.trained:
+            raise e.BuildError('Classifier has not been properly trained')
+
+        logger.info('Predicting data ...')
+
+        start = time.time()
+
         for i in range(self.g.n_nodes):
             j = 0
             k = self.g.idx_nodes[j]
@@ -124,8 +137,6 @@ class SupervisedOPF(OPF):
             else:
                 weight = d.log_squared_euclidean_distance(
                     self.g.nodes[k].features, self.g.nodes[i].features)
-
-            print(self.g.nodes[k].cost, weight)
             
             min_cost = np.maximum(self.g.nodes[k].cost, weight)
 
@@ -140,8 +151,6 @@ class SupervisedOPF(OPF):
                     weight = d.log_squared_euclidean_distance(
                         self.g.nodes[l].features, self.g.nodes[i].features)
 
-                print(self.g.nodes[l].cost, weight)
-
                 temp_min_cost = np.maximum(self.g.nodes[l].cost, weight)
 
                 if (temp_min_cost < min_cost):
@@ -152,3 +161,11 @@ class SupervisedOPF(OPF):
             
             self.g.nodes[i].predicted_label = current_label
 
+        # Ending timer
+        end = time.time()
+
+        # Calculating training task time
+        predict_time = end - start
+
+        logger.info('Data has been predicted.')
+        logger.info(f'Prediction time: {predict_time} seconds.')

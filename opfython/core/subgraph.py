@@ -16,11 +16,13 @@ class Subgraph:
         """Initialization method.
 
         Args:
-            data (df): A pre-loaded dataframe in the OPF file format.
+            X (np.array): Array of features.
+            Y (np.array): Array of labels.
+            from_file (bool): Whether Subgraph should be directly created from a file.
 
         """
 
-        logger.info('Creating class: Subgraph.')
+        logger.debug('Creating class: Subgraph.')
 
         # Number of nodes
         self.n_nodes = 0
@@ -47,7 +49,7 @@ class Subgraph:
             # Now, we need to build this class up
             self._build(X, Y)
 
-            logger.info('Class created.')
+            logger.debug('Class created.')
 
         # If data could not be loaded
         else:
@@ -101,6 +103,21 @@ class Subgraph:
             raise e.TypeError('`nodes` should be a list')
 
         self._nodes = nodes
+
+    @property
+    def idx_nodes(self):
+        """list: List of indexes of ordered nodes.
+
+        """
+
+        return self._idx_nodes
+
+    @idx_nodes.setter
+    def idx_nodes(self, idx_nodes):
+        if not isinstance(idx_nodes, list):
+            raise e.TypeError('`idx_nodes` should be a list')
+
+        self._idx_nodes = idx_nodes
 
     @property
     def trained(self):

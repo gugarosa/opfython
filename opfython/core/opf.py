@@ -109,3 +109,9 @@ class OPF:
                             h.update(q, weight)
 
         logger.debug('Prototypes found.')
+
+    def fit():
+        raise NotImplementedError
+    
+    def predict():
+        raise NotImplementedError

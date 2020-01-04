@@ -9,10 +9,11 @@ txt = l.load_txt('data/sample.txt')
 # Parsing a pre-loaded numpy array
 X, Y = p.parse_array(txt)
 
-#
+# Creates a SupervisedOPF instance
 opf = SupervisedOPF()
 
-#
+# Fits training data into the classifier
 opf.fit(X, Y)
 
+# Predicts new data
 opf.predict(X)
