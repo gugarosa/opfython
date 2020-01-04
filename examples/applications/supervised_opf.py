@@ -16,6 +16,6 @@ opf = SupervisedOPF()
 opf.fit(X, Y)
 
 # Predicts new data
-preds = opf.predict(X)
+# preds = opf.predict(X)
 
-print(preds)
+# print(preds)

@@ -16,8 +16,6 @@ class Heap:
 
         """
 
-        size = 2 * size
-
         # Maximum size of the heap
         self.size = size
 
@@ -157,7 +155,7 @@ class Heap:
         """
 
         # If last position equals to size - 1
-        if self.last == self.size - 1:
+        if self.last is (self.size - 1):
             # Return as True
             return True
 
@@ -173,7 +171,7 @@ class Heap:
         """
 
         # If last position is equal to -1
-        if self.last == -1:
+        if self.last is -1:
             # Return as True
             return True
 
@@ -227,7 +225,7 @@ class Heap:
         # Checks if policy is `min`
         if self.policy == 'min':
             # While the heap exists and the cost of post-node is bigger than current node
-            while ((i > 0) & (self.cost[self.p[j]] > self.cost[self.p[i]])):
+            while i > 0 and self.cost[self.p[j]] > self.cost[self.p[i]]:
                 # Swap the positions
                 self.p[j], self.p[i] = self.p[i], self.p[j]
 
@@ -246,7 +244,7 @@ class Heap:
         # If policy is `max`
         else:
             # While the heap exists and the cost of post-node is smaller than current node
-            while ((i > 0) & (self.cost[self.p[j]] < self.cost[self.p[i]])):
+            while i > 0 and self.cost[self.p[j]] < self.cost[self.p[i]]:
                 # Swap the positions
                 self.p[j], self.p[i] = self.p[i], self.p[j]
 
@@ -279,27 +277,29 @@ class Heap:
         # Equals the value of `j` and `i` counters
         j = i
 
+        # print(left, right, i)
+
         # Checks if policy is `min`
         if self.policy == 'min':
             # Checks if left node is not the last and its cost is smaller than previous
-            if ((left <= self.last) & (self.cost[self.p[left]] < self.cost[self.p[i]])):
+            if left <= self.last and self.cost[self.p[left]] < self.cost[self.p[i]]:
                 # Apply `j` counter as the left node
                 j = left
 
             # Checks if right node is not the last and its cost is smaller than previous
-            if ((right <= self.last) & (self.cost[self.p[right]] < self.cost[self.p[j]])):
+            if right <= self.last and self.cost[self.p[right]] < self.cost[self.p[j]]:
                 # Apply `j` counter as the right node
                 j = right
 
         # If policy is `max`
         else:
             # Checks if left node is not the last and its cost is bigger than previous
-            if ((left <= self.last) & (self.cost[self.p[left]] > self.cost[self.p[i]])):
+            if left <= self.last and self.cost[self.p[left]] > self.cost[self.p[i]]:
                 # Apply `j` counter as the left node
                 j = left
 
             # Checks if right node is not the last and its cost is bigger than previous
-            if ((right <= self.last) & (self.cost[self.p[right]] > self.cost[self.p[j]])):
+            if right <= self.last and self.cost[self.p[right]] > self.cost[self.p[j]]:
                 # Apply `j` counter as the right node
                 j = right
 
@@ -336,6 +336,8 @@ class Heap:
             # Adds the new node to the heap
             self.p[self.last] = p
 
+            # print(self.last, self.p)
+
             # Marks it as gray
             self.color[p] = c.GRAY
 
@@ -359,6 +361,7 @@ class Heap:
 
         # Checks if heap is not empty
         if not self.is_empty():
+            # print(self.p)
             # Gathers the node's value
             p = self.p[0]
 

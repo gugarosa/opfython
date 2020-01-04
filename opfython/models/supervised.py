@@ -57,7 +57,7 @@ class SupervisedOPF(OPF):
         self._find_prototypes(self.g)
 
         # Creating a minimum heap
-        h = Heap(size=self.g.n_nodes)
+        Q = Heap(size=self.g.n_nodes)
 
         # Also creating an costs array
         costs = np.zeros(self.g.n_nodes)
@@ -79,15 +79,15 @@ class SupervisedOPF(OPF):
                 costs[i] = 0
 
                 # Inserts the node into the heap
-                h.insert(i)
+                Q.insert(i)
 
         # Resets the `i` counter
         i = 0
 
         # While the heap is not empty
-        while not h.is_empty():
+        while not Q.is_empty():
             # Removes a node
-            p = h.remove()
+            p = Q.remove()
 
             # Appends its index to the ordered list
             self.g.idx_nodes.append(p)
@@ -127,7 +127,7 @@ class SupervisedOPF(OPF):
                             self.g.nodes[q].predicted_label = self.g.nodes[p].predicted_label
 
                             # Updates the heap with `q` node and the current cost
-                            h.update(q, current_cost)
+                            Q.update(q, current_cost)
 
         # The subgraph has been properly trained
         self.g.trained = True

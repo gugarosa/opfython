@@ -72,41 +72,44 @@ class OPF:
         path.fill(c.FLOAT_MAX)
 
         #
-        h = Heap(g.n_nodes)
+        H = Heap(g.n_nodes)
 
         path[0] = 0
         g.nodes[0].pred = c.NIL
 
-        h.insert(0)
+        H.insert(0)
 
-        n_proto = 0.0
+        n_proto = 0
 
-        while not h.is_empty():
-            p = h.remove()
+        while not H.is_empty():
+            p = H.remove()
             g.nodes[p].cost = path[p]
             pred = g.nodes[p].pred
 
-            if not pred == -1:
-                if not g.nodes[p].label == g.nodes[pred].label:
-                    if not g.nodes[p].status == c.PROTOTYPE:
+            # print(path)
+
+            if pred is not c.NIL:
+                if g.nodes[p].label is not g.nodes[pred].label:
+                    if g.nodes[p].status is not c.PROTOTYPE:
                         g.nodes[p].status = c.PROTOTYPE
                         n_proto += 1
-                    if not g.nodes[pred].status == c.PROTOTYPE:
+                    if g.nodes[pred].status is not c.PROTOTYPE:
                         g.nodes[pred].status = c.PROTOTYPE
                         n_proto += 1
 
             for q in range(g.n_nodes):
-                if not h.color[q] == c.BLACK:
-                    if not p == q:
+                if H.color[q] is not c.BLACK:
+                    if p is not q:
                         if self.pre_computed_distance:
                             weight = self.distances[g.nodes[p].idx][g.nodes[q].idx]
                         else:
-                            weight = d.log_euclidean_distance(
+                            weight = d.log_squared_euclidean_distance(
                                 g.nodes[p].features, g.nodes[q].features)
 
                         if weight < path[q]:
+                            path[q] = weight
                             g.nodes[q].pred = p
-                            h.update(q, weight)
+                            H.update(q, weight)
 
         logger.debug('Prototypes found.')
 
