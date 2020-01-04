@@ -57,7 +57,7 @@ class SupervisedOPF(OPF):
         self._find_prototypes(self.g)
 
         # Creating a minimum heap
-        Q = Heap(size=self.g.n_nodes)
+        h = Heap(size=self.g.n_nodes)
 
         # Also creating an costs array
         costs = np.zeros(self.g.n_nodes)
@@ -69,6 +69,7 @@ class SupervisedOPF(OPF):
         for i in range(self.g.n_nodes):
             # Checks if node is a prototype or not
             if self.g.nodes[i].status == c.PROTOTYPE:
+                print(i)
                 # If yes, it does not have predecessor nodes
                 self.g.nodes[i].pred = c.NIL
 
@@ -79,15 +80,15 @@ class SupervisedOPF(OPF):
                 costs[i] = 0
 
                 # Inserts the node into the heap
-                Q.insert(i)
+                h.insert(i)
 
         # Resets the `i` counter
         i = 0
 
         # While the heap is not empty
-        while not Q.is_empty():
+        while not h.is_empty():
             # Removes a node
-            p = Q.remove()
+            p = h.remove()
 
             # Appends its index to the ordered list
             self.g.idx_nodes.append(p)
@@ -127,7 +128,7 @@ class SupervisedOPF(OPF):
                             self.g.nodes[q].predicted_label = self.g.nodes[p].predicted_label
 
                             # Updates the heap with `q` node and the current cost
-                            Q.update(q, current_cost)
+                            h.update(q, current_cost)
 
         # The subgraph has been properly trained
         self.g.trained = True
@@ -196,7 +197,7 @@ class SupervisedOPF(OPF):
             current_label = self.g.nodes[k].predicted_label
 
             # While `j` is a possible node and the minimum cost is bigger than the current node's cost
-            while (j < self.g.n_nodes - 1) & (min_cost > self.g.nodes[self.g.idx_nodes[j+1]].cost):
+            while j < (self.g.n_nodes - 1) and min_cost > self.g.nodes[self.g.idx_nodes[j+1]].cost:
                 # Gathers the next node from the ordered list
                 l = self.g.idx_nodes[j+1]
 
@@ -215,7 +216,7 @@ class SupervisedOPF(OPF):
                 temp_min_cost = np.maximum(self.g.nodes[l].cost, weight)
 
                 # If temporary minimum cost is smaller than the minimum cost
-                if (temp_min_cost < min_cost):
+                if temp_min_cost < min_cost:
                     # Replaces the minimum cost
                     min_cost = temp_min_cost
 

@@ -72,17 +72,17 @@ class OPF:
         path.fill(c.FLOAT_MAX)
 
         #
-        H = Heap(g.n_nodes)
+        h = Heap(g.n_nodes)
 
         path[0] = 0
         g.nodes[0].pred = c.NIL
 
-        H.insert(0)
+        h.insert(0)
 
         n_proto = 0
 
-        while not H.is_empty():
-            p = H.remove()
+        while not h.is_empty():
+            p = h.remove()
             g.nodes[p].cost = path[p]
             pred = g.nodes[p].pred
 
@@ -98,7 +98,7 @@ class OPF:
                         n_proto += 1
 
             for q in range(g.n_nodes):
-                if H.color[q] is not c.BLACK:
+                if h.color[q] is not c.BLACK:
                     if p is not q:
                         if self.pre_computed_distance:
                             weight = self.distances[g.nodes[p].idx][g.nodes[q].idx]
@@ -109,7 +109,7 @@ class OPF:
                         if weight < path[q]:
                             path[q] = weight
                             g.nodes[q].pred = p
-                            H.update(q, weight)
+                            h.update(q, weight)
 
         logger.debug('Prototypes found.')
 
