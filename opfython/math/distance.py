@@ -232,3 +232,20 @@ def squared_euclidean_distance(x, y):
     dist = (x - y) ** 2
 
     return np.sum(dist)
+
+
+# A distances constant dictionary for selecting the desired
+# distance metric to be used
+DISTANCES = {
+    'bray_curtis': bray_curtis_distance,
+    'canberra': canberra_distance,
+    'chi_squared': chi_squared_distance,
+    'euclidean': euclidean_distance,
+    'gaussian': gaussian_distance,
+    'log_euclidean': log_euclidean_distance,
+    'log_squared_euclidean': log_squared_euclidean_distance,
+    'manhattan': manhattan_distance,
+    'squared_chi_squared': squared_chi_squared_distance,
+    'squared_cord': squared_cord_distance,
+    'squared_euclidean': squared_euclidean_distance
+}

@@ -172,8 +172,9 @@ class Subgraph:
 
         # If extension is not recognized
         else:
-            # Raises a ValueError exception
-            raise ValueError('File extension not recognized.')
+            # Raises an ArgumentError exception
+            raise e.ArgumentError(
+                'File extension not recognized. It should be `.csv`, `.json` or `.txt`')
 
         # Parsing array
         X, Y = p.parse_array(data)
@@ -217,6 +218,8 @@ class Subgraph:
 
         """
 
+        logger.debug('Resetting subgraph ...')
+
         # For every possible node
         for i in range(self.n_nodes):
             # Resets its predecessor
@@ -224,3 +227,5 @@ class Subgraph:
 
             # Resets whether its relevant or not
             self.nodes[i].relevant = c.IRRELEVANT
+
+        logger.debug('Subgraph reseted.')

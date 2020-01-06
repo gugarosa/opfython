@@ -11,7 +11,7 @@ txt = l.load_txt('data/boat.txt')
 X, Y = p.parse_array(txt)
 
 # Creates a SupervisedOPF instance
-opf = SupervisedOPF()
+opf = SupervisedOPF(distance='log_squared_euclidean', pre_computed_distance=None)
 
 # Fits training data into the classifier
 opf.fit(X, Y)

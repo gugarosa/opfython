@@ -33,12 +33,14 @@ def parse_array(data):
         # If there is only one class
         if len(counts) < 2:
             # Raises a ValueError
-            raise e.ValueError('Parsed data should have at least two distinct labels')
+            raise e.ValueError(
+                'Parsed data should have at least two distinct labels')
 
         # If there are unsequential labels
         if len(counts) != np.max(Y):
             # Raises a ValueError
-            raise e.ValueError('Parsed data should have sequential labels, e.g., 1, 2, ..., n')
+            raise e.ValueError(
+                'Parsed data should have sequential labels, e.g., 1, 2, ..., n')
 
         logger.debug(f'Array parsed.')
 
