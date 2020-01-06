@@ -19,6 +19,7 @@ opf.fit(X, Y)
 # Predicts new data
 preds = opf.predict(X)
 
-print(preds)
+# Calculating accuracy
+acc = g.opf_accuracy(Y, preds)
 
-g.opf_accuracy(Y, preds)
+print(f'Accuracy: {acc}')

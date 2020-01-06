@@ -1,6 +1,38 @@
 import numpy as np
 
 
+def confusion_matrix(labels, preds):
+    """Calculates the confusion matrix between true and predicted labels.
+
+    Args:
+        labels (np.array | list): List or numpy array holding the true labels.
+        preds (np.array | list): List or numpy array holding the predicted labels.
+
+    Returns:
+        The confusion matrix.
+        
+    """
+
+    # Making sure that labels is a numpy array
+    labels = np.asarray(labels)
+
+    # Making sure that predictions is a numpy array
+    preds = np.asarray(preds)
+
+    # Calculating the number of classes
+    n_class = np.max(labels)
+
+    # Creating an empty errors matrix
+    c_matrix = np.zeros((n_class, n_class))
+
+    # For every label and prediction
+    for label, pred in zip(labels, preds):
+        # Increments the corresponding cell from the confusion matrix
+        c_matrix[label-1][pred-1] += 1
+
+    return c_matrix
+
+
 def normalize(array):
     """Normalizes an input array.
 
@@ -45,20 +77,20 @@ def opf_accuracy(labels, preds):
     # Calculating the number of classes
     n_class = np.max(labels)
 
+    # Creating an empty errors matrix
+    errors = np.zeros((n_class, 2))
+
     # Gathering the amount of labels per class
     _, counts = np.unique(labels, return_counts=True)
-
-    # Creating an empty errors matrix
-    errors = np.zeros((len(counts), 2))
 
     # For every label and prediction
     for label, pred in zip(labels, preds):
         # If label is different from prediction
         if label != pred:
-            # Increments the corresponding cell from the confusion matrix
+            # Increments the corresponding cell from the error matrix
             errors[pred-1][0] += 1
 
-            # Increments the corresponding cell from the confusion matrix
+            # Increments the corresponding cell from the error matrix
             errors[label-1][1] += 1
 
     # Calculating the float value of the true label errors
@@ -72,5 +104,47 @@ def opf_accuracy(labels, preds):
 
     # Calculates the OPF accuracy
     accuracy = 1 - (np.sum(errors) / (2 * n_class))
+
+    return accuracy
+
+def opf_accuracy_per_label(labels, preds):
+    """Calculates the accuracy per label between true and predicted labels using OPF-style measure.
+
+    Args:
+        labels (np.array | list): List or numpy array holding the true labels.
+        preds (np.array | list): List or numpy array holding the predicted labels.
+
+    Returns:
+        The OPF accuracy measure per label between 0 and 1.
+
+    """
+
+    # Making sure that labels is a numpy array
+    labels = np.asarray(labels)
+
+    # Making sure that predictions is a numpy array
+    preds = np.asarray(preds)
+
+    # Calculating the number of classes
+    n_class = np.max(labels)
+
+    # Creating an empty errors array
+    errors = np.zeros(n_class)
+
+    # Gathering the amount of labels per class
+    _, counts = np.unique(labels, return_counts=True)
+
+    # For every label and prediction
+    for label, pred in zip(labels, preds):
+        # If label is different from prediction
+        if label != pred:
+            # Increments the corresponding cell from the error array
+            errors[label-1] += 1
+
+    # Calculating the float value of the true label errors
+    errors /= counts
+
+    # Calculates the OPF accuracy
+    accuracy = 1 - errors
 
     return accuracy
