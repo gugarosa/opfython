@@ -12,10 +12,12 @@ txt = l.load_txt('data/boat.txt')
 X, Y = p.parse_array(txt)
 
 # Splitting data into training and testing sets
-X_train, X_test, Y_train, Y_test = s.split(X, Y, percentage=0.5, random_state=1)
+X_train, X_test, Y_train, Y_test = s.split(
+    X, Y, percentage=0.5, random_state=1)
 
 # Creates a SupervisedOPF instance
-opf = SupervisedOPF(distance='log_squared_euclidean', pre_computed_distance=None)
+opf = SupervisedOPF(distance='log_squared_euclidean',
+                    pre_computed_distance=None)
 
 # Fits training data into the classifier
 opf.fit(X_train, Y_train)
