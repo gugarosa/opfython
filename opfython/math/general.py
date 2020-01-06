@@ -10,7 +10,7 @@ def confusion_matrix(labels, preds):
 
     Returns:
         The confusion matrix.
-        
+
     """
 
     # Making sure that labels is a numpy array
@@ -106,6 +106,7 @@ def opf_accuracy(labels, preds):
     accuracy = 1 - (np.sum(errors) / (2 * n_class))
 
     return accuracy
+
 
 def opf_accuracy_per_label(labels, preds):
     """Calculates the accuracy per label between true and predicted labels using OPF-style measure.
