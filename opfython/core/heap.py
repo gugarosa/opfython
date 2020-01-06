@@ -277,8 +277,6 @@ class Heap:
         # Equals the value of `j` and `i` counters
         j = i
 
-        # print(left, right, i)
-
         # Checks if policy is `min`
         if self.policy == 'min':
             # Checks if left node is not the last and its cost is smaller than previous
@@ -335,8 +333,6 @@ class Heap:
 
             # Adds the new node to the heap
             self.p[self.last] = p
-
-            # print(self.last, self.p)
 
             # Marks it as gray
             self.color[p] = c.GRAY
