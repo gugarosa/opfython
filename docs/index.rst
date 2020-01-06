@@ -17,6 +17,10 @@ OPFython is compatible with: **Python 3.6+** and **PyPy 3.5**.
     :caption: Package Reference
 
     api/opfython.core
+    api/opfython.math
+    api/opfython.models
+    api/opfython.stream
+    api/opfython.utils
 
 
 Indices and tables

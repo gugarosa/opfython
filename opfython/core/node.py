@@ -34,8 +34,11 @@ class Node:
         # Array of features
         self.features = features
 
-        # Cost of the path
+        # Cost of the node
         self.cost = 0.0
+
+        # Density of the node
+        self.density = 0.0
 
         # Whether the node is a prototype or not
         self.status = c.STANDARD
@@ -113,6 +116,36 @@ class Node:
         self._features = features
 
     @property
+    def cost(self):
+        """float: Node's cost.
+
+        """
+
+        return self._cost
+
+    @cost.setter
+    def cost(self, cost):
+        if not (isinstance(cost, float) or isinstance(cost, int)):
+            raise e.TypeError('`cost` should be a float or integer')
+
+        self._cost = cost
+
+    @property
+    def density(self):
+        """float: Node's density.
+
+        """
+
+        return self._density
+
+    @density.setter
+    def density(self, density):
+        if not (isinstance(density, float) or isinstance(density, int)):
+            raise e.TypeError('`density` should be a float or integer')
+
+        self._density = density
+
+    @property
     def status(self):
         """int: Whether the node is a prototype or not.
 
@@ -122,10 +155,8 @@ class Node:
 
     @status.setter
     def status(self, status):
-        if not isinstance(status, int):
-            raise e.TypeError('`status` should be an integer')
-        if status < 0:
-            raise e.ValueError('`status` should be >= 0')
+        if status not in [c.STANDARD, c.PROTOTYPE]:
+            raise e.TypeError('`status` should be `STANDARD` or `PROTOTYPE`')
 
         self._status = status
 
@@ -141,8 +172,9 @@ class Node:
     def pred(self, pred):
         if not isinstance(pred, int):
             raise e.TypeError('`pred` should be an integer')
-        if pred < -1:
-            raise e.ValueError('`pred` should be >= -1')
+        if pred < c.NIL:
+            raise e.ValueError(
+                '`pred` should have a value larger than `NIL`, e.g., -1')
 
         self._pred = pred
 
@@ -156,9 +188,8 @@ class Node:
 
     @relevant.setter
     def relevant(self, relevant):
-        if not isinstance(relevant, int):
-            raise e.TypeError('`relevant` should be an integer')
-        if relevant < 0:
-            raise e.ValueError('`relevant` should be >= 0')
+        if relevant not in [c.RELEVANT, c.IRRELEVANT]:
+            raise e.TypeError(
+                '`relevant` should be `RELEVANT` or `IRRELEVANT`')
 
         self._relevant = relevant

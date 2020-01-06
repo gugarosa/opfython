@@ -213,6 +213,69 @@ class Subgraph:
         logger.debug(
             f'Nodes: {self.n_nodes} | Features: {self.n_features}.')
 
+    def eliminate_maxima_height(self, height):
+        """Eliminates maxima values in the subgraph that are below the inputted height.
+
+        Args:
+            height (float): Height's threshold.
+
+        """
+
+        logger.debug(f'Eliminating maxima above height = {height} ...')
+
+        # Checks if height is bigger than zero
+        if height > 0:
+            # For every possible node
+            for i in range(self.nodes):
+                # Calculates its new cost
+                self.nodes[i].cost = np.maximum(
+                    self.nodes[i].density - height, 0)
+
+        logger.debug('Maxima eliminated.')
+
+    def eliminate_maxima_area(self, area):
+        """Eliminates maxima values in the subgraph that are below the inputted area.
+
+        Args:
+            area (float): Area's threshold.
+
+        """
+
+        logger.debug(f'Eliminating maxima above area = {area} ...')
+
+        logger.debug('Maxima eliminated.')
+
+    def eliminate_maxima_volume(self, volume):
+        """Eliminates maxima values in the subgraph that are below the inputted volume.
+
+        Args:
+            volume (float): Volume's threshold.
+
+        """
+
+        logger.debug(f'Eliminating maxima above volume = {volume} ...')
+
+        logger.debug('Maxima eliminated.')
+
+    def mark_nodes(self, i):
+        """Marks a node and its whole path as relevant.
+
+        Args:
+            i (int): An identifier of the node to start the marking.
+
+        """
+
+        # While the node still has a predecessor
+        while self.nodes[i].pred != c.NIL:
+            # Marks current node as relevant
+            self.nodes[i].relevant = c.RELEVANT
+
+            # Gathers the predecessor node of current node
+            i = self.nodes[i].pred
+
+        # Marks the first node as relevant
+        self.nodes[i].relevant = c.RELEVANT
+
     def reset(self):
         """Resets the subgraph predecessors and arcs.
 
@@ -227,5 +290,7 @@ class Subgraph:
 
             # Resets whether its relevant or not
             self.nodes[i].relevant = c.IRRELEVANT
+
+        # Destroys the arcs
 
         logger.debug('Subgraph reseted.')
