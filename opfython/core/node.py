@@ -1,5 +1,6 @@
 import numpy as np
 
+import opfython.utils.constants as c
 import opfython.utils.exception as e
 import opfython.utils.logging as l
 
@@ -37,13 +38,13 @@ class Node:
         self.cost = 0.0
 
         # Whether the node is a prototype or not
-        self.status = 0
+        self.status = c.STANDARD
 
         # Identifier to the predecessor node
-        self.pred = 0
+        self.pred = c.NIL
 
         # Whether the node is relevant or not
-        self.relavant = 0
+        self.relavant = c.IRRELEVANT
 
     @property
     def idx(self):

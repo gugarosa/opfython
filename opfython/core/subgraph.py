@@ -2,6 +2,7 @@ import numpy as np
 
 import opfython.stream.loader as loader
 import opfython.stream.parser as p
+import opfython.utils.constants as c
 import opfython.utils.exception as e
 import opfython.utils.logging as l
 from opfython.core.node import Node
@@ -210,3 +211,16 @@ class Subgraph:
         # Logging attributes
         logger.debug(
             f'Nodes: {self.n_nodes} | Features: {self.n_features}.')
+
+    def reset(self):
+        """Resets the subgraph predecessors and arcs.
+
+        """
+
+        # For every possible node
+        for i in range(self.n_nodes):
+            # Resets its predecessor
+            self.nodes[i].pred = c.NIL
+
+            # Resets whether its relevant or not
+            self.nodes[i].relevant = c.IRRELEVANT

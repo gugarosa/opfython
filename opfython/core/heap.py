@@ -302,7 +302,7 @@ class Heap:
                 j = right
 
         # Checks if `j` is not equal to `i`
-        if j is not i:
+        if j != i:
             # Swap node's position
             self.p[j], self.p[i] = self.p[i], self.p[j]
 

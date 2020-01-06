@@ -80,18 +80,18 @@ class OPF:
 
             # print(path)
 
-            if pred is not c.NIL:
-                if self.subgraph.nodes[p].label is not self.subgraph.nodes[pred].label:
-                    if self.subgraph.nodes[p].status is not c.PROTOTYPE:
+            if pred != c.NIL:
+                if self.subgraph.nodes[p].label != self.subgraph.nodes[pred].label:
+                    if self.subgraph.nodes[p].status != c.PROTOTYPE:
                         self.subgraph.nodes[p].status = c.PROTOTYPE
                         n_proto += 1
-                    if self.subgraph.nodes[pred].status is not c.PROTOTYPE:
+                    if self.subgraph.nodes[pred].status != c.PROTOTYPE:
                         self.subgraph.nodes[pred].status = c.PROTOTYPE
                         n_proto += 1
 
             for q in range(self.subgraph.n_nodes):
-                if h.color[q] is not c.BLACK:
-                    if p is not q:
+                if h.color[q] != c.BLACK:
+                    if p != q:
                         if self.pre_computed_distance:
                             weight = self.distances[self.subgraph.nodes[p]
                                                     .idx][self.subgraph.nodes[q].idx]

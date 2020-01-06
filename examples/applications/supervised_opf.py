@@ -1,3 +1,4 @@
+import opfython.math.general as g
 import opfython.stream.loader as l
 import opfython.stream.parser as p
 from opfython.core.subgraph import Subgraph
@@ -19,3 +20,5 @@ opf.fit(X, Y)
 preds = opf.predict(X)
 
 print(preds)
+
+g.accuracy(Y, preds)

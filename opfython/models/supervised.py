@@ -102,7 +102,7 @@ class SupervisedOPF(OPF):
             # For every possible node
             for q in range(self.subgraph.n_nodes):
                 # If we are dealing with different nodes
-                if p is not q:
+                if p != q:
                     # If `p` node cost is smaller than `q` node cost
                     if costs[p] < costs[q]:
                         # Checks if we are using a pre-computed distance

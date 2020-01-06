@@ -20,12 +20,18 @@ NIL = -1
 
 # Defining constant to identify whether a node is
 # a prototype or not
+STANDARD = 0
 PROTOTYPE = 1
 
 # Defining constant to identify whether a node is
 # relevant or not
+IRRELEVANT = 0
 RELEVANT = 1
 
 # Defining constant to reflect the maximum arc weight
 # used to calculate the distance measures
 MAX_ARC_WEIGHT = 100000
+
+# Defining constant to reflect the maximum density
+# used to calculate in unsupervised approaches
+MAX_DENSITY = 1000
