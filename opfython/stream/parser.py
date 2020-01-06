@@ -17,7 +17,7 @@ def parse_array(data):
 
     """
 
-    logger.debug('Parsing array ...')
+    logger.info('Parsing data ...')
 
     # Tries to parse the dataframe
     try:
@@ -42,7 +42,7 @@ def parse_array(data):
             raise e.ValueError(
                 'Parsed data should have sequential labels, e.g., 1, 2, ..., n')
 
-        logger.debug(f'Array parsed.')
+        logger.info(f'Data parsed.')
 
         return X, Y.astype(int)
 

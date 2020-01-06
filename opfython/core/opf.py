@@ -248,7 +248,7 @@ class OPF:
                             # Updates the arc on the heap
                             h.update(q, weight)
 
-        logger.debug(f'Prototypes: {prototypes}')
+        logger.debug(f'Prototypes: {prototypes}.')
 
     def load(self, file_name):
         """Loads the object from a pickle encoding.
