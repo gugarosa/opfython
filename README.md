@@ -1,4 +1,4 @@
-# OPFython: An Optimum-Path Forest classifier
+# OPFython: Python-Inspired Optimum-Path Forest
 
 [![Latest release](https://img.shields.io/github/release/gugarosa/opfython.svg)](https://github.com/gugarosa/opfython/releases)
 [![Open issues](https://img.shields.io/github/issues/gugarosa/opfython.svg)](https://github.com/gugarosa/opfython/issues)
