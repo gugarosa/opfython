@@ -155,7 +155,7 @@ class Heap:
         """
 
         # If last position equals to size - 1
-        if self.last is (self.size - 1):
+        if self.last == (self.size - 1):
             # Return as True
             return True
 
@@ -171,7 +171,7 @@ class Heap:
         """
 
         # If last position is equal to -1
-        if self.last is -1:
+        if self.last == -1:
             # Return as True
             return True
 

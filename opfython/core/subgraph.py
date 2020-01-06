@@ -52,7 +52,7 @@ class Subgraph:
             # Checks if labels are provided or not
             if Y is None:
                 # If not, creates an empty numpy array
-                Y = np.zeros(len(X), dtype=int)
+                Y = np.ones(len(X), dtype=int)
 
             # Now, we need to build this class up
             self._build(X, Y)

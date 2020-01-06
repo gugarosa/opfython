@@ -21,4 +21,4 @@ preds = opf.predict(X)
 
 print(preds)
 
-g.accuracy(Y, preds)
+g.opf_accuracy(Y, preds)

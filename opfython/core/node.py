@@ -12,7 +12,7 @@ class Node:
 
     """
 
-    def __init__(self, idx=0, label=0, features=None):
+    def __init__(self, idx=0, label=1, features=None):
         """Initialization method.
 
         Args:
@@ -29,7 +29,7 @@ class Node:
         self.label = label
 
         # Also its possible predicted label
-        self.predicted_label = 0
+        self.predicted_label = 1
 
         # Array of features
         self.features = features
@@ -75,8 +75,8 @@ class Node:
     def label(self, label):
         if not isinstance(label, int):
             raise e.TypeError('`label` should be an integer')
-        if label < 0:
-            raise e.ValueError('`label` should be >= 0')
+        if label < 1:
+            raise e.ValueError('`label` should be >= 1')
 
         self._label = label
 
@@ -92,8 +92,8 @@ class Node:
     def predicted_label(self, predicted_label):
         if not isinstance(predicted_label, int):
             raise e.TypeError('`predicted_label` should be an integer')
-        if predicted_label < 0:
-            raise e.ValueError('`predicted_label` should be >= 0')
+        if predicted_label < 1:
+            raise e.ValueError('`predicted_label` should be >= 1')
 
         self._predicted_label = predicted_label
 
