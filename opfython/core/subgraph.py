@@ -39,10 +39,6 @@ class Subgraph:
         # List of indexes of ordered nodes
         self.idx_nodes = []
 
-        self.density = 0.0
-        self.min_density = 0.0
-        self.max_density = 0.0
-
         # Whether the subgraph is trained or not
         self.trained = False
 
@@ -141,6 +137,9 @@ class Subgraph:
 
     @trained.setter
     def trained(self, trained):
+        if not isinstance(trained, bool):
+            raise e.TypeError('`trained` should be a boolean')
+
         self._trained = trained
 
     def _load(self, file_path):
@@ -234,50 +233,6 @@ class Subgraph:
 
         logger.debug('Arcs destroyed.')
 
-    def eliminate_maxima_height(self, height):
-        """Eliminates maxima values in the subgraph that are below the inputted height.
-
-        Args:
-            height (float): Height's threshold.
-
-        """
-
-        logger.debug(f'Eliminating maxima above height = {height} ...')
-
-        # Checks if height is bigger than zero
-        if height > 0:
-            # For every possible node
-            for i in range(self.nodes):
-                # Calculates its new cost
-                self.nodes[i].cost = np.maximum(
-                    self.nodes[i].density - height, 0)
-
-        logger.debug('Maxima eliminated.')
-
-    def eliminate_maxima_area(self, area):
-        """Eliminates maxima values in the subgraph that are below the inputted area.
-
-        Args:
-            area (float): Area's threshold.
-
-        """
-
-        logger.debug(f'Eliminating maxima above area = {area} ...')
-
-        logger.debug('Maxima eliminated.')
-
-    def eliminate_maxima_volume(self, volume):
-        """Eliminates maxima values in the subgraph that are below the inputted volume.
-
-        Args:
-            volume (float): Volume's threshold.
-
-        """
-
-        logger.debug(f'Eliminating maxima above volume = {volume} ...')
-
-        logger.debug('Maxima eliminated.')
-
     def mark_nodes(self, i):
         """Marks a node and its whole path as relevant.
 
@@ -299,7 +254,7 @@ class Subgraph:
         # Marks the first node as relevant
         self.nodes[i].relevant = c.RELEVANT
 
-        logger.debug('Node and its path has been marked.')
+        logger.debug('Node and its path have been marked.')
 
     def reset(self):
         """Resets the subgraph predecessors and arcs.

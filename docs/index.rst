@@ -20,6 +20,7 @@ OPFython is compatible with: **Python 3.6+** and **PyPy 3.5**.
     api/opfython.math
     api/opfython.models
     api/opfython.stream
+    api/opfython.subgraphs
     api/opfython.utils
 
 

@@ -56,6 +56,8 @@ OPFython is based on the following structure, and you should pay attention to it
         - loader
         - parser
         - splitter
+    - subgraphs
+        - knn
     - utils
         - constants
         - converter
@@ -78,6 +80,10 @@ Each machine learning OPF-based technique is defined in this package. From Super
 ### Stream
 
 Every pipeline has its first step, right? The stream package serves as primary methods to load data, parse it into feasible arrays, and split them into the desired sets (training, evaluation, testing).
+
+### Subgraphs
+
+As each type of OPF classifier might need a particular subgraph, we opted to define a unique package to hold them all. The subgraph's package is in charge of implementing some of its varities, such as the k-nearest neighbour (KNN) subgraph.
 
 ### Utils
 

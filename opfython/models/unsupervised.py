@@ -8,7 +8,7 @@ import opfython.utils.exception as e
 import opfython.utils.logging as l
 from opfython.core.heap import Heap
 from opfython.core.opf import OPF
-from opfython.core.subgraph import Subgraph
+from opfython.subgraphs.knn import KNNSubgraph
 
 logger = l.get_logger(__name__)
 
@@ -98,18 +98,19 @@ class UnsupervisedOPF(OPF):
             n_elems = 1
             for k in range(k_max):
                 if self.pre_computed_distance:
-                    dist = self.pre_distances[self.subgraph.nodes[i].idx][self.subgraph.nodes[].idx]
+                    dist = self.pre_distances[self.subgraph.nodes[i].idx][self.subgraph.nodes[k].idx]
                 else:
                     dist = distance.DISTANCES[self.distance](self.subgraph.nodes[i].features, self.subgraph.nodes[j].features)
 
 
     def _best_minimum_cut(self, k_min, k_max):
         maxdists = self._create_arcs(k_max)
+        print(maxdists)
 
-        for k in range(k_min, k_max+1):
-            if minimum_cut != 0:
-                self.subgraph.density = maxdists[k-1]
-                self.subgraph.best_k = k
+        # for k in range(k_min, k_max+1):
+        #     if minimum_cut != 0:
+        #         self.subgraph.density = maxdists[k-1]
+        #         self.subgraph.best_k = k
 
 
 
@@ -127,9 +128,9 @@ class UnsupervisedOPF(OPF):
         start = time.time()
 
         # Creating a subgraph
-        self.subgraph = Subgraph(X)
+        self.subgraph = KNNSubgraph(X)
 
-        dists = self._best_minimum_cut(1, 1)
+        self._best_minimum_cut(1, 1)
 
         # Checks if it is supposed to use pre-computed distances
         if self.pre_computed_distance:

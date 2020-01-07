@@ -40,8 +40,13 @@ class Node:
         # Density of the node
         self.density = 0.0
 
+        # Maximum distance among the k-nearest neighbors
         self.radius = 0.0
+
+        # Amount of adjacent nodes on plateaus
         self.n_adjacency = 0
+
+        # List of adjacent nodes
         self.adjacency = []
 
         # Whether the node is a prototype or not
@@ -148,6 +153,53 @@ class Node:
             raise e.TypeError('`density` should be a float or integer')
 
         self._density = density
+
+    @property
+    def radius(self):
+        """float: Maximum distance among the k-nearest neighbors.
+
+        """
+
+        return self._radius
+
+    @radius.setter
+    def radius(self, radius):
+        if not (isinstance(radius, float) or isinstance(radius, int)):
+            raise e.TypeError('`radius` should be a float or integer')
+
+        self._radius = radius
+
+    @property
+    def n_adjacency(self):
+        """int: Amount of adjacent nodes on plateaus.
+
+        """
+
+        return self._n_adjacency
+
+    @n_adjacency.setter
+    def n_adjacency(self, n_adjacency):
+        if not isinstance(n_adjacency, int):
+            raise e.TypeError('`n_adjacency` should be an integer')
+        if n_adjacency < 0:
+            raise e.ValueError('`n_adjacency` should be >= 0')
+
+        self._n_adjacency = n_adjacency
+
+    @property
+    def adjacency(self):
+        """list: Adjacent nodes.
+
+        """
+
+        return self._adjacency
+
+    @adjacency.setter
+    def adjacency(self, adjacency):
+        if not isinstance(adjacency, list):
+            raise e.TypeError('`adjacency` should be a list')
+
+        self._adjacency = adjacency
 
     @property
     def status(self):
