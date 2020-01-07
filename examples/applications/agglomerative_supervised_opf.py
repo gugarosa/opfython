@@ -13,8 +13,8 @@ txt = l.load_txt('data/boat.txt')
 # Parsing a pre-loaded numpy array
 X, Y = p.parse_array(txt)
 
-# Splitting data into training and testing sets
-X_train, X_test, Y_train, Y_test = s.split(
+# Splitting data into training and validation sets
+X_train, X_val, Y_train, Y_val = s.split(
     X, Y, percentage=0.5, random_state=2)
 
 # Creates a always true loop
@@ -27,15 +27,15 @@ while True:
     opf.fit(X_train, Y_train)
 
     # Predicts new data
-    preds = opf.predict(X_test)
+    preds = opf.predict(X_val)
 
     # Calculating accuracy
-    acc = g.opf_accuracy(Y_test, preds)
+    acc = g.opf_accuracy(Y_val, preds)
 
     print(f'Accuracy: {acc}')
 
     # Gathers which samples were missclassified
-    errors = np.argwhere(Y_test != preds)
+    errors = np.argwhere(Y_val != preds)
 
     # If there are no missclassified samples
     if len(errors) == 0:
@@ -45,11 +45,11 @@ while True:
     # For every wrong classified sample
     for e in errors:
         # Adds the sample to the training set
-        X_train = np.vstack((X_train, X_test[e, :]))
-        Y_train = np.hstack((Y_train, Y_test[e]))
+        X_train = np.vstack((X_train, X_val[e, :]))
+        Y_train = np.hstack((Y_train, Y_val[e]))
 
     # For every wrong classified sample
     for e in errors:
         # Deletes the sample from the testing set
-        X_test = np.delete(X_test, e, axis=0)
-        Y_test = np.delete(Y_test, e)
+        X_val = np.delete(X_val, e, axis=0)
+        Y_val = np.delete(Y_val, e)

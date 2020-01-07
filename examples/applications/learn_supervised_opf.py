@@ -17,8 +17,8 @@ txt = l.load_txt('data/boat.txt')
 # Parsing a pre-loaded numpy array
 X, Y = p.parse_array(txt)
 
-# Splitting data into training and testing sets
-X_train, X_test, Y_train, Y_test = s.split(
+# Splitting data into training and validation sets
+X_train, X_val, Y_train, Y_val = s.split(
     X, Y, percentage=0.5, random_state=1)
 
 # Defining initial variables
@@ -39,10 +39,10 @@ while True:
     opf.fit(X_train, Y_train)
 
     # Predicts new data
-    preds = opf.predict(X_test)
+    preds = opf.predict(X_val)
 
     # Calculating accuracy
-    acc = g.opf_accuracy(Y_test, preds)
+    acc = g.opf_accuracy(Y_val, preds)
 
     # Checks if current accuracy is better than the best one
     if acc > max_acc:
@@ -53,7 +53,7 @@ while True:
         best_opf = copy.deepcopy(opf)
 
     # Gathers which samples were missclassified
-    errors = np.argwhere(Y_test != preds)
+    errors = np.argwhere(Y_val != preds)
 
     # Defining the initial number of non-prototypes as 0
     non_prototypes = 0
@@ -78,8 +78,8 @@ while True:
             # If the node on that particular index is not a prototype
             if opf.subgraph.nodes[j].status != c.PROTOTYPE:
                 # Swap the nodes
-                X_train[j, :], X_test[e, :] = X_test[e, :], X_train[j, :]
-                Y_train[j], Y_test[e] = Y_test[e], Y_train[j]
+                X_train[j, :], X_val[e, :] = X_val[e, :], X_train[j, :]
+                Y_train[j], Y_val[e] = Y_val[e], Y_train[j]
 
                 # Decrements the number of non-prototypes
                 non_prototypes -= 1

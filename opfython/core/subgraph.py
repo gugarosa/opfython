@@ -39,6 +39,8 @@ class Subgraph:
         # List of indexes of ordered nodes
         self.idx_nodes = []
 
+        self.density = 0.0
+
         # Whether the subgraph is trained or not
         self.trained = False
 

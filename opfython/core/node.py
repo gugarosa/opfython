@@ -40,6 +40,10 @@ class Node:
         # Density of the node
         self.density = 0.0
 
+        self.radius = 0.0
+        self.n_adjacency = 0
+        self.adjacency = []
+
         # Whether the node is a prototype or not
         self.status = c.STANDARD
 
