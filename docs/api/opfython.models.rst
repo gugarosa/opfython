@@ -5,6 +5,7 @@ Each machine learning OPF-based technique is defined in this package. From Super
 
 .. toctree::
     opfython.models.supervised
+    opfython.models.unsupervised
 
 .. automodule:: opfython.models
    :members:

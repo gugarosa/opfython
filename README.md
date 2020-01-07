@@ -51,6 +51,7 @@ OPFython is based on the following structure, and you should pay attention to it
         - random
     - models
         - supervised
+        - unsupervised
     - stream
         - loader
         - parser
