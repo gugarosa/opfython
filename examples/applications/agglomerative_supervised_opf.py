@@ -4,7 +4,6 @@ import opfython.math.general as g
 import opfython.stream.loader as l
 import opfython.stream.parser as p
 import opfython.stream.splitter as s
-from opfython.core.subgraph import Subgraph
 from opfython.models.supervised import SupervisedOPF
 
 # Loading a .txt file to a numpy array

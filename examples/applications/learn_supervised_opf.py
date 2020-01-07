@@ -8,7 +8,6 @@ import opfython.stream.loader as l
 import opfython.stream.parser as p
 import opfython.stream.splitter as s
 import opfython.utils.constants as c
-from opfython.core.subgraph import Subgraph
 from opfython.models.supervised import SupervisedOPF
 
 # Loading a .txt file to a numpy array
