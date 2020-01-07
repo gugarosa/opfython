@@ -44,6 +44,83 @@ class KNNSubgraph(Subgraph):
 
         logger.info('Class overrided.')
 
+    @property
+    def best_k(self):
+        """int: Number of adjacent nodes (k-nearest neighbours).
+
+        """
+
+        return self._best_k
+
+    @best_k.setter
+    def best_k(self, best_k):
+        if not isinstance(best_k, int):
+            raise e.TypeError('`best_k` should be an integer')
+        if best_k < 0:
+            raise e.ValueError('`best_k` should be >= 0')
+
+        self._best_k = best_k
+
+    @property
+    def k(self):
+        """float: Constant for computing the probability density function (p.d.f.).
+
+        """
+
+        return self._k
+
+    @k.setter
+    def k(self, k):
+        if not (isinstance(k, float) or isinstance(k, int)):
+            raise e.TypeError('`k` should be a float or integer')
+
+        self._k = k
+
+    @property
+    def density(self):
+        """float: Density of the subgraph.
+
+        """
+
+        return self._density
+
+    @density.setter
+    def density(self, density):
+        if not (isinstance(density, float) or isinstance(density, int)):
+            raise e.TypeError('`density` should be a float or integer')
+
+        self._density = density
+
+    @property
+    def min_density(self):
+        """float: Minimum density of the subgraph.
+
+        """
+
+        return self._min_density
+
+    @min_density.setter
+    def min_density(self, min_density):
+        if not (isinstance(min_density, float) or isinstance(min_density, int)):
+            raise e.TypeError('`min_density` should be a float or integer')
+
+        self._min_density = min_density
+
+    @property
+    def max_density(self):
+        """float: Maximum density of the subgraph.
+
+        """
+
+        return self._max_density
+
+    @max_density.setter
+    def max_density(self, max_density):
+        if not (isinstance(max_density, float) or isinstance(max_density, int)):
+            raise e.TypeError('`max_density` should be a float or integer')
+
+        self._max_density = max_density
+
     def eliminate_maxima_height(self, height):
         """Eliminates maxima values in the subgraph that are below the inputted height.
 
