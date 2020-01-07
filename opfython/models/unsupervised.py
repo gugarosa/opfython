@@ -82,8 +82,35 @@ class UnsupervisedOPF(OPF):
 
         return maxdists
 
+    def _pdf_kmax(self):
+        k_max = self.subgraph.best_k
+        self.subgraph.K = 2 * self.subgraph.density / 9
+
+        self.subgraph.min_density = c.FLOAT_MAX
+        self.subgraph.max_density = c.FLOAT_MAX * -1
+
+
+        value = np.zeros(self.subgraph.n_nodes)
+
+        for i in range(self.subgraph.n_nodes):
+            adjacency = self.subgraph.nodes[i].adjacency
+            value[i] = 0
+            n_elems = 1
+            for k in range(k_max):
+                if self.pre_computed_distance:
+                    dist = self.pre_distances[self.subgraph.nodes[i].idx][self.subgraph.nodes[].idx]
+                else:
+                    dist = distance.DISTANCES[self.distance](self.subgraph.nodes[i].features, self.subgraph.nodes[j].features)
+
+
     def _best_minimum_cut(self, k_min, k_max):
-        dists = self._create_arcs(k_max)
+        maxdists = self._create_arcs(k_max)
+
+        for k in range(k_min, k_max+1):
+            if minimum_cut != 0:
+                self.subgraph.density = maxdists[k-1]
+                self.subgraph.best_k = k
+
 
 
     def fit(self, X):

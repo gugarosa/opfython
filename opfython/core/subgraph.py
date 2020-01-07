@@ -40,6 +40,8 @@ class Subgraph:
         self.idx_nodes = []
 
         self.density = 0.0
+        self.min_density = 0.0
+        self.max_density = 0.0
 
         # Whether the subgraph is trained or not
         self.trained = False
@@ -215,6 +217,23 @@ class Subgraph:
         logger.debug(
             f'Nodes: {self.n_nodes} | Features: {self.n_features}.')
 
+    def destroy_arcs(self):
+        """Destroy the arcs present in the subgraph.
+
+        """
+
+        logger.debug('Destroying arcs ...')
+
+        # For every possible node
+        for i in range(self.n_nodes):
+            # Reset the number of adjacent nodes
+            self.nodes[i].n_adjacency = 0
+
+            # Resets the list of adjacent nodes
+            self.nodes[i].adjacency = []
+
+        logger.debug('Arcs destroyed.')
+
     def eliminate_maxima_height(self, height):
         """Eliminates maxima values in the subgraph that are below the inputted height.
 
@@ -267,6 +286,8 @@ class Subgraph:
 
         """
 
+        logger.debug(f'Marking node {i} and its path ...')
+
         # While the node still has a predecessor
         while self.nodes[i].pred != c.NIL:
             # Marks current node as relevant
@@ -277,6 +298,8 @@ class Subgraph:
 
         # Marks the first node as relevant
         self.nodes[i].relevant = c.RELEVANT
+
+        logger.debug('Node and its path has been marked.')
 
     def reset(self):
         """Resets the subgraph predecessors and arcs.
@@ -294,5 +317,6 @@ class Subgraph:
             self.nodes[i].relevant = c.IRRELEVANT
 
         # Destroys the arcs
+        self.destroy_arcs()
 
         logger.debug('Subgraph reseted.')
