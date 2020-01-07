@@ -221,8 +221,6 @@ class Subgraph:
 
         """
 
-        logger.debug('Destroying arcs ...')
-
         # For every possible node
         for i in range(self.n_nodes):
             # Reset the number of adjacent nodes
@@ -231,8 +229,6 @@ class Subgraph:
             # Resets the list of adjacent nodes
             self.nodes[i].adjacency = []
 
-        logger.debug('Arcs destroyed.')
-
     def mark_nodes(self, i):
         """Marks a node and its whole path as relevant.
 
@@ -240,8 +236,6 @@ class Subgraph:
             i (int): An identifier of the node to start the marking.
 
         """
-
-        logger.debug(f'Marking node {i} and its path ...')
 
         # While the node still has a predecessor
         while self.nodes[i].pred != c.NIL:
@@ -254,14 +248,10 @@ class Subgraph:
         # Marks the first node as relevant
         self.nodes[i].relevant = c.RELEVANT
 
-        logger.debug('Node and its path have been marked.')
-
     def reset(self):
         """Resets the subgraph predecessors and arcs.
 
         """
-
-        logger.debug('Resetting subgraph ...')
 
         # For every possible node
         for i in range(self.n_nodes):
@@ -273,5 +263,3 @@ class Subgraph:
 
         # Destroys the arcs
         self.destroy_arcs()
-
-        logger.debug('Subgraph reseted.')

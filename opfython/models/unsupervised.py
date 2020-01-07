@@ -130,8 +130,6 @@ class UnsupervisedOPF(OPF):
         # Creating a subgraph
         self.subgraph = KNNSubgraph(X)
 
-        self._best_minimum_cut(1, 1)
-
         # Checks if it is supposed to use pre-computed distances
         if self.pre_computed_distance:
             # Checks if its size is the same as the subgraph's amount of nodes
@@ -139,6 +137,8 @@ class UnsupervisedOPF(OPF):
                 # If not, raises an error
                 raise e.BuildError(
                     'Pre-computed distance matrix should have the size of `n_nodes x n_nodes`')
+
+        self._best_minimum_cut(1, 1)
 
         #
         # for i in range(self.subgraph.n_nodes):

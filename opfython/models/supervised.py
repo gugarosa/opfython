@@ -235,6 +235,9 @@ class SupervisedOPF(OPF):
                     # Replaces the minimum cost
                     min_cost = temp_min_cost
 
+                    # Gathers the identifier of `l` node
+                    conqueror = l
+
                     # Updates the current label as `l` node's predicted label
                     current_label = self.subgraph.nodes[l].predicted_label
 
@@ -246,6 +249,9 @@ class SupervisedOPF(OPF):
 
             # Node's `i` predicted label is the same as current label
             pred_subgraph.nodes[i].predicted_label = current_label
+
+            # Marks the conqueror node and its path
+            self.subgraph.mark_nodes(conqueror)
 
         # Creating the list of predictions
         preds = [pred.predicted_label for pred in pred_subgraph.nodes]
