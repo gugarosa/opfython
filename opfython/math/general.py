@@ -149,3 +149,24 @@ def opf_accuracy_per_label(labels, preds):
     accuracy = 1 - errors
 
     return accuracy
+
+
+def purity(labels, preds):
+    """Calculates the purity measure of an unsupervised technique.
+
+    Args:
+        labels (np.array | list): List or numpy array holding the true labels.
+        preds (np.array | list): List or numpy array holding the assigned labels by the clusters.
+
+    Returns:
+        The purity measure.
+
+    """
+
+    # Calculating the confusion matrix
+    c_matrix = confusion_matrix(labels, preds)
+
+    # Calculating the purity measure
+    purity = np.sum(np.max(c_matrix, axis=0)) / len(labels)
+
+    return purity
