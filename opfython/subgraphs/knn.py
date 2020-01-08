@@ -122,10 +122,11 @@ class KNNSubgraph(Subgraph):
 
         self._max_density = max_density
 
-    def calculate_pdf(self, distance_function, pre_computed_distance=False, pre_distances=None):
-        """Calculates the probability density function for each value of `k`.
+    def calculate_pdf(self, best_k, distance_function, pre_computed_distance=False, pre_distances=None):
+        """Calculates the probability density function for the best `k` values.
 
         Args:
+            best_k (int): Best value of k.
             distance_function (callable): The distance function to be used to calculate the arcs.
             pre_computed_distance (bool): Whether OPF should use a pre-computed distance or not.
             pre_distances (np.array): Pre-computed distance matrix.
@@ -146,46 +147,45 @@ class KNNSubgraph(Subgraph):
 
         # For every possible node
         for i in range(self.n_nodes):
-            # For every adjacent node of current node
-            for j in self.nodes[i].adjacency:
-                # Initialize the p.d.f. as zero
-                pdf[i] = 0
+            # Initialize the p.d.f. as zero
+            pdf[i] = 0
 
-                # Initialize the number of p.d.f. calculations as 1
-                n_pdf = 1
+            # Initialize the number of p.d.f. calculations as 1
+            n_pdf = 1
 
-                # For every possible `k`
-                for _ in range(self.best_k):
-                    # If it is supposed to use a pre-computed distance
-                    if pre_computed_distance:
-                        # Gathers the distance from the matrix
-                        distance = pre_distances[self.nodes[i].idx][self.nodes[int(
-                            j)].idx]
+            # For every possible `k`
+            for k in range(best_k):
+                # Gathering adjacent node from the list
+                j = int(self.nodes[i].adjacency[k])
 
-                    # If it is supposed to calculate the distance
-                    else:
-                        # Calculates the distance between nodes `i` and `j`
-                        distance = distance_function(
-                            self.nodes[i].features, self.nodes[int(j)].features)
+                # If it is supposed to use a pre-computed distance
+                if pre_computed_distance:
+                    # Gathers the distance from the matrix
+                    distance = pre_distances[self.nodes[i].idx][self.nodes[j].idx]
 
-                    # Calculates the p.d.f.
-                    pdf[i] += np.exp(-distance / self.k)
+                # If it is supposed to calculate the distance
+                else:
+                    # Calculates the distance between nodes `i` and `j`
+                    distance = distance_function(self.nodes[i].features, self.nodes[j].features)
 
-                    # Increments the number of p.d.f. calculations
-                    n_pdf += 1
+                # Calculates the p.d.f.
+                pdf[i] += np.exp(-distance / self.k)
 
-                # Calculates the p.d.f. mean value
-                pdf[i] /= n_pdf
+                # Increments the number of p.d.f. calculations
+                n_pdf += 1
 
-                # If p.d.f. value is smaller than minimum density
-                if pdf[i] < self.min_density:
-                    # Applies subgraph's minimum density as p.d.f.'s value
-                    self.min_density = pdf[i]
+            # Calculates the p.d.f. mean value
+            pdf[i] /= n_pdf
 
-                # If p.d.f. value is bigger than maximum density
-                if pdf[i] > self.max_density:
-                    # Applies subgraph's maximum density as p.d.f.'s value
-                    self.max_density = pdf[i]
+            # If p.d.f. value is smaller than minimum density
+            if pdf[i] < self.min_density:
+                # Applies subgraph's minimum density as p.d.f.'s value
+                self.min_density = pdf[i]
+
+            # If p.d.f. value is bigger than maximum density
+            if pdf[i] > self.max_density:
+                # Applies subgraph's maximum density as p.d.f.'s value
+                self.max_density = pdf[i]
 
         # If subgraph's minimum density is the same as the maximum density
         if self.min_density == self.max_density:
@@ -277,7 +277,7 @@ class KNNSubgraph(Subgraph):
             self.nodes[i].n_adjacency = 0
 
             # For every possible decreasing `k`
-            for l in range(k-1, -1, -1):
+            for l in range(k - 1, -1, -1):
                 # Checks if distance is different from maximum value
                 if distances[l] != c.FLOAT_MAX:
                     # If distance is bigger than subgraph's density
@@ -296,7 +296,7 @@ class KNNSubgraph(Subgraph):
                         max_distances[l] = distances[l]
 
                     # Adds the neighbour to the adjacency list of node `i`
-                    self.nodes[i].adjacency.append(neighbours_idx[l])
+                    self.nodes[i].adjacency.insert(0, neighbours_idx[l])
 
         # If subgraph's density is smaller than a threshold
         if self.density < 0.00001:
@@ -304,6 +304,19 @@ class KNNSubgraph(Subgraph):
             self.density = 1
 
         return max_distances
+
+    def destroy_arcs(self):
+        """Destroy the arcs present in the subgraph.
+
+        """
+
+        # For every possible node
+        for i in range(self.n_nodes):
+            # Reset the number of adjacent nodes
+            self.nodes[i].n_adjacency = 0
+
+            # Resets the list of adjacent nodes
+            self.nodes[i].adjacency = []
 
     def eliminate_maxima_height(self, height):
         """Eliminates maxima values in the subgraph that are below the inputted height.
@@ -348,3 +361,7 @@ class KNNSubgraph(Subgraph):
         logger.debug(f'Eliminating maxima above volume = {volume} ...')
 
         logger.debug('Maxima eliminated.')
+
+
+    def normalized_cut(self):
+        pass

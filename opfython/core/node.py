@@ -29,7 +29,7 @@ class Node:
         self.label = label
 
         # Also its possible predicted label
-        self.predicted_label = 1
+        self.predicted_label = 0
 
         # Array of features
         self.features = features
@@ -48,6 +48,8 @@ class Node:
 
         # List of adjacent nodes
         self.adjacency = []
+
+        self.root = 0
 
         # Whether the node is a prototype or not
         self.status = c.STANDARD
@@ -104,8 +106,8 @@ class Node:
     def predicted_label(self, predicted_label):
         if not isinstance(predicted_label, int):
             raise e.TypeError('`predicted_label` should be an integer')
-        if predicted_label < 1:
-            raise e.ValueError('`predicted_label` should be >= 1')
+        if predicted_label < 0:
+            raise e.ValueError('`predicted_label` should be >= 0')
 
         self._predicted_label = predicted_label
 
