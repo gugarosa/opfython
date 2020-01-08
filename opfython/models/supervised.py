@@ -69,12 +69,6 @@ class SupervisedOPF(OPF):
         # Creating a minimum heap
         h = Heap(size=self.subgraph.n_nodes)
 
-        # Also creating an costs array
-        costs = np.zeros(self.subgraph.n_nodes)
-
-        # Filling the costs array with maximum possible value
-        costs.fill(c.FLOAT_MAX)
-
         # For each possible node
         for i in range(self.subgraph.n_nodes):
             # Checks if node is a prototype or not
@@ -86,7 +80,7 @@ class SupervisedOPF(OPF):
                 self.subgraph.nodes[i].predicted_label = self.subgraph.nodes[i].label
 
                 # Its cost equals to zero
-                costs[i] = 0
+                h.cost[i] = 0
 
                 # Inserts the node into the heap
                 h.insert(i)
@@ -103,7 +97,8 @@ class SupervisedOPF(OPF):
             self.subgraph.idx_nodes.append(p)
 
             # Gathers its cost
-            self.subgraph.nodes[p].cost = costs[p]
+            # self.subgraph.nodes[p].cost = costs[p]
+            self.subgraph.nodes[p].cost = h.cost[p]
 
             # Increases the counter
             i += 1
@@ -113,7 +108,7 @@ class SupervisedOPF(OPF):
                 # If we are dealing with different nodes
                 if p != q:
                     # If `p` node cost is smaller than `q` node cost
-                    if costs[p] < costs[q]:
+                    if h.cost[p] < h.cost[q]:
                         # Checks if we are using a pre-computed distance
                         if self.pre_computed_distance:
                             # Gathers the distance from the distance's matrix
@@ -127,12 +122,10 @@ class SupervisedOPF(OPF):
                                 self.subgraph.nodes[p].features, self.subgraph.nodes[q].features)
 
                         # The current cost will be the maximum cost between the node's and its weight (arc)
-                        current_cost = np.maximum(costs[p], weight)
+                        current_cost = np.maximum(h.cost[p], weight)
 
                         # If current cost is smaller than `q` node's cost
-                        if current_cost < costs[q]:
-                            # Updates the costs array with current cost
-                            costs[q] = current_cost
+                        if current_cost < h.cost[q]:
 
                             # `q` node has `p` as its predecessor
                             self.subgraph.nodes[q].pred = p

@@ -23,7 +23,7 @@ class Heap:
         self.policy = policy
 
         # List of node's costs
-        self.cost = [0 for i in range(size)]
+        self.cost = [c.FLOAT_MAX for i in range(size)]
 
         # List of node's colors
         self.color = [c.WHITE for i in range(size)]
@@ -245,6 +245,7 @@ class Heap:
         else:
             # While the heap exists and the cost of post-node is smaller than current node
             while i > 0 and self.cost[self.p[j]] < self.cost[self.p[i]]:
+                print(self.p[j], self.p[i])
                 # Swap the positions
                 self.p[j], self.p[i] = self.p[i], self.p[j]
 
@@ -357,7 +358,6 @@ class Heap:
 
         # Checks if heap is not empty
         if not self.is_empty():
-            # print(self.p)
             # Gathers the node's value
             p = self.p[0]
 

@@ -167,17 +167,8 @@ class OPF:
 
         logger.debug('Finding prototypes ...')
 
-        # Creating an array of paths' costs
-        path = np.ones(self.subgraph.n_nodes)
-
-        # Filling the array with the maximum possible value
-        path.fill(c.FLOAT_MAX)
-
         # Creating a Heap of size equals to number of nodes
         h = Heap(self.subgraph.n_nodes)
-
-        # Applying cost zero to the first node's path
-        path[0] = 0
 
         # Marking first node without any predecessor
         self.subgraph.nodes[0].pred = c.NIL
@@ -194,7 +185,7 @@ class OPF:
             p = h.remove()
 
             # Gathers its cost
-            self.subgraph.nodes[p].cost = path[p]
+            self.subgraph.nodes[p].cost = h.cost[p]
 
             # And also its predecessor
             pred = self.subgraph.nodes[p].pred
@@ -238,10 +229,7 @@ class OPF:
                                 self.subgraph.nodes[p].features, self.subgraph.nodes[q].features)
 
                         # If current arc's cost is smaller than the path's cost
-                        if weight < path[q]:
-                            # Replace the path's cost value
-                            path[q] = weight
-
+                        if weight < h.cost[q]:
                             # Marks `q` predecessor node as `p`
                             self.subgraph.nodes[q].pred = p
 

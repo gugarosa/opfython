@@ -38,24 +38,22 @@ class UnsupervisedOPF(OPF):
 
         logger.info('Class overrided.')
 
-    def _clustering(self, k):
+    def _clustering(self, best_k):
         """
         """
 
         for i in range(self.subgraph.n_nodes):
-            i_adjacency = self.subgraph.nodes[i].adjacency
-            for _ in range(k):
-                for i_adj in i_adjacency:
-                    if self.subgraph.nodes[i].density == self.subgraph.nodes[int(i_adj)].density:
-                        j_adjacency = self.subgraph.nodes[int(i_adj)].adjacency
-                        insert = True
-                        for _ in range(k):
-                            for j_adj in j_adjacency:
-                                if i == j_adj:
-                                    insert = False
+            for k in range(best_k):
+                i_adj = int(self.subgraph.nodes[i].adjacency[k])
+                if self.subgraph.nodes[i].density == self.subgraph.nodes[i_adj].density:
+                    insert = True
+                    for k in range(best_k):
+                        j_adj = int(self.subgraph.nodes[i_adj].adjacency[k])
+                        if i == j_adj:
+                            insert = False
                         if insert:
-                            self.subgraph.nodes[int(i_adj)].adjacency.append(i)
-                            self.subgraph.nodes[int(i_adj)].n_adjacency += 1
+                            self.subgraph.nodes[i_adj].adjacency.insert(0, i)
+                            self.subgraph.nodes[i_adj].n_adjacency += 1
 
         # Creating a minimum heap
         h = Heap(size=self.subgraph.n_nodes, policy='max')
@@ -64,6 +62,7 @@ class UnsupervisedOPF(OPF):
         costs = np.zeros(self.subgraph.n_nodes)
 
         for i in range(self.subgraph.n_nodes):
+            h.cost[i] = self.subgraph.nodes[i].cost
             costs[i] = self.subgraph.nodes[i].cost
             self.subgraph.nodes[i].pred = c.NIL
             self.subgraph.nodes[i].root = i
@@ -76,6 +75,7 @@ class UnsupervisedOPF(OPF):
         while not h.is_empty():
             # Removes a node
             p = h.remove()
+            # print(p)
 
             # Appends its index to the ordered list
             self.subgraph.idx_nodes.append(p)
@@ -87,20 +87,31 @@ class UnsupervisedOPF(OPF):
 
             self.subgraph.nodes[p].cost = costs[p]
 
-            n_adjacents = self.subgraph.nodes[p].n_adjacency + k
+            n_adjacents = self.subgraph.nodes[p].n_adjacency + best_k
 
-            for p_adj in self.subgraph.nodes[p].adjacency:
+            for k in range(n_adjacents):
+                p_adj = int(self.subgraph.nodes[p].adjacency[k])
+                # print(k, p_adj)
                 if h.color[int(p_adj)] != c.BLACK:
-                    temp = np.minimum(costs[p], self.subgraph.nodes[int(p_adj)].density)
+                    temp = np.minimum(costs[p], self.subgraph.nodes[p_adj].density)
                     if temp > costs[int(p_adj)]:
                         temp = costs[int(p_adj)]
                         self.subgraph.nodes[int(p_adj)].pred = p
                         self.subgraph.nodes[int(p_adj)].root = self.subgraph.nodes[p].root
                         self.subgraph.nodes[int(p_adj)].predicted_label = self.subgraph.nodes[p].predicted_label
 
+            # for p_adj in self.subgraph.nodes[p].adjacency:
+            #     if h.color[int(p_adj)] != c.BLACK:
+            #         temp = np.minimum(costs[p], self.subgraph.nodes[int(p_adj)].density)
+            #         if temp > costs[int(p_adj)]:
+            #             temp = costs[int(p_adj)]
+            #             self.subgraph.nodes[int(p_adj)].pred = p
+            #             self.subgraph.nodes[int(p_adj)].root = self.subgraph.nodes[p].root
+            #             self.subgraph.nodes[int(p_adj)].predicted_label = self.subgraph.nodes[p].predicted_label
+
         self.subgraph.n_labels = l
 
-        # print(l)
+        print(l)
 
             
         
