@@ -90,6 +90,21 @@ class OPF:
         self._distance = distance
 
     @property
+    def pre_computed_distance(self):
+        """bool: Whether OPF should use a pre-computed distance or not.
+
+        """
+
+        return self._pre_computed_distance
+
+    @pre_computed_distance.setter
+    def pre_computed_distance(self, pre_computed_distance):
+        if not isinstance(pre_computed_distance, bool):
+            raise e.TypeError('`pre_computed_distance` should be a boolean')
+
+        self._pre_computed_distance = pre_computed_distance
+
+    @property
     def pre_distances(self):
         """np.array: Pre-computed distance matrix.
 
@@ -104,21 +119,6 @@ class OPF:
                 raise e.TypeError('`pre_distances` should be a numpy array')
 
         self._pre_distances = pre_distances
-
-    @property
-    def pre_computed_distance(self):
-        """bool: Whether OPF should use a pre-computed distance or not.
-
-        """
-
-        return self._pre_computed_distance
-
-    @pre_computed_distance.setter
-    def pre_computed_distance(self, pre_computed_distance):
-        if not isinstance(pre_computed_distance, bool):
-            raise e.TypeError('`pre_computed_distance` should be a boolean')
-
-        self._pre_computed_distance = pre_computed_distance
 
     def _read_distances(self, file_path):
         """Reads the distance between nodes from a pre-defined file.
