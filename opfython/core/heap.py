@@ -245,7 +245,6 @@ class Heap:
         else:
             # While the heap exists and the cost of post-node is smaller than current node
             while i > 0 and self.cost[self.p[j]] < self.cost[self.p[i]]:
-                print(self.p[j], self.p[i])
                 # Swap the positions
                 self.p[j], self.p[i] = self.p[i], self.p[j]
 

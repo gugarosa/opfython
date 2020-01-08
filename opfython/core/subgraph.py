@@ -216,6 +216,19 @@ class Subgraph:
         logger.debug(
             f'Nodes: {self.n_nodes} | Features: {self.n_features}.')
 
+    def destroy_arcs(self):
+        """Destroy the arcs present in the subgraph.
+
+        """
+
+        # For every possible node
+        for i in range(self.n_nodes):
+            # Reset the number of adjacent nodes
+            self.nodes[i].n_adjacency = 0
+
+            # Resets the list of adjacent nodes
+            self.nodes[i].adjacency = []
+
     def mark_nodes(self, i):
         """Marks a node and its whole path as relevant.
 

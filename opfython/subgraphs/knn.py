@@ -305,19 +305,6 @@ class KNNSubgraph(Subgraph):
 
         return max_distances
 
-    def destroy_arcs(self):
-        """Destroy the arcs present in the subgraph.
-
-        """
-
-        # For every possible node
-        for i in range(self.n_nodes):
-            # Reset the number of adjacent nodes
-            self.nodes[i].n_adjacency = 0
-
-            # Resets the list of adjacent nodes
-            self.nodes[i].adjacency = []
-
     def eliminate_maxima_height(self, height):
         """Eliminates maxima values in the subgraph that are below the inputted height.
 

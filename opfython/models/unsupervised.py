@@ -75,7 +75,6 @@ class UnsupervisedOPF(OPF):
         while not h.is_empty():
             # Removes a node
             p = h.remove()
-            # print(p)
 
             # Appends its index to the ordered list
             self.subgraph.idx_nodes.append(p)
@@ -91,7 +90,6 @@ class UnsupervisedOPF(OPF):
 
             for k in range(n_adjacents):
                 p_adj = int(self.subgraph.nodes[p].adjacency[k])
-                # print(k, p_adj)
                 if h.color[int(p_adj)] != c.BLACK:
                     temp = np.minimum(costs[p], self.subgraph.nodes[p_adj].density)
                     if temp > costs[int(p_adj)]:
@@ -130,7 +128,7 @@ class UnsupervisedOPF(OPF):
 
         # Calculates the maximum possible distances
         max_distances = self.subgraph.create_arcs(k_max, distance_function, self.pre_computed_distance, self.pre_distances)
-
+        
         # Initialize the minimum cut as maximum possible value
         min_cut = c.FLOAT_MAX
         
@@ -176,7 +174,7 @@ class UnsupervisedOPF(OPF):
                     'Pre-computed distance matrix should have the size of `n_nodes x n_nodes`')
 
         #
-        self._best_minimum_cut(1, 2)
+        self._best_minimum_cut(1, 10)
 
         #
         # for i in range(self.subgraph.n_nodes):
