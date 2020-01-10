@@ -1,6 +1,6 @@
 import opfython.stream.loader as l
 import opfython.stream.parser as p
-from opfython.core.subgraph import Subgraph
+from opfython.subgraphs.knn import KNNSubgraph
 
 # Defining an input file
 input_file = 'data/boat.txt'
@@ -11,8 +11,8 @@ txt = l.load_txt(input_file)
 # Parsing a pre-loaded dataframe
 X, Y = p.parse_array(txt)
 
-# Creating a subgraph structure
-g = Subgraph(X, Y)
+# Creating a knn-subgraph structure
+g = KNNSubgraph(X, Y)
 
-# Subgraph can also be directly created from a file
-g = Subgraph(from_file=input_file)
+# KNNSubgraph can also be directly created from a file
+g = KNNSubgraph(from_file=input_file)

@@ -265,7 +265,8 @@ class UnsupervisedOPF(OPF):
 
         """
 
-        logger.debug(f'Calculating the best minimum cut within [{min_k}, {max_k}] ...')
+        logger.debug(
+            f'Calculating the best minimum cut within [{min_k}, {max_k}] ...')
 
         # Gathers the distance function
         distance_function = distance.DISTANCES[self.distance]
@@ -321,22 +322,6 @@ class UnsupervisedOPF(OPF):
 
         logger.debug(f'Best: {best_k} | Minimum cut: {min_cut}.')
 
-    def assign_labels(self):
-        """Runs through the clusters and assign possible predicted labels to the samples.
-
-        """
-
-        logger.info('Assigning predicted labels from clusters ...')
-
-        for i in range(self.subgraph.n_nodes):
-            root = self.subgraph.nodes[i].root
-            if root == i:
-                self.subgraph.nodes[i].predicted_label = self.subgraph.nodes[i].label
-            else:
-                self.subgraph.nodes[i].predicted_label = self.subgraph.nodes[root].label
-
-        logger.info('Labels assigned.')
-
     def fit(self, X, Y=None):
         """Fits data in the classifier.
 
@@ -380,3 +365,27 @@ class UnsupervisedOPF(OPF):
         logger.info('Classifier has been clustered with.')
         logger.info(f'Number of clusters: {self.subgraph.n_clusters}.')
         logger.info(f'Clustering time: {train_time} seconds.')
+
+    def label_from_clusters(self):
+        """Runs through the clusters and assign possible predicted labels to the samples.
+
+        """
+
+        logger.info('Assigning predicted labels from clusters ...')
+
+        # For every possible node
+        for i in range(self.subgraph.n_nodes):
+            # Gathers the root from the node
+            root = self.subgraph.nodes[i].root
+
+            # If the root is the same as node's identifier
+            if root == i:
+                # Apply the predicted label as node's label
+                self.subgraph.nodes[i].predicted_label = self.subgraph.nodes[i].label
+
+            # If the root is different from node's identifier
+            else:
+                # Apply the predicted label as the root's label
+                self.subgraph.nodes[i].predicted_label = self.subgraph.nodes[root].label
+
+        logger.info('Labels assigned.')

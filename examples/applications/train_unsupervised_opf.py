@@ -16,4 +16,4 @@ opf = UnsupervisedOPF(min_k=1, max_k=10, distance='log_squared_euclidean', pre_c
 opf.fit(X, Y)
 
 # If data is labeled, one can assign predicted labels instead of only the cluster identifiers
-opf.assign_labels()
+opf.label_from_clusters()

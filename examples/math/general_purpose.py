@@ -26,3 +26,7 @@ print(opf_acc)
 # Calculating OPF-like accuracy per label
 opf_acc_per_label = g.opf_accuracy_per_label(labels, preds)
 print(opf_acc_per_label)
+
+# Calculating purity measure
+purity = g.purity(labels, preds)
+print(purity)
