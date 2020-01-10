@@ -98,18 +98,35 @@ class UnsupervisedOPF(OPF):
                         self.subgraph.nodes[int(p_adj)].root = self.subgraph.nodes[p].root
                         self.subgraph.nodes[int(p_adj)].predicted_label = self.subgraph.nodes[p].predicted_label
 
-            # for p_adj in self.subgraph.nodes[p].adjacency:
-            #     if h.color[int(p_adj)] != c.BLACK:
-            #         temp = np.minimum(costs[p], self.subgraph.nodes[int(p_adj)].density)
-            #         if temp > costs[int(p_adj)]:
-            #             temp = costs[int(p_adj)]
-            #             self.subgraph.nodes[int(p_adj)].pred = p
-            #             self.subgraph.nodes[int(p_adj)].root = self.subgraph.nodes[p].root
-            #             self.subgraph.nodes[int(p_adj)].predicted_label = self.subgraph.nodes[p].predicted_label
 
         self.subgraph.n_labels = l
 
-        print(l)
+    def _normalized_cut(self, best_k, distance_function):
+
+
+        internal_cluster = np.zeros(self.subgraph.n_labels)
+        external_cluster = np.zeros(self.subgraph.n_labels)
+        cut = 0
+
+        for i in range(self.subgraph.n_nodes):
+            n_adjacents = self.subgraph.nodes[i].n_adjacency + best_k
+            for k in range(n_adjacents):
+                i_adj = int(self.subgraph.nodes[i].adjacency[k])
+                if self.pre_computed_distance:
+                    distance = self.pre_distances[self.subgraph.nodes[i].idx][self.subgraph.nodes[i_adj].idx]
+                else:
+                    distance = distance_function(self.subgraph.nodes[i].features, self.subgraph.nodes[i_adj].features)
+                if distance > 0:
+                    if self.subgraph.nodes[i].predicted_label == self.subgraph.nodes[i_adj].predicted_label:
+                        internal_cluster[self.subgraph.nodes[i].predicted_label] += 1 / distance
+                    else:
+                        external_cluster[self.subgraph.nodes[i].predicted_label] += 1 / distance
+
+        for l in range(self.subgraph.n_labels):
+            if internal_cluster[l] + external_cluster[l] > 0:
+                cut += external_cluster[l] / (internal_cluster[l] + external_cluster[l])
+
+        return cut
 
             
         
@@ -148,6 +165,22 @@ class UnsupervisedOPF(OPF):
                 #
                 self._clustering(k)
 
+                #
+                cut = self._normalized_cut(k, distance_function)
+
+                if cut < min_cut:
+                    min_cut = cut
+                    best_k = k
+
+        self.subgraph.destroy_arcs()
+
+        self.best_k = best_k
+
+        self.subgraph.create_arcs(best_k, distance_function, self.pre_computed_distance, self.pre_distances)
+
+        self.subgraph.calculate_pdf(best_k, distance_function, self.pre_computed_distance, self.pre_distances)
+
+
 
     def fit(self, X):
         """Fits data in the classifier.
@@ -157,7 +190,7 @@ class UnsupervisedOPF(OPF):
 
         """
 
-        logger.info('Fitting classifier ...')
+        logger.info('Clustering with classifier ...')
 
         # Initializing the timer
         start = time.time()
@@ -177,41 +210,17 @@ class UnsupervisedOPF(OPF):
         self._best_minimum_cut(1, 10)
 
         #
-        # for i in range(self.subgraph.n_nodes):
-        #     i_adjacents = self.subgraph.nodes[i].adjacent
-        #     while i_adjacents is not None:
-        #         j = i_adjacents[0]
-        #         if self.subgraph.nodes[i].density == self.subgraph.nodes[j].density:
-        #             j_adjacentes = self.subgraph.nodes[j].adjacent
-        #             insert_i = 1
-        #             while j_adjacentes is not None:
-        #                 if i == j_adjacentes[0]:
+        self._clustering(self.subgraph.best_k)
 
-        # for i in range(self.subgraph.n_nodes):
-        #     left_adjacency = self.subgraph.nodes[i].adjacency
-        #     for left in left_adjacency:
-        #         j = left
-        #         if self.subgraph.nodes[i].density == self.subgraph.nodes[j].density:
-        #             right_adjacency = self.subgraph.nodes[j].adjacency
-        #             insert = True
-        #             for right in right_adjacency:
-        #                 if i == right:
-        #                     insert = False
-        #                     break
-        #             if insert:
-        #                 self.subgraph.nodes[j].adjacency.append(i)
-                    
+        # The subgraph has been properly trained
+        self.subgraph.trained = True
 
+        # Ending timer
+        end = time.time()
 
+        # Calculating training task time
+        train_time = end - start
 
-        # # The subgraph has been properly trained
-        # self.subgraph.trained = True
-
-        # # Ending timer
-        # end = time.time()
-
-        # # Calculating training task time
-        # train_time = end - start
-
-        # logger.info('Classifier has been fitted.')
-        # logger.info(f'Training time: {train_time} seconds.')
+        logger.info('Classifier has been clustered with.')
+        logger.info(f'Number of clusters: {self.subgraph.n_labels}.')
+        logger.info(f'Training time: {train_time} seconds.')

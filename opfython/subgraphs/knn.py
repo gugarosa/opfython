@@ -28,6 +28,8 @@ class KNNSubgraph(Subgraph):
         # Override its parent class with the receiving arguments
         super(KNNSubgraph, self).__init__(X=X, Y=Y, from_file=from_file)
 
+        self.n_labels = 0
+
         # Number of adjacent nodes (k-nearest neighbours)
         self.best_k = 0
 
