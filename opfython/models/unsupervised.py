@@ -389,3 +389,110 @@ class UnsupervisedOPF(OPF):
                 self.subgraph.nodes[i].predicted_label = self.subgraph.nodes[root].label
 
         logger.info('Labels assigned.')
+
+    def predict(self, X):
+        """Predicts new data using the pre-trained classifier.
+
+        Args:
+            X (np.array): Array of features.
+
+        Returns:
+            A list of predictions for each record of the data.
+
+        """
+
+        # Checks if there is a knn-subgraph
+        if not self.subgraph:
+            # If not, raises an BuildError
+            raise e.BuildError('KNNSubgraph has not been properly created')
+
+        # Checks if knn-subgraph has been properly trained
+        if not self.subgraph.trained:
+            # If not, raises an BuildError
+            raise e.BuildError('Classifier has not been properly clustered')
+
+        logger.info('Predicting data ...')
+
+        # Initializing the timer
+        start = time.time()
+
+        # Creating a prediction subgraph
+        pred_subgraph = KNNSubgraph(X)
+
+        #
+        k = self.subgraph.best_k
+
+        # Creating an array of distances
+        distances = np.zeros(k + 1)
+
+        # Creating an array of nearest neighbours indexes
+        neighbours_idx = np.zeros(k + 1)
+
+        for i in range(pred_subgraph.n_nodes):
+            cost = c.FLOAT_MAX * -1
+
+            # Filling array of distances with maximum value
+            distances.fill(c.FLOAT_MAX)
+
+            for j in range(self.subgraph.n_nodes):
+                # If they are different nodes
+                if j != i:
+                    # If it is supposed to use a pre-computed distance
+                    if self.pre_computed_distance:
+                        # Gathers the distance from the matrix
+                        distances[k] = self.pre_distances[pred_subgraph.nodes[i].idx][self.subgraph.nodes[j].idx]
+
+                    # If it is supposed to calculate the distance
+                    else:
+                        # Calculates the distance between nodes `i` and `j`
+                        distances[k] = distance.DISTANCES[self.distance](pred_subgraph.nodes[i].features, self.subgraph.nodes[j].features)
+
+                    # Apply node `j` as a neighbour
+                    neighbours_idx[k] = j
+
+                    # Gathers current `k`
+                    current_k = k
+
+                    # While current `k` is bigger than 0 and the `k` distance is smaller than `k-1` distance
+                    while current_k > 0 and distances[current_k] < distances[current_k - 1]:
+                        # Swaps the distance from `k` and `k-1`
+                        distances[current_k], distances[current_k -
+                                                        1] = distances[current_k - 1], distances[current_k]
+
+                        # Swaps the neighbours indexex from `k` and `k-1`
+                        neighbours_idx[current_k], neighbours_idx[current_k -
+                                                                  1] = neighbours_idx[current_k - 1], neighbours_idx[current_k]
+
+                        # Decrements `k`
+                        current_k -= 1
+            
+            density = 0
+            for l in range(k):
+                density += np.exp(-distances[l] / self.subgraph.constant)
+            density /= k
+
+            density = ((c.MAX_DENSITY - 1) * (density - self.subgraph.min_density) / (self.subgraph.max_density - self.subgraph.min_density)) + 1
+
+            for l in range(k):
+                if distances[l] != c.FLOAT_MAX:
+                    neighbour = int(neighbours_idx[l])
+                    temp_cost = np.minimum(self.subgraph.nodes[neighbour].cost, density)
+                    if temp_cost > cost:
+                        cost = temp_cost
+                        pred_subgraph.nodes[i].predicted_label = self.subgraph.nodes[neighbour].predicted_label
+
+        
+        # Creating the list of predictions
+        preds = [pred.predicted_label for pred in pred_subgraph.nodes]
+
+        # Ending timer
+        end = time.time()
+
+        # Calculating prediction task time
+        predict_time = end - start
+
+        logger.info('Data has been predicted.')
+        logger.info(f'Prediction time: {predict_time} seconds.')
+
+        return preds
+

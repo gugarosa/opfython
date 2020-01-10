@@ -34,6 +34,8 @@ class KNNSubgraph(Subgraph):
         # Number of adjacent nodes (k-nearest neighbours)
         self.best_k = 0
 
+        self.constant = 0
+
         # Density of the subgraph
         self.density = 0.0
 
@@ -136,7 +138,7 @@ class KNNSubgraph(Subgraph):
         """
 
         # Calculating constant for computing the probability density function
-        pdf_constant = 2 * self.density / 9
+        self.constant = 2 * self.density / 9
 
         # Defining subgraph's minimum density
         self.min_density = c.FLOAT_MAX
@@ -172,7 +174,7 @@ class KNNSubgraph(Subgraph):
                         self.nodes[i].features, self.nodes[j].features)
 
                 # Calculates the p.d.f.
-                pdf[i] += np.exp(-distance / pdf_constant)
+                pdf[i] += np.exp(-distance / self.constant)
 
                 # Increments the number of p.d.f. calculations
                 n_pdf += 1
