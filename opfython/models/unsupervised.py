@@ -366,30 +366,6 @@ class UnsupervisedOPF(OPF):
         logger.info(f'Number of clusters: {self.subgraph.n_clusters}.')
         logger.info(f'Clustering time: {train_time} seconds.')
 
-    def label_from_clusters(self):
-        """Runs through the clusters and assign possible predicted labels to the samples.
-
-        """
-
-        logger.info('Assigning predicted labels from clusters ...')
-
-        # For every possible node
-        for i in range(self.subgraph.n_nodes):
-            # Gathers the root from the node
-            root = self.subgraph.nodes[i].root
-
-            # If the root is the same as node's identifier
-            if root == i:
-                # Apply the predicted label as node's label
-                self.subgraph.nodes[i].predicted_label = self.subgraph.nodes[i].label
-
-            # If the root is different from node's identifier
-            else:
-                # Apply the predicted label as the root's label
-                self.subgraph.nodes[i].predicted_label = self.subgraph.nodes[root].label
-
-        logger.info('Labels assigned.')
-
     def predict(self, X):
         """Predicts new data using the pre-trained classifier.
 
@@ -419,39 +395,42 @@ class UnsupervisedOPF(OPF):
         # Creating a prediction subgraph
         pred_subgraph = KNNSubgraph(X)
 
-        #
-        k = self.subgraph.best_k
+        # Gathering the best `k` value
+        best_k = self.subgraph.best_k
 
         # Creating an array of distances
-        distances = np.zeros(k + 1)
+        distances = np.zeros(best_k + 1)
 
         # Creating an array of nearest neighbours indexes
-        neighbours_idx = np.zeros(k + 1)
+        neighbours_idx = np.zeros(best_k + 1)
 
+        # For every possible prediction node
         for i in range(pred_subgraph.n_nodes):
+            # Defines the current cost
             cost = c.FLOAT_MAX * -1
 
             # Filling array of distances with maximum value
             distances.fill(c.FLOAT_MAX)
-
+            
+            # For every possible trained node
             for j in range(self.subgraph.n_nodes):
                 # If they are different nodes
                 if j != i:
                     # If it is supposed to use a pre-computed distance
                     if self.pre_computed_distance:
                         # Gathers the distance from the matrix
-                        distances[k] = self.pre_distances[pred_subgraph.nodes[i].idx][self.subgraph.nodes[j].idx]
+                        distances[best_k] = self.pre_distances[pred_subgraph.nodes[i].idx][self.subgraph.nodes[j].idx]
 
                     # If it is supposed to calculate the distance
                     else:
                         # Calculates the distance between nodes `i` and `j`
-                        distances[k] = distance.DISTANCES[self.distance](pred_subgraph.nodes[i].features, self.subgraph.nodes[j].features)
+                        distances[best_k] = distance.DISTANCES[self.distance](pred_subgraph.nodes[i].features, self.subgraph.nodes[j].features)
 
                     # Apply node `j` as a neighbour
-                    neighbours_idx[k] = j
+                    neighbours_idx[best_k] = j
 
                     # Gathers current `k`
-                    current_k = k
+                    current_k = best_k
 
                     # While current `k` is bigger than 0 and the `k` distance is smaller than `k-1` distance
                     while current_k > 0 and distances[current_k] < distances[current_k - 1]:
@@ -466,19 +445,36 @@ class UnsupervisedOPF(OPF):
                         # Decrements `k`
                         current_k -= 1
             
-            density = 0
-            for l in range(k):
-                density += np.exp(-distances[l] / self.subgraph.constant)
-            density /= k
+            # Defining the density as 0
+            density = 0.0
 
+            # For every possible k
+            for k in range(best_k):
+                # Accumulates the density
+                density += np.exp(-distances[k] / self.subgraph.constant)
+
+            # Gather its mean value
+            density /= best_k
+
+            # Scale the density between minimum and maximum values
             density = ((c.MAX_DENSITY - 1) * (density - self.subgraph.min_density) / (self.subgraph.max_density - self.subgraph.min_density)) + 1
 
-            for l in range(k):
-                if distances[l] != c.FLOAT_MAX:
-                    neighbour = int(neighbours_idx[l])
+            # For every possible k
+            for k in range(best_k):
+                # If distance is different than maximum possible value
+                if distances[k] != c.FLOAT_MAX:
+                    # Gathers the node's neighbour
+                    neighbour = int(neighbours_idx[k])
+
+                    # Calculate a temporary cost
                     temp_cost = np.minimum(self.subgraph.nodes[neighbour].cost, density)
+
+                    # If temporary cost is bigger than current cost
                     if temp_cost > cost:
+                        # Replaces the current cost
                         cost = temp_cost
+
+                        # And propagates the predicted label from the neighbour
                         pred_subgraph.nodes[i].predicted_label = self.subgraph.nodes[neighbour].predicted_label
 
         
@@ -495,4 +491,28 @@ class UnsupervisedOPF(OPF):
         logger.info(f'Prediction time: {predict_time} seconds.')
 
         return preds
+
+    def propagate_labels(self):
+        """Runs through the clusters and propagate the clusters roots labels to the samples.
+
+        """
+
+        logger.info('Assigning predicted labels from clusters ...')
+
+        # For every possible node
+        for i in range(self.subgraph.n_nodes):
+            # Gathers the root from the node
+            root = self.subgraph.nodes[i].root
+
+            # If the root is the same as node's identifier
+            if root == i:
+                # Apply the predicted label as node's label
+                self.subgraph.nodes[i].predicted_label = self.subgraph.nodes[i].label
+
+            # If the root is different from node's identifier
+            else:
+                # Apply the predicted label as the root's label
+                self.subgraph.nodes[i].predicted_label = self.subgraph.nodes[root].label
+
+        logger.info('Labels assigned.')
 

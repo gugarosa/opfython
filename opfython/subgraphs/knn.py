@@ -34,7 +34,8 @@ class KNNSubgraph(Subgraph):
         # Number of adjacent nodes (k-nearest neighbours)
         self.best_k = 0
 
-        self.constant = 0
+        # Constant used to calculate the p.d.f.
+        self.constant = 0.0
 
         # Density of the subgraph
         self.density = 0.0
@@ -80,6 +81,21 @@ class KNNSubgraph(Subgraph):
             raise e.ValueError('`best_k` should be >= 0')
 
         self._best_k = best_k
+
+    @property
+    def constant(self):
+        """float: Constant used to calculate the probability density function.
+
+        """
+
+        return self._constant
+
+    @constant.setter
+    def constant(self, constant):
+        if not (isinstance(constant, float) or isinstance(constant, int)):
+            raise e.TypeError('`constant` should be a float or integer')
+
+        self._constant = constant
 
     @property
     def density(self):

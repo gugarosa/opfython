@@ -21,8 +21,8 @@ opf = UnsupervisedOPF(
 # Fits training data into the classifier
 opf.fit(X_train, Y_train)
 
-# If data is labeled, one can assign predicted labels instead of only the cluster identifiers
-opf.label_from_clusters()
+# If data is labeled, one can propagate predicted labels instead of only the cluster identifiers
+opf.propagate_labels()
 
 # Predicts new data
 preds = opf.predict(X_test)
