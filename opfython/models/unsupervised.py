@@ -17,7 +17,7 @@ class UnsupervisedOPF(OPF):
     """An UnsupervisedOPF which implements the unsupervised version of OPF classifier.
 
     References:
-
+        L. M. Rocha, F. A. M. Cappabianco, A. X. Falcão. Data clustering as an optimum-path forest problem with applications in image analysis. International Journal of Imaging Systems and Technology (2009).
 
     """
 
