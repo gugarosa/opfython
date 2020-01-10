@@ -28,13 +28,11 @@ class KNNSubgraph(Subgraph):
         # Override its parent class with the receiving arguments
         super(KNNSubgraph, self).__init__(X=X, Y=Y, from_file=from_file)
 
-        self.n_labels = 0
+        #  Number of assigned clusters
+        self.n_clusters = 0
 
         # Number of adjacent nodes (k-nearest neighbours)
         self.best_k = 0
-
-        # Constant for computing the probability density function (p.d.f.)
-        self.k = 0.0
 
         # Density of the subgraph
         self.density = 0.0
@@ -46,6 +44,23 @@ class KNNSubgraph(Subgraph):
         self.max_density = 0.0
 
         logger.info('Class overrided.')
+
+    @property
+    def n_clusters(self):
+        """int: Number of assigned clusters.
+
+        """
+
+        return self._n_clusters
+
+    @n_clusters.setter
+    def n_clusters(self, n_clusters):
+        if not isinstance(n_clusters, int):
+            raise e.TypeError('`n_clusters` should be an integer')
+        if n_clusters < 0:
+            raise e.ValueError('`n_clusters` should be >= 0')
+
+        self._n_clusters = n_clusters
 
     @property
     def best_k(self):
@@ -63,21 +78,6 @@ class KNNSubgraph(Subgraph):
             raise e.ValueError('`best_k` should be >= 0')
 
         self._best_k = best_k
-
-    @property
-    def k(self):
-        """float: Constant for computing the probability density function (p.d.f.).
-
-        """
-
-        return self._k
-
-    @k.setter
-    def k(self, k):
-        if not (isinstance(k, float) or isinstance(k, int)):
-            raise e.TypeError('`k` should be a float or integer')
-
-        self._k = k
 
     @property
     def density(self):
@@ -136,7 +136,7 @@ class KNNSubgraph(Subgraph):
         """
 
         # Calculating constant for computing the probability density function
-        self.k = 2 * self.density / 9
+        pdf_constant = 2 * self.density / 9
 
         # Defining subgraph's minimum density
         self.min_density = c.FLOAT_MAX
@@ -171,7 +171,7 @@ class KNNSubgraph(Subgraph):
                     distance = distance_function(self.nodes[i].features, self.nodes[j].features)
 
                 # Calculates the p.d.f.
-                pdf[i] += np.exp(-distance / self.k)
+                pdf[i] += np.exp(-distance / pdf_constant)
 
                 # Increments the number of p.d.f. calculations
                 n_pdf += 1
@@ -350,7 +350,3 @@ class KNNSubgraph(Subgraph):
         logger.debug(f'Eliminating maxima above volume = {volume} ...')
 
         logger.debug('Maxima eliminated.')
-
-
-    def normalized_cut(self):
-        pass

@@ -10,8 +10,7 @@ txt = l.load_txt('data/boat.txt')
 X, Y = p.parse_array(txt)
 
 # Creates an UnsupervisedOPF instance
-opf = UnsupervisedOPF(distance='log_squared_euclidean',
-                    pre_computed_distance=None)
+opf = UnsupervisedOPF(min_k=1, max_k=10, distance='log_squared_euclidean', pre_computed_distance=None)
 
 # Fits training data into the classifier
 opf.fit(X)

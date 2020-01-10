@@ -28,8 +28,11 @@ class Node:
         # We also need to set its label (true label)
         self.label = label
 
-        # Also its possible predicted label
+        # Its possible predicted label
         self.predicted_label = 0
+
+        # And finally, its cluster assignment label (if used)
+        self.cluster_label = 0
 
         # Array of features
         self.features = features
@@ -49,6 +52,7 @@ class Node:
         # List of adjacent nodes
         self.adjacency = []
 
+        # The cluster's root node identifier
         self.root = 0
 
         # Whether the node is a prototype or not
@@ -110,6 +114,23 @@ class Node:
             raise e.ValueError('`predicted_label` should be >= 0')
 
         self._predicted_label = predicted_label
+
+    @property
+    def cluster_label(self):
+        """int: Node's cluster assignment identifier.
+
+        """
+
+        return self._cluster_label
+
+    @cluster_label.setter
+    def cluster_label(self, cluster_label):
+        if not isinstance(cluster_label, int):
+            raise e.TypeError('`cluster_label` should be an integer')
+        if cluster_label < 0:
+            raise e.ValueError('`cluster_label` should be >= 0')
+
+        self._cluster_label = cluster_label
 
     @property
     def features(self):
@@ -202,6 +223,23 @@ class Node:
             raise e.TypeError('`adjacency` should be a list')
 
         self._adjacency = adjacency
+
+    @property
+    def root(self):
+        """int: Cluster's root node identifier.
+
+        """
+
+        return self._root
+
+    @root.setter
+    def root(self, root):
+        if not isinstance(root, int):
+            raise e.TypeError('`root` should be an integer')
+        if root < 0:
+            raise e.ValueError('`root` should be >= 0')
+
+        self._root = root
 
     @property
     def status(self):
