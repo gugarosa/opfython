@@ -17,7 +17,7 @@ class UnsupervisedOPF(OPF):
     """An UnsupervisedOPF which implements the unsupervised version of OPF classifier.
 
     References:
-        
+
 
     """
 
@@ -75,6 +75,8 @@ class UnsupervisedOPF(OPF):
             raise e.TypeError('`max_k` should be an integer')
         if max_k < 1:
             raise e.ValueError('`max_k` should be >= 1')
+        if max_k < self.min_k:
+            raise e.ValueError('`max_k` should be >= `min_k`')
 
         self._max_k = max_k
 
@@ -107,7 +109,7 @@ class UnsupervisedOPF(OPF):
                         if i == j_adj:
                             # Turns off the insertion flag
                             insert = False
-                        
+
                         # If it is supposed to be inserted
                         if insert:
                             # Inserts node `i` in the adjacency list of `i_adj`
@@ -118,7 +120,7 @@ class UnsupervisedOPF(OPF):
 
         # Creating a maximum heap
         h = Heap(size=self.subgraph.n_nodes, policy='max')
-        
+
         # For every possible node
         for i in range(self.subgraph.n_nodes):
             # Updates the node's cost on the heap
@@ -134,8 +136,7 @@ class UnsupervisedOPF(OPF):
             h.insert(i)
 
         # Resets the `i` and `l` counter
-        i = 0
-        l = 0
+        i, l = 0, 0
 
         # While the heap is not empty
         while not h.is_empty():
@@ -170,7 +171,8 @@ class UnsupervisedOPF(OPF):
                 # If its color in the heap is different from `BLACK`
                 if h.color[p_adj] != c.BLACK:
                     # Calculates a temporary cost
-                    temp_cost = np.minimum(h.cost[p], self.subgraph.nodes[p_adj].density)
+                    temp_cost = np.minimum(
+                        h.cost[p], self.subgraph.nodes[p_adj].density)
 
                     # If temporary cost is bigger than heap's cost
                     if temp_cost > h.cost[p_adj]:
@@ -190,34 +192,70 @@ class UnsupervisedOPF(OPF):
         self.subgraph.n_clusters = l
 
     def _normalized_cut(self, best_k, distance_function):
-        """
+        """Performs a normalized cut over the subgraph using the best `k` value.
+
+        Args:
+            best_k (int): Best value of k.
+            distance_function (callable): The distance function to be used to calculate the arcs.
+
+        Returns:
+            The value of the normalized cut.
+
         """
 
+        # Defining an array to represent the internal cluster distances
         internal_cluster = np.zeros(self.subgraph.n_clusters)
-        external_cluster = np.zeros(self.subgraph.n_clusters)
-        cut = 0
 
+        # Defining an array to represent the external cluster distances
+        external_cluster = np.zeros(self.subgraph.n_clusters)
+
+        # Defining the cut value
+        cut = 0.0
+
+        # For every possible node
         for i in range(self.subgraph.n_nodes):
+            # Calculates its number of adjacent nodes
             n_adjacents = self.subgraph.nodes[i].n_adjacency + best_k
+
+            # For every possible adjacent node
             for k in range(n_adjacents):
+                # Gathers its adjacent node identifier
                 i_adj = int(self.subgraph.nodes[i].adjacency[k])
+
+                # If it is supposed to use a pre-computed distance
                 if self.pre_computed_distance:
-                    distance = self.pre_distances[self.subgraph.nodes[i].idx][self.subgraph.nodes[i_adj].idx]
+                    # Gathers the distance from the matrix
+                    distance = self.pre_distances[self.subgraph.nodes[i]
+                                                  .idx][self.subgraph.nodes[i_adj].idx]
+
+                # If it is supposed to calculate the distance
                 else:
-                    distance = distance_function(self.subgraph.nodes[i].features, self.subgraph.nodes[i_adj].features)
-                if distance > 0:
+                     # Calculates the distance between nodes `i` and `i_adj`
+                    distance = distance_function(
+                        self.subgraph.nodes[i].features, self.subgraph.nodes[i_adj].features)
+
+                # If distance is bigger than 0
+                if distance > 0.0:
+                    # If nodes belongs to the same clusters
                     if self.subgraph.nodes[i].cluster_label == self.subgraph.nodes[i_adj].cluster_label:
+                        # Increments the internal cluster distance
                         internal_cluster[self.subgraph.nodes[i].cluster_label] += 1 / distance
+
+                    # If nodes belongs to distinct clusters
                     else:
+                        # Increments the external cluster distance
                         external_cluster[self.subgraph.nodes[i].cluster_label] += 1 / distance
 
+        # For every possible cluster
         for l in range(self.subgraph.n_clusters):
-            if internal_cluster[l] + external_cluster[l] > 0:
-                cut += external_cluster[l] / (internal_cluster[l] + external_cluster[l])
+            # If the sum of internal and external clusters is bigger than 0
+            if internal_cluster[l] + external_cluster[l] > 0.0:
+                # Increments the value of the cut
+                cut += external_cluster[l] / \
+                    (internal_cluster[l] + external_cluster[l])
 
         return cut
 
-            
     def _best_minimum_cut(self, min_k, max_k):
         """Performs a minimum cut on the subgraph using the best `k` value.
 
@@ -227,19 +265,22 @@ class UnsupervisedOPF(OPF):
 
         """
 
+        logger.debug(f'Calculating the best minimum cut within [{min_k}, {max_k}] ...')
+
         # Gathers the distance function
         distance_function = distance.DISTANCES[self.distance]
 
         # Calculates the maximum possible distances
-        max_distances = self.subgraph.create_arcs(max_k, distance_function, self.pre_computed_distance, self.pre_distances)
-        
+        max_distances = self.subgraph.create_arcs(
+            max_k, distance_function, self.pre_computed_distance, self.pre_distances)
+
         # Initialize the minimum cut as maximum possible value
         min_cut = c.FLOAT_MAX
-        
+
         # For every possible value of `k`
         for k in range(min_k, max_k + 1):
             # If minimum cut is different than zero
-            if min_cut != 0:
+            if min_cut != 0.0:
                 # Gathers the subgraph's density
                 self.subgraph.density = max_distances[k - 1]
 
@@ -247,7 +288,8 @@ class UnsupervisedOPF(OPF):
                 self.subgraph.best_k = k
 
                 # Calculates the p.d.f.
-                self.subgraph.calculate_pdf(k, distance_function, self.pre_computed_distance, self.pre_distances)
+                self.subgraph.calculate_pdf(
+                    k, distance_function, self.pre_computed_distance, self.pre_distances)
 
                 # Clustering with current `k` value
                 self._clustering(k)
@@ -265,22 +307,42 @@ class UnsupervisedOPF(OPF):
 
         # Destroy current arcs
         self.subgraph.destroy_arcs()
-        
+
         # Applying best `k` value to the subgraph
         self.subgraph.best_k = best_k
 
         # Creating new arcs with the best `k` value
-        self.subgraph.create_arcs(best_k, distance_function, self.pre_computed_distance, self.pre_distances)
+        self.subgraph.create_arcs(
+            best_k, distance_function, self.pre_computed_distance, self.pre_distances)
 
         # Calculating the new p.d.f. with the best `k` value
-        self.subgraph.calculate_pdf(best_k, distance_function, self.pre_computed_distance, self.pre_distances)
+        self.subgraph.calculate_pdf(
+            best_k, distance_function, self.pre_computed_distance, self.pre_distances)
 
+        logger.debug(f'Best: {best_k} | Minimum cut: {min_cut}.')
 
-    def fit(self, X):
+    def assign_labels(self):
+        """Runs through the clusters and assign possible predicted labels to the samples.
+
+        """
+
+        logger.info('Assigning predicted labels from clusters ...')
+
+        for i in range(self.subgraph.n_nodes):
+            root = self.subgraph.nodes[i].root
+            if root == i:
+                self.subgraph.nodes[i].predicted_label = self.subgraph.nodes[i].label
+            else:
+                self.subgraph.nodes[i].predicted_label = self.subgraph.nodes[root].label
+
+        logger.info('Labels assigned.')
+
+    def fit(self, X, Y=None):
         """Fits data in the classifier.
 
         Args:
             X (np.array): Array of features.
+            Y (np.array): Array of labels.
 
         """
 
@@ -290,7 +352,7 @@ class UnsupervisedOPF(OPF):
         start = time.time()
 
         # Creating a subgraph
-        self.subgraph = KNNSubgraph(X)
+        self.subgraph = KNNSubgraph(X, Y)
 
         # Checks if it is supposed to use pre-computed distances
         if self.pre_computed_distance:

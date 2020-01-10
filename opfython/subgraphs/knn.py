@@ -168,7 +168,8 @@ class KNNSubgraph(Subgraph):
                 # If it is supposed to calculate the distance
                 else:
                     # Calculates the distance between nodes `i` and `j`
-                    distance = distance_function(self.nodes[i].features, self.nodes[j].features)
+                    distance = distance_function(
+                        self.nodes[i].features, self.nodes[j].features)
 
                 # Calculates the p.d.f.
                 pdf[i] += np.exp(-distance / pdf_constant)
