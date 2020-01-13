@@ -126,14 +126,13 @@ class SupervisedOPF(OPF):
 
                         # If current cost is smaller than `q` node's cost
                         if current_cost < h.cost[q]:
-
                             # `q` node has `p` as its predecessor
                             self.subgraph.nodes[q].pred = p
 
                             # And its predicted label is the same as `p`
                             self.subgraph.nodes[q].predicted_label = self.subgraph.nodes[p].predicted_label
 
-                            # Updates the heap with `q` node and the current cost
+                            # Updates the heap `q` node and the current cost
                             h.update(q, current_cost)
 
         # The subgraph has been properly trained
