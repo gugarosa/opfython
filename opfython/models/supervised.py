@@ -2,7 +2,6 @@ import time
 
 import numpy as np
 
-import opfython.math.distance as d
 import opfython.utils.constants as c
 import opfython.utils.exception as e
 import opfython.utils.logging as l
@@ -54,7 +53,7 @@ class SupervisedOPF(OPF):
         # Adding first node to the heap
         h.insert(0)
 
-        # A list of prototype nodes
+        # Creating a list of prototype nodes
         prototypes = []
 
         # While the heap is not empty
@@ -62,7 +61,7 @@ class SupervisedOPF(OPF):
             # Remove a node from the heap
             p = h.remove()
 
-            # Gathers its cost
+            # Gathers its cost from the heap
             self.subgraph.nodes[p].cost = h.cost[p]
 
             # And also its predecessor
@@ -103,8 +102,7 @@ class SupervisedOPF(OPF):
                         # If distance is supposed to be calculated
                         else:
                             # Calculates the distance
-                            weight = d.DISTANCES[self.distance](
-                                self.subgraph.nodes[p].features, self.subgraph.nodes[q].features)
+                            weight = self.distance_fn(self.subgraph.nodes[p].features, self.subgraph.nodes[q].features)
 
                         # If current arc's cost is smaller than the path's cost
                         if weight < h.cost[q]:
@@ -163,9 +161,6 @@ class SupervisedOPF(OPF):
                 # Inserts the node into the heap
                 h.insert(i)
 
-        # Resets the `i` counter
-        i = 0
-
         # While the heap is not empty
         while not h.is_empty():
             # Removes a node
@@ -175,11 +170,7 @@ class SupervisedOPF(OPF):
             self.subgraph.idx_nodes.append(p)
 
             # Gathers its cost
-            # self.subgraph.nodes[p].cost = costs[p]
             self.subgraph.nodes[p].cost = h.cost[p]
-
-            # Increases the counter
-            i += 1
 
             # For every possible node
             for q in range(self.subgraph.n_nodes):
@@ -196,8 +187,7 @@ class SupervisedOPF(OPF):
                         # If the distance is supposed to be calculated
                         else:
                             # Calls the corresponding distance function
-                            weight = d.DISTANCES[self.distance](
-                                self.subgraph.nodes[p].features, self.subgraph.nodes[q].features)
+                            weight = self.distance_fn(self.subgraph.nodes[p].features, self.subgraph.nodes[q].features)
 
                         # The current cost will be the maximum cost between the node's and its weight (arc)
                         current_cost = np.maximum(h.cost[p], weight)
@@ -271,8 +261,7 @@ class SupervisedOPF(OPF):
             # If the distance is supposed to be calculated
             else:
                 # Calls the corresponding distance function
-                weight = d.DISTANCES[self.distance](
-                    self.subgraph.nodes[k].features, pred_subgraph.nodes[i].features)
+                weight = self.distance_fn(self.subgraph.nodes[k].features, pred_subgraph.nodes[i].features)
 
             # The minimum cost will be the maximum between the `k` node cost and its weight (arc)
             min_cost = np.maximum(self.subgraph.nodes[k].cost, weight)
@@ -294,8 +283,7 @@ class SupervisedOPF(OPF):
                 # If the distance is supposed to be calculated
                 else:
                     # Calls the corresponding distance function
-                    weight = d.DISTANCES[self.distance](
-                        self.subgraph.nodes[l].features, pred_subgraph.nodes[i].features)
+                    weight = self.distance_fn(self.subgraph.nodes[l].features, pred_subgraph.nodes[i].features)
 
                 # The temporary minimum cost will be the maximum between the `l` node cost and its weight (arc)
                 temp_min_cost = np.maximum(self.subgraph.nodes[l].cost, weight)

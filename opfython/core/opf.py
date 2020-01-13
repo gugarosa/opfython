@@ -38,6 +38,9 @@ class OPF:
         # An indicator of the distance metric to be used
         self.distance = distance
 
+        # Gathers the distance function as a property
+        self.distance_fn = d.DISTANCES[distance]
+
         # If OPF should use a pre-computed distance
         if pre_computed_distance:
             # Marks the boolean indicator as True
@@ -88,6 +91,21 @@ class OPF:
             raise e.TypeError('`distance` should be `bray_curtis`, `canberra`, `chi_squared`, `euclidean`, `gaussian`, `log_euclidean`, `log_squared_euclidean`, `manhattan`, `squared_chi_squared`, `squared_cord` or `squared_euclidean`')
 
         self._distance = distance
+
+    @property
+    def distance_fn(self):
+        """bool: Distance function to be used.
+
+        """
+
+        return self._distance_fn
+
+    @distance_fn.setter
+    def distance_fn(self, distance_fn):
+        if not callable(distance_fn):
+            raise e.TypeError('`distance_fn` should be a callable')
+
+        self._distance_fn = distance_fn
 
     @property
     def pre_computed_distance(self):
