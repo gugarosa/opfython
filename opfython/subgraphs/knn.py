@@ -23,7 +23,7 @@ class KNNSubgraph(Subgraph):
 
         """
 
-        logger.info('Overriding class: Subgraph -> KNNSubgraph.')
+        logger.debug('Overriding class: Subgraph -> KNNSubgraph.')
 
         # Override its parent class with the receiving arguments
         super(KNNSubgraph, self).__init__(X=X, Y=Y, from_file=from_file)
@@ -46,7 +46,7 @@ class KNNSubgraph(Subgraph):
         # Maximum density of the subgraph
         self.max_density = 0.0
 
-        logger.info('Class overrided.')
+        logger.debug('Class overrided.')
 
     @property
     def n_clusters(self):

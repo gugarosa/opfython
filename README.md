@@ -50,6 +50,8 @@ OPFython is based on the following structure, and you should pay attention to it
         - general
         - random
     - models
+        - kmeans
+        - knn_supervised
         - supervised
         - unsupervised
     - stream

@@ -131,34 +131,58 @@ class KNNSupervisedOPF(OPF):
                         h.update(int(p_adj), current_cost)
 
     def _learn(self, X_train, Y_train, X_val, Y_val):
+        """Learns the best `k` value over the validation set.
 
-        # Gathers the distance function
-        distance_function = distance.DISTANCES[self.distance]
+        Args:
+            X_train (np.array): Array of training features.
+            Y_train (np.array): Array of training labels.
+            X_val (np.array): Array of validation features.
+            Y_val (np.array): Array of validation labels.
+
+        Returns:
+            The best `k` value found over the validation set.
+
+        """
+
+        logger.info('Learning best `k` value ...')
 
         # Creating a subgraph
         self.subgraph = KNNSubgraph(X_train, Y_train)
 
-        max_acc = 0
-
+        # Defining initial maximum accuracy as 0
+        max_acc = 0.0
+        
+        # For every possible `k` value
         for k in range(1, self.max_k + 1):
+            # Gathers current `k` as subgraph's best `k`
             self.subgraph.best_k = k
-            self.subgraph.create_arcs(k, distance_function, self.pre_computed_distance, self.pre_distances)
 
-            self.subgraph.calculate_pdf(k, distance_function, self.pre_computed_distance, self.pre_distances)
+            # Calculate the arcs using the current `k` value
+            self.subgraph.create_arcs(k, self.distance_fn, self.pre_computed_distance, self.pre_distances)
 
+            # Calculate the p.d.f. using the current `k` value
+            self.subgraph.calculate_pdf(k, self.distance_fn, self.pre_computed_distance, self.pre_distances)
+
+            # Clusters the subgraph
             self._clustering()
 
+            # Calculate the predictions over the validation set
             preds = self.predict(X_val)
 
+            # Calculating the accuracy
             acc = g.opf_accuracy(Y_val, preds)
 
-            print(acc, k)
-
+            # If accuracy is better than maximum accuracy
             if acc > max_acc:
+                # Replaces the maximum accuracy value
                 max_acc = acc
-                best_k = k
-                self.subgraph.best_k = k
 
+                # Defines current `k` as the best `k` value
+                best_k = k
+
+            logger.info(f'Accuracy over k = {k}: {acc}')
+
+            # Destroy the arcs
             self.subgraph.destroy_arcs()
 
         return best_k
@@ -167,8 +191,10 @@ class KNNSupervisedOPF(OPF):
         """Fits data in the classifier.
 
         Args:
-            X (np.array): Array of features.
-            Y (np.array): Array of labels.
+            X_train (np.array): Array of training features.
+            Y_train (np.array): Array of training labels.
+            X_val (np.array): Array of validation features.
+            Y_val (np.array): Array of validation labels.
 
         """
 
@@ -176,9 +202,6 @@ class KNNSupervisedOPF(OPF):
 
         # Initializing the timer
         start = time.time()
-
-        # Creating a subgraph
-        # self.subgraph = KNNSubgraph(X_train, Y_train)
 
         # Checks if it is supposed to use pre-computed distances
         if self.pre_computed_distance:
@@ -188,21 +211,20 @@ class KNNSupervisedOPF(OPF):
                 raise e.BuildError(
                     'Pre-computed distance matrix should have the size of `n_nodes x n_nodes`')
 
-        #
+        # Performing the learning process in order to find the best `k` value
         self.subgraph.best_k = self._learn(X_train, Y_train, X_val, Y_val)
 
-        # Gathers the distance function
-        distance_function = distance.DISTANCES[self.distance]
+        # Creating arcs with the best `k` value
+        self.subgraph.create_arcs(self.subgraph.best_k, self.distance_fn, self.pre_computed_distance, self.pre_distances)
 
-        self.subgraph.create_arcs(self.subgraph.best_k, distance_function, self.pre_computed_distance, self.pre_distances)
+        # Calculating p.d.f. with the best `k` value
+        self.subgraph.calculate_pdf(self.subgraph.best_k, self.distance_fn, self.pre_computed_distance, self.pre_distances)
 
-        self.subgraph.calculate_pdf(self.subgraph.best_k, distance_function, self.pre_computed_distance, self.pre_distances)
-
+        # Clustering subgraph forcing each class to have at least one prototype
         self._clustering(force_prototype=True)
 
+        # Destroying arcs
         self.subgraph.destroy_arcs()
-
-
 
         # The subgraph has been properly trained
         self.subgraph.trained = True
@@ -213,10 +235,10 @@ class KNNSupervisedOPF(OPF):
         # Calculating training task time
         train_time = end - start
 
-        logger.info('Classifier has been fitted.')
+        logger.info(f'Classifier has been fitted with k = {self.subgraph.best_k}.')
         logger.info(f'Training time: {train_time} seconds.')
 
-    def predict(self, X):
+    def predict(self, X, verbose=False):
         """Predicts new data using the pre-trained classifier.
 
         Args:
@@ -226,9 +248,7 @@ class KNNSupervisedOPF(OPF):
             A list of predictions for each record of the data.
 
         """
-
-
-
+        
         logger.info('Predicting data ...')
 
         # Initializing the timer
