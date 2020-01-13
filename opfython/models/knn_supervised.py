@@ -42,24 +42,39 @@ class KNNSupervisedOPF(OPF):
         logger.info('Class overrided.')
 
     def _clustering(self, force_prototype=False):
-        """Clusters the subgraph using the best `k` value.
+        """Clusters the subgraph.
 
         Args:
-            best_k (int): Best value of k.
+            force_prototype (bool): Whether clustering should for each class to have at least one prototype.
 
         """
 
         # For every possible node
         for i in range(self.subgraph.n_nodes):
-            for i_adj in self.subgraph.nodes[i].adjacency:
-                 if self.subgraph.nodes[i].density == self.subgraph.nodes[int(i_adj)].density:
-                     insert = True
-                     for j_adj in self.subgraph.nodes[int(i_adj)].adjacency:
-                        if i == j_adj:
+            # For every adjacent node of `i`
+            for j in self.subgraph.nodes[i].adjacency:
+                # Making sure that variable is an integer
+                j = int(j)
+
+                # Checks if node `i` density is equals as node `j` density
+                if self.subgraph.nodes[i].density == self.subgraph.nodes[j].density:
+                    # Marks the insertion flag as True
+                    insert = True
+
+                    # For every adjacent node of `j`
+                    for l in self.subgraph.nodes[j].adjacency:
+                        # Making sure that variable is an integer
+                        l = int(l)
+
+                        # Checks if it is the same node as `i`
+                        if i == l:
+                            # If yes, mark insertion flag as False
                             insert = False
+                        
+                        # If insertion flag is True
                         if insert:
-                            # Inserts node `i` in the adjacency list of `i_adj`
-                            self.subgraph.nodes[i_adj].adjacency.insert(0, i)
+                            # Inserts node `i` in the adjacency list of `j`
+                            self.subgraph.nodes[j].adjacency.insert(0, i)
 
 
         # Creating a maximum heap
@@ -79,9 +94,6 @@ class KNNSupervisedOPF(OPF):
             # Inserts the node in the heap
             h.insert(i)
 
-        # Resets the `i` and `l` counter
-        i = 0
-
         # While the heap is not empty
         while not h.is_empty():
             # Removes a node
@@ -90,45 +102,48 @@ class KNNSupervisedOPF(OPF):
             # Appends its index to the ordered list
             self.subgraph.idx_nodes.append(p)
 
-            i += 1
-
             # If the node's predecessor is NIL
             if self.subgraph.nodes[p].pred == c.NIL:
                 # Updates its cost on the heap
                 h.cost[p] = self.subgraph.nodes[p].density
 
-                # print(h.cost[p])
-
-                # Defines its cluster label as `l`
+                # Defines its predicted label as the node's true label
                 self.subgraph.nodes[p].predicted_label = self.subgraph.nodes[p].label
 
             # Apply current node's cost as the heap's cost
             self.subgraph.nodes[p].cost = h.cost[p]
 
-            for p_adj in self.subgraph.nodes[p].adjacency:
+            # For every possible adjacent node
+            for q in self.subgraph.nodes[p].adjacency:
+                # Making sure that variable is an integer
+                q = int(q)
+
                 # If its color in the heap is different from `BLACK`
-                if h.color[int(p_adj)] != c.BLACK:
+                if h.color[q] != c.BLACK:
                     # Calculates the current cost
                     current_cost = np.minimum(
-                        h.cost[p], self.subgraph.nodes[int(p_adj)].density)
+                        h.cost[p], self.subgraph.nodes[q].density)
 
+                    # If prototypes should be forced to belong to a class
                     if force_prototype:
-                        if self.subgraph.nodes[p].label != self.subgraph.nodes[int(p_adj)].label:
-                            current_cost = c.FLOAT_MAX * -1
+                        # Checks if nodes `p` and `q` labels are different
+                        if self.subgraph.nodes[p].label != self.subgraph.nodes[q].label:
+                            # If yes, define current cost as minimum value possible
+                            current_cost = -c.FLOAT_MAX
 
-                    # If temporary cost is bigger than heap's cost
-                    if current_cost > h.cost[int(p_adj)]:
-                        # Apply `int(p_adj)` predecessor as `p`
-                        self.subgraph.nodes[int(p_adj)].pred = p
+                    # If current cost is bigger than heap's cost
+                    if current_cost > h.cost[q]:
+                        # Apply `q` predecessor as `p`
+                        self.subgraph.nodes[q].pred = p
 
                         # Gathers the same root's identifier
-                        self.subgraph.nodes[int(p_adj)].root = self.subgraph.nodes[p].root
+                        self.subgraph.nodes[q].root = self.subgraph.nodes[p].root
 
                         # And its cluster label
-                        self.subgraph.nodes[int(p_adj)].predicted_label = self.subgraph.nodes[p].predicted_label
+                        self.subgraph.nodes[q].predicted_label = self.subgraph.nodes[p].predicted_label
 
-                        #
-                        h.update(int(p_adj), current_cost)
+                        # Updates node `q` on the heap with the current cost
+                        h.update(q, current_cost)
 
     def _learn(self, X_train, Y_train, X_val, Y_val):
         """Learns the best `k` value over the validation set.
