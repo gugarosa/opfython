@@ -2,7 +2,6 @@ import time
 
 import numpy as np
 
-import opfython.math.distance as distance
 import opfython.math.general as g
 import opfython.utils.constants as c
 import opfython.utils.exception as e
@@ -301,8 +300,7 @@ class KNNSupervisedOPF(OPF):
                     # If it is supposed to calculate the distance
                     else:
                         # Calculates the distance between nodes `i` and `j`
-                        distances[best_k] = distance.DISTANCES[self.distance](
-                            pred_subgraph.nodes[i].features, self.subgraph.nodes[j].features)
+                        distances[best_k] = self.distance_fn(pred_subgraph.nodes[i].features, self.subgraph.nodes[j].features)
 
                     # Apply node `j` as a neighbour
                     neighbours_idx[best_k] = j
