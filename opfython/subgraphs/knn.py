@@ -142,11 +142,11 @@ class KNNSubgraph(Subgraph):
 
         self._max_density = max_density
 
-    def calculate_pdf(self, best_k, distance_function, pre_computed_distance=False, pre_distances=None):
-        """Calculates the probability density function for the best `k` values.
+    def calculate_pdf(self, n_neighbours, distance_function, pre_computed_distance=False, pre_distances=None):
+        """Calculates the probability density function for `k` neighbours.
 
         Args:
-            best_k (int): Best value of k.
+            n_neighbours (int): Number of neighbours in the adjacency relation.
             distance_function (callable): The distance function to be used to calculate the arcs.
             pre_computed_distance (bool): Whether OPF should use a pre-computed distance or not.
             pre_distances (np.array): Pre-computed distance matrix.
@@ -160,7 +160,7 @@ class KNNSubgraph(Subgraph):
         self.min_density = c.FLOAT_MAX
 
         # Defining subgraph's maximum density
-        self.max_density = c.FLOAT_MAX * -1
+        self.max_density = -c.FLOAT_MAX
 
         # Creating an array to hold the p.d.f. calculation
         pdf = np.zeros(self.n_nodes)
@@ -173,8 +173,8 @@ class KNNSubgraph(Subgraph):
             # Initialize the number of p.d.f. calculations as 1
             n_pdf = 1
 
-            # For every possible `k`
-            for k in range(best_k):
+            # For every possible `k` value
+            for k in range(n_neighbours):
                 # Gathering adjacent node from the list
                 j = int(self.nodes[i].adjacency[k])
 
