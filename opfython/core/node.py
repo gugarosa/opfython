@@ -62,7 +62,7 @@ class Node:
         self.pred = 0
 
         # Whether the node is relevant or not
-        self.relavant = c.IRRELEVANT
+        self.relevant = c.IRRELEVANT
 
     @property
     def idx(self):

@@ -23,7 +23,7 @@ def split(X, Y, percentage=0.5, random_state=1):
     Args:
         X (np.array): Array of features.
         Y (np.array): Array of labels.
-        train_percentage (float): Percentage of the data that should be in first set.
+        percentage (float): Percentage of the data that should be in first set.
         random_state (int): An integer that fixes the random seed.
 
     Returns:
