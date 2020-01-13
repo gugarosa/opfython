@@ -38,6 +38,84 @@ class SupervisedOPF(OPF):
 
         logger.info('Class overrided.')
 
+    def _find_prototypes(self):
+        """Find prototype nodes using the Minimum Spanning Tree (MST) approach.
+
+        """
+
+        logger.debug('Finding prototypes ...')
+
+        # Creating a Heap of size equals to number of nodes
+        h = Heap(self.subgraph.n_nodes)
+
+        # Marking first node without any predecessor
+        self.subgraph.nodes[0].pred = c.NIL
+
+        # Adding first node to the heap
+        h.insert(0)
+
+        # A list of prototype nodes
+        prototypes = []
+
+        # While the heap is not empty
+        while not h.is_empty():
+            # Remove a node from the heap
+            p = h.remove()
+
+            # Gathers its cost
+            self.subgraph.nodes[p].cost = h.cost[p]
+
+            # And also its predecessor
+            pred = self.subgraph.nodes[p].pred
+
+            # If the predecessor is not NIL
+            if pred != c.NIL:
+                # Checks if the label of current node is the same as its predecessor
+                if self.subgraph.nodes[p].label != self.subgraph.nodes[pred].label:
+                    # If current node is not a prototype
+                    if self.subgraph.nodes[p].status != c.PROTOTYPE:
+                        # Marks it as a prototype
+                        self.subgraph.nodes[p].status = c.PROTOTYPE
+
+                        # Appends current node identifier to the prototype's list
+                        prototypes.append(p)
+
+                    # If predecessor node is not a prototype
+                    if self.subgraph.nodes[pred].status != c.PROTOTYPE:
+                        # Marks it as a protoype
+                        self.subgraph.nodes[pred].status = c.PROTOTYPE
+
+                        # Appends predecessor node identifier to the prototype's list
+                        prototypes.append(pred)
+
+            # For every possible node
+            for q in range(self.subgraph.n_nodes):
+                # Checks if the color of current node in the heap is not black
+                if h.color[q] != c.BLACK:
+                    # If `p` and `q` identifiers are different
+                    if p != q:
+                        # If it is supposed to use pre-computed distances
+                        if self.pre_computed_distance:
+                            # Gathers the arc from the distances' matrix
+                            weight = self.pre_distances[self.subgraph.nodes[p]
+                                                        .idx][self.subgraph.nodes[q].idx]
+
+                        # If distance is supposed to be calculated
+                        else:
+                            # Calculates the distance
+                            weight = d.DISTANCES[self.distance](
+                                self.subgraph.nodes[p].features, self.subgraph.nodes[q].features)
+
+                        # If current arc's cost is smaller than the path's cost
+                        if weight < h.cost[q]:
+                            # Marks `q` predecessor node as `p`
+                            self.subgraph.nodes[q].pred = p
+
+                            # Updates the arc on the heap
+                            h.update(q, weight)
+
+        logger.debug(f'Prototypes: {prototypes}.')
+
     def fit(self, X, Y):
         """Fits data in the classifier.
 
@@ -64,7 +142,7 @@ class SupervisedOPF(OPF):
                     'Pre-computed distance matrix should have the size of `n_nodes x n_nodes`')
 
         # Finding prototypes
-        self.find_prototypes()
+        self._find_prototypes()
 
         # Creating a minimum heap
         h = Heap(size=self.subgraph.n_nodes)
