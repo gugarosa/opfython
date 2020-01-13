@@ -19,7 +19,7 @@ opf = UnsupervisedOPF(
     min_k=1, max_k=10, distance='log_squared_euclidean', pre_computed_distance=None)
 
 # Fits training data into the classifier
-opf.fit(X, Y)
+opf.fit(X_train, Y_train)
 
 # If data is labeled, one can propagate predicted labels instead of only the cluster identifiers
 opf.propagate_labels()

@@ -19,3 +19,11 @@ opf = KNNSupervisedOPF(max_k=10, distance='log_squared_euclidean', pre_computed_
 
 # Fits training data into the classifier
 opf.fit(X, Y, X, Y)
+
+# Predicts new data
+preds = opf.predict(X)
+
+# Calculating accuracy
+acc = g.opf_accuracy(Y, preds)
+
+print(f'Accuracy: {acc}')
