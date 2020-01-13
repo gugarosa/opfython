@@ -61,9 +61,6 @@ class KNNSupervisedOPF(OPF):
                             # Inserts node `i` in the adjacency list of `i_adj`
                             self.subgraph.nodes[i_adj].adjacency.insert(0, i)
 
-                            # Increments the amount of adjacent nodes
-                            self.subgraph.nodes[i_adj].n_adjacency += 1
-
 
         # Creating a maximum heap
         h = Heap(size=self.subgraph.n_nodes, policy='max')
@@ -100,43 +97,38 @@ class KNNSupervisedOPF(OPF):
                 # Updates its cost on the heap
                 h.cost[p] = self.subgraph.nodes[p].density
 
+                # print(h.cost[p])
+
                 # Defines its cluster label as `l`
                 self.subgraph.nodes[p].predicted_label = self.subgraph.nodes[p].label
 
             # Apply current node's cost as the heap's cost
             self.subgraph.nodes[p].cost = h.cost[p]
 
-            # Calculates the number of its adjacent nodes
-            n_adjacents = self.subgraph.nodes[p].n_adjacency
-
-            # For every possible adjacent node
-            for k in range(n_adjacents):
-                # Gathers the adjacent identifier
-                p_adj = int(self.subgraph.nodes[p].adjacency[k])
-
+            for p_adj in self.subgraph.nodes[p].adjacency:
                 # If its color in the heap is different from `BLACK`
-                if h.color[p_adj] != c.BLACK:
+                if h.color[int(p_adj)] != c.BLACK:
                     # Calculates the current cost
                     current_cost = np.minimum(
-                        h.cost[p], self.subgraph.nodes[p_adj].density)
+                        h.cost[p], self.subgraph.nodes[int(p_adj)].density)
 
                     if force_prototype:
-                        if self.subgraph.nodes[p].label != self.subgraph.nodes[p_adj].label:
+                        if self.subgraph.nodes[p].label != self.subgraph.nodes[int(p_adj)].label:
                             current_cost = c.FLOAT_MAX * -1
 
                     # If temporary cost is bigger than heap's cost
-                    if current_cost > h.cost[p_adj]:
-                        # Apply `p_adj` predecessor as `p`
-                        self.subgraph.nodes[p_adj].pred = p
+                    if current_cost > h.cost[int(p_adj)]:
+                        # Apply `int(p_adj)` predecessor as `p`
+                        self.subgraph.nodes[int(p_adj)].pred = p
 
                         # Gathers the same root's identifier
-                        self.subgraph.nodes[p_adj].root = self.subgraph.nodes[p].root
+                        self.subgraph.nodes[int(p_adj)].root = self.subgraph.nodes[p].root
 
                         # And its cluster label
-                        self.subgraph.nodes[p_adj].predicted_label = self.subgraph.nodes[p].predicted_label
+                        self.subgraph.nodes[int(p_adj)].predicted_label = self.subgraph.nodes[p].predicted_label
 
                         #
-                        h.update(p_adj, current_cost)
+                        h.update(int(p_adj), current_cost)
 
     def _learn(self, X_train, Y_train, X_val, Y_val):
 
@@ -144,15 +136,15 @@ class KNNSupervisedOPF(OPF):
         distance_function = distance.DISTANCES[self.distance]
 
         # Creating a subgraph
-        subgraph = KNNSubgraph(X_train, Y_train)
+        self.subgraph = KNNSubgraph(X_train, Y_train)
 
         max_acc = 0
 
         for k in range(1, self.max_k + 1):
-            subgraph.best_k = k
-            subgraph.create_arcs(k, distance_function, self.pre_computed_distance, self.pre_distances)
+            self.subgraph.best_k = k
+            self.subgraph.create_arcs(k, distance_function, self.pre_computed_distance, self.pre_distances)
 
-            subgraph.calculate_pdf(k, distance_function, self.pre_computed_distance, self.pre_distances)
+            self.subgraph.calculate_pdf(k, distance_function, self.pre_computed_distance, self.pre_distances)
 
             self._clustering()
 
@@ -160,12 +152,14 @@ class KNNSupervisedOPF(OPF):
 
             acc = g.opf_accuracy(Y_val, preds)
 
+            print(acc, k)
+
             if acc > max_acc:
                 max_acc = acc
                 best_k = k
-                subgraph.best_k = k
+                self.subgraph.best_k = k
 
-            subgraph.destroy_arcs()
+            self.subgraph.destroy_arcs()
 
         return best_k
 
@@ -184,7 +178,7 @@ class KNNSupervisedOPF(OPF):
         start = time.time()
 
         # Creating a subgraph
-        self.subgraph = KNNSubgraph(X_train, Y_train)
+        # self.subgraph = KNNSubgraph(X_train, Y_train)
 
         # Checks if it is supposed to use pre-computed distances
         if self.pre_computed_distance:

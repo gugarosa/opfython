@@ -224,7 +224,7 @@ class Subgraph:
         # For every possible node
         for i in range(self.n_nodes):
             # Reset the number of adjacent nodes
-            self.nodes[i].n_adjacency = 0
+            self.nodes[i].n_plateaus = 0
 
             # Resets the list of adjacent nodes
             self.nodes[i].adjacency = []

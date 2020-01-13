@@ -47,7 +47,7 @@ class Node:
         self.radius = 0.0
 
         # Amount of adjacent nodes on plateaus
-        self.n_adjacency = 0
+        self.n_plateaus = 0
 
         # List of adjacent nodes
         self.adjacency = []
@@ -193,21 +193,21 @@ class Node:
         self._radius = radius
 
     @property
-    def n_adjacency(self):
+    def n_plateaus(self):
         """int: Amount of adjacent nodes on plateaus.
 
         """
 
-        return self._n_adjacency
+        return self._n_plateaus
 
-    @n_adjacency.setter
-    def n_adjacency(self, n_adjacency):
-        if not isinstance(n_adjacency, int):
-            raise e.TypeError('`n_adjacency` should be an integer')
-        if n_adjacency < 0:
-            raise e.ValueError('`n_adjacency` should be >= 0')
+    @n_plateaus.setter
+    def n_plateaus(self, n_plateaus):
+        if not isinstance(n_plateaus, int):
+            raise e.TypeError('`n_plateaus` should be an integer')
+        if n_plateaus < 0:
+            raise e.ValueError('`n_plateaus` should be >= 0')
 
-        self._n_adjacency = n_adjacency
+        self._n_plateaus = n_plateaus
 
     @property
     def adjacency(self):

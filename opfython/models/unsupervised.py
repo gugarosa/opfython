@@ -118,7 +118,7 @@ class UnsupervisedOPF(OPF):
                             self.subgraph.nodes[i_adj].adjacency.insert(0, i)
 
                             # Increments the amount of adjacent nodes
-                            self.subgraph.nodes[i_adj].n_adjacency += 1
+                            self.subgraph.nodes[i_adj].n_plateaus += 1
 
         # Creating a maximum heap
         h = Heap(size=self.subgraph.n_nodes, policy='max')
@@ -163,7 +163,7 @@ class UnsupervisedOPF(OPF):
             self.subgraph.nodes[p].cost = h.cost[p]
 
             # Calculates the number of its adjacent nodes
-            n_adjacents = self.subgraph.nodes[p].n_adjacency + best_k
+            n_adjacents = self.subgraph.nodes[p].n_plateaus + best_k
 
             # For every possible adjacent node
             for k in range(n_adjacents):
@@ -217,7 +217,7 @@ class UnsupervisedOPF(OPF):
         # For every possible node
         for i in range(self.subgraph.n_nodes):
             # Calculates its number of adjacent nodes
-            n_adjacents = self.subgraph.nodes[i].n_adjacency + best_k
+            n_adjacents = self.subgraph.nodes[i].n_plateaus + best_k
 
             # For every possible adjacent node
             for k in range(n_adjacents):

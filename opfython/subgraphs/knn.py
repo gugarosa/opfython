@@ -229,6 +229,8 @@ class KNNSubgraph(Subgraph):
                 # Calculates the node's cost
                 self.nodes[i].cost = self.nodes[i].density - 1
 
+        # print(pdf)
+
     def create_arcs(self, k, distance_function, pre_computed_distance=False, pre_distances=None):
         """Creates arcs for each node (adjacency relation).
 
@@ -295,7 +297,7 @@ class KNNSubgraph(Subgraph):
             self.nodes[i].radius = 0.0
 
             # Also make sure that it does not have any adjacent nodes
-            self.nodes[i].n_adjacency = 0
+            self.nodes[i].n_plateaus = 0
 
             # For every possible decreasing `k`
             for l in range(k - 1, -1, -1):
