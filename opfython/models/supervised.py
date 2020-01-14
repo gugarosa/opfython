@@ -105,7 +105,8 @@ class SupervisedOPF(OPF):
                         # If distance is supposed to be calculated
                         else:
                             # Calculates the distance
-                            weight = self.distance_fn(self.subgraph.nodes[p].features, self.subgraph.nodes[q].features)
+                            weight = self.distance_fn(
+                                self.subgraph.nodes[p].features, self.subgraph.nodes[q].features)
 
                         # If current arc's cost is smaller than the path's cost
                         if weight < h.cost[q]:
@@ -190,7 +191,8 @@ class SupervisedOPF(OPF):
                         # If the distance is supposed to be calculated
                         else:
                             # Calls the corresponding distance function
-                            weight = self.distance_fn(self.subgraph.nodes[p].features, self.subgraph.nodes[q].features)
+                            weight = self.distance_fn(
+                                self.subgraph.nodes[p].features, self.subgraph.nodes[q].features)
 
                         # The current cost will be the maximum cost between the node's and its weight (arc)
                         current_cost = np.maximum(h.cost[p], weight)
@@ -251,7 +253,7 @@ class SupervisedOPF(OPF):
         for i in range(pred_subgraph.n_nodes):
             # Initializing the conqueror node
             conqueror = -1
-            
+
             # Initializes the `j` counter
             j = 0
 
@@ -267,7 +269,8 @@ class SupervisedOPF(OPF):
             # If the distance is supposed to be calculated
             else:
                 # Calls the corresponding distance function
-                weight = self.distance_fn(self.subgraph.nodes[k].features, pred_subgraph.nodes[i].features)
+                weight = self.distance_fn(
+                    self.subgraph.nodes[k].features, pred_subgraph.nodes[i].features)
 
             # The minimum cost will be the maximum between the `k` node cost and its weight (arc)
             min_cost = np.maximum(self.subgraph.nodes[k].cost, weight)
@@ -289,7 +292,8 @@ class SupervisedOPF(OPF):
                 # If the distance is supposed to be calculated
                 else:
                     # Calls the corresponding distance function
-                    weight = self.distance_fn(self.subgraph.nodes[l].features, pred_subgraph.nodes[i].features)
+                    weight = self.distance_fn(
+                        self.subgraph.nodes[l].features, pred_subgraph.nodes[i].features)
 
                 # The temporary minimum cost will be the maximum between the `l` node cost and its weight (arc)
                 temp_min_cost = np.maximum(self.subgraph.nodes[l].cost, weight)
@@ -429,14 +433,75 @@ class SupervisedOPF(OPF):
             # Incrementing the counter
             t += 1
 
-            logger.info(f'Accuracy: {acc} | Delta: {delta} | Maximum Accuracy: {max_acc}')
+            logger.info(
+                f'Accuracy: {acc} | Delta: {delta} | Maximum Accuracy: {max_acc}')
 
             # If the difference is smaller than 10e-4 or iterations are finished
             if delta < 0.0001 and t == n_iterations:
                 # Replaces current class with the best OPF
                 self = best_opf
 
-                logger.info(f'Best classifier has been learned over iteration {best_t+1}.')
+                logger.info(
+                    f'Best classifier has been learned over iteration {best_t+1}.')
 
                 # Breaks the loop
                 break
+
+    def prune(self, X_train, Y_train, X_val, Y_val, n_iterations=10):
+        """Prunes a classifier over a validation set.
+
+        Args:
+            X_train (np.array): Array of training features.
+            Y_train (np.array): Array of training labels.
+            X_val (np.array): Array of validation features.
+            Y_val (np.array): Array of validation labels.
+            n_iterations (int): Maximum number of iterations.
+
+        """
+
+        logger.info('Pruning classifier ...')
+
+        # Fits training data into the classifier
+        self.fit(X_train, Y_train)
+
+        # Predicts new data
+        self.predict(X_val)
+
+        # Gathering initial number of nodes
+        initial_nodes = self.subgraph.n_nodes
+
+        # For every possible iteration
+        for t in range(n_iterations):
+            logger.info(f'Running iteration {t+1}/{n_iterations} ...')
+
+            # Creating temporary lists
+            X_temp, Y_temp = [], []
+
+            # Removing irrelevant nodes
+            for j, n in enumerate(self.subgraph.nodes):
+                if n.relevant != c.IRRELEVANT:
+                    X_temp.append(X_train[j, :])
+                    Y_temp.append(Y_train[j])
+
+            # Copying lists back to original data
+            X_train = np.asarray(X_temp)
+            Y_train = np.asarray(Y_temp)
+
+            # Fits training data into the classifier
+            self.fit(X_train, Y_train)
+
+            # Predicts new data
+            preds = self.predict(X_val)
+
+            # Calculating accuracy
+            acc = g.opf_accuracy(Y_val, preds)
+
+            logger.info(f'Current accuracy: {acc}.')
+
+        # Gathering final number of nodes
+        final_nodes = self.subgraph.n_nodes
+
+        # Calculating pruning ratio
+        prune_ratio = 1 - final_nodes / initial_nodes
+
+        logger.info(f'Prune ratio: {prune_ratio}.')

@@ -6,15 +6,23 @@ import opfython.utils.logging as l
 logger = l.get_logger(__name__)
 
 
-def k_folds():
-    """Creates k-folds subgraphs from cross-validation.
+def k_folds(X, Y, n_folds=2, random_state=1):
+    """Splits the data into k-folds for further cross-validation.
+
+    Args:
+        X (np.array): Array of features.
+        Y (np.array): Array of labels.
+        n_folds (int): Number of folds (`k` value).
+        random_state (int): An integer that fixes the random seed.
 
     Returns:
-        A list of k-folds subgraphs.
+        k-folds that were created from `X` and `Y`.
 
     """
 
-    pass
+    logger.info(f'Creating k-folds with k = {n_folds} ...')
+
+    logger.info('Folds created.')
 
 
 def split(X, Y, percentage=0.5, random_state=1):
@@ -27,7 +35,7 @@ def split(X, Y, percentage=0.5, random_state=1):
         random_state (int): An integer that fixes the random seed.
 
     Returns:
-        Two new sets for `X` and `Y`.
+        Two new sets that were created from `X` and `Y`.
 
     """
 
@@ -71,7 +79,7 @@ def merge(X_1, X_2, Y_1, Y_2):
         Y_2 (np.array): Second array of labels.
 
     Returns:
-        A new merged set for `X` and `Y`.
+        A new merged set that was created from `X_1`, `X_2`, `Y_1` and `Y_2`.
 
     """
 
