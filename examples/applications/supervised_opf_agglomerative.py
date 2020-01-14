@@ -14,7 +14,7 @@ X, Y = p.parse_array(txt)
 
 # Splitting data into training and validation sets
 X_train, X_val, Y_train, Y_val = s.split(
-    X, Y, percentage=0.5, random_state=2)
+    X, Y, percentage=0.5, random_state=1)
 
 # Creates a always true loop
 while True:

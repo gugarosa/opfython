@@ -249,6 +249,9 @@ class SupervisedOPF(OPF):
 
         # For every possible node
         for i in range(pred_subgraph.n_nodes):
+            # Initializing the conqueror node
+            conqueror = -1
+            
             # Initializes the `j` counter
             j = 0
 
@@ -311,8 +314,10 @@ class SupervisedOPF(OPF):
             # Node's `i` predicted label is the same as current label
             pred_subgraph.nodes[i].predicted_label = current_label
 
-            # Marks the conqueror node and its path
-            self.subgraph.mark_nodes(conqueror)
+            # Checks if any node has been conquered
+            if conqueror > -1:
+                # Marks the conqueror node and its path
+                self.subgraph.mark_nodes(conqueror)
 
         # Creating the list of predictions
         preds = [pred.predicted_label for pred in pred_subgraph.nodes]
