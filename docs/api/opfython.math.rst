@@ -5,7 +5,6 @@ Just because we are computing stuff, it does not means that we do not need math.
 
 .. toctree::
     opfython.math.distance
-    opfython.math.distribution
     opfython.math.general
     opfython.math.random
 
