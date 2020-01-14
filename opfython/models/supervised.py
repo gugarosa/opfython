@@ -151,7 +151,7 @@ class SupervisedOPF(OPF):
 
         # For each possible node
         for i in range(self.subgraph.n_nodes):
-            # Checks if node is a prototype or not
+            # Checks if node is a prototype
             if self.subgraph.nodes[i].status == c.PROTOTYPE:
                 # If yes, it does not have predecessor nodes
                 self.subgraph.nodes[i].pred = c.NIL
@@ -164,6 +164,11 @@ class SupervisedOPF(OPF):
 
                 # Inserts the node into the heap
                 h.insert(i)
+            
+            # If node is not a prototype
+            else:
+                # Its cost equals to maximum possible value
+                h.cost[i] = c.FLOAT_MAX
 
         # While the heap is not empty
         while not h.is_empty():

@@ -65,7 +65,7 @@ class Subgraph:
 
         """
 
-        return self._n_nodes
+        return len(self.nodes)
 
     @n_nodes.setter
     def n_nodes(self, n_nodes):
@@ -197,9 +197,6 @@ class Subgraph:
 
             # Appends the node to the list
             self.nodes.append(node)
-
-        # Calculates the number of nodes
-        self.n_nodes = len(self.nodes)
 
         # Calculates the number of features
         self.n_features = self.nodes[0].features.shape[0]
