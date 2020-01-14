@@ -317,12 +317,12 @@ class UnsupervisedOPF(OPF):
 
         logger.debug(f'Best: {best_k} | Minimum cut: {min_cut}.')
 
-    def fit(self, X, Y=None):
+    def fit(self, X_train, Y_train=None):
         """Fits data in the classifier.
 
         Args:
-            X (np.array): Array of features.
-            Y (np.array): Array of labels.
+            X_train (np.array): Array of training features.
+            Y_train (np.array): Array of training labels.
 
         """
 
@@ -332,7 +332,7 @@ class UnsupervisedOPF(OPF):
         start = time.time()
 
         # Creating a subgraph
-        self.subgraph = KNNSubgraph(X, Y)
+        self.subgraph = KNNSubgraph(X_train, Y_train)
 
         # Checks if it is supposed to use pre-computed distances
         if self.pre_computed_distance:
@@ -361,11 +361,11 @@ class UnsupervisedOPF(OPF):
         logger.info(f'Number of clusters: {self.subgraph.n_clusters}.')
         logger.info(f'Clustering time: {train_time} seconds.')
 
-    def predict(self, X):
+    def predict(self, X_val):
         """Predicts new data using the pre-trained classifier.
 
         Args:
-            X (np.array): Array of features.
+            X_val (np.array): Array of validation features.
 
         Returns:
             A list of predictions for each record of the data.
@@ -388,7 +388,7 @@ class UnsupervisedOPF(OPF):
         start = time.time()
 
         # Creating a prediction subgraph
-        pred_subgraph = KNNSubgraph(X)
+        pred_subgraph = KNNSubgraph(X_val)
 
         # Gathering the best `k` value
         best_k = self.subgraph.best_k

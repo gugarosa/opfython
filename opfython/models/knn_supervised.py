@@ -17,6 +17,7 @@ class KNNSupervisedOPF(OPF):
     """A KNNSupervisedOPF which implements the supervised version of OPF classifier with a KNN subgraph.
 
     References:
+        João P. Papa and A. X. Falcão. A Learning Algorithm for the Optimum-Path Forest Classifier. Graph-Based Representations in Pattern Recognition (2009).
 
     """
 
@@ -24,6 +25,7 @@ class KNNSupervisedOPF(OPF):
         """Initialization method.
 
         Args:
+            max_k (int): Maximum `k` value for cutting the subgraph.
             distance (str): An indicator of the distance metric to be used.
             pre_computed_distance (str): A pre-computed distance file for feeding into OPF.
 
@@ -39,6 +41,23 @@ class KNNSupervisedOPF(OPF):
         self.max_k = max_k
 
         logger.info('Class overrided.')
+
+    @property
+    def max_k(self):
+        """int: Maximum `k` value for cutting the subgraph.
+
+        """
+
+        return self._max_k
+
+    @max_k.setter
+    def max_k(self, max_k):
+        if not isinstance(max_k, int):
+            raise e.TypeError('`max_k` should be an integer')
+        if max_k < 1:
+            raise e.ValueError('`max_k` should be >= 1')
+
+        self._max_k = max_k
 
     def _clustering(self, force_prototype=False):
         """Clusters the subgraph.
@@ -256,11 +275,11 @@ class KNNSupervisedOPF(OPF):
             f'Classifier has been fitted with k = {self.subgraph.best_k}.')
         logger.info(f'Training time: {train_time} seconds.')
 
-    def predict(self, X, verbose=False):
+    def predict(self, X_test, verbose=False):
         """Predicts new data using the pre-trained classifier.
 
         Args:
-            X (np.array): Array of features.
+            X_test (np.array): Array of features.
 
         Returns:
             A list of predictions for each record of the data.
@@ -273,7 +292,7 @@ class KNNSupervisedOPF(OPF):
         start = time.time()
 
         # Creating a prediction subgraph
-        pred_subgraph = KNNSubgraph(X)
+        pred_subgraph = KNNSubgraph(X_test)
 
         # Gathering the best `k` value
         best_k = self.subgraph.best_k

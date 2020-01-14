@@ -1,7 +1,10 @@
+import copy
 import time
 
 import numpy as np
 
+import opfython.math.general as g
+import opfython.math.random as r
 import opfython.utils.constants as c
 import opfython.utils.exception as e
 import opfython.utils.logging as l
@@ -114,12 +117,12 @@ class SupervisedOPF(OPF):
 
         logger.debug(f'Prototypes: {prototypes}.')
 
-    def fit(self, X, Y):
+    def fit(self, X_train, Y_train):
         """Fits data in the classifier.
 
         Args:
-            X (np.array): Array of features.
-            Y (np.array): Array of labels.
+            X_train (np.array): Array of training features.
+            Y_train (np.array): Array of training labels.
 
         """
 
@@ -129,7 +132,7 @@ class SupervisedOPF(OPF):
         start = time.time()
 
         # Creating a subgraph
-        self.subgraph = Subgraph(X, Y)
+        self.subgraph = Subgraph(X_train, Y_train)
 
         # Checks if it is supposed to use pre-computed distances
         if self.pre_computed_distance:
@@ -215,11 +218,11 @@ class SupervisedOPF(OPF):
         logger.info('Classifier has been fitted.')
         logger.info(f'Training time: {train_time} seconds.')
 
-    def predict(self, X):
+    def predict(self, X_val):
         """Predicts new data using the pre-trained classifier.
 
         Args:
-            X (np.array): Array of features.
+            X_val (np.array): Array of validation or test features.
 
         Returns:
             A list of predictions for each record of the data.
@@ -242,7 +245,7 @@ class SupervisedOPF(OPF):
         start = time.time()
 
         # Creating a prediction subgraph
-        pred_subgraph = Subgraph(X)
+        pred_subgraph = Subgraph(X_val)
 
         # For every possible node
         for i in range(pred_subgraph.n_nodes):
@@ -324,3 +327,111 @@ class SupervisedOPF(OPF):
         logger.info(f'Prediction time: {predict_time} seconds.')
 
         return preds
+
+    def learn(self, X_train, Y_train, X_val, Y_val, n_iterations=10):
+        """Learns the best classifier over a validation set.
+
+        Args:
+            X_train (np.array): Array of training features.
+            Y_train (np.array): Array of training labels.
+            X_val (np.array): Array of validation features.
+            Y_val (np.array): Array of validation labels.
+            n_iterations (int): Number of iterations.
+
+        """
+
+        logger.info('Learning the best classifier ...')
+
+        # Defines the maximum accuracy
+        max_acc = 0
+
+        # Defines the previous accuracy
+        previous_acc = 0
+
+        # Defines the iterations counter
+        t = 0
+
+        # An always true loop
+        while True:
+            logger.info(f'Running iteration {t+1}/{n_iterations} ...')
+
+            # Fits training data into the classifier
+            self.fit(X_train, Y_train)
+
+            # Predicts new data
+            preds = self.predict(X_val)
+
+            # Calculating accuracy
+            acc = g.opf_accuracy(Y_val, preds)
+
+            # Checks if current accuracy is better than the best one
+            if acc > max_acc:
+                # If yes, replace the maximum accuracy
+                max_acc = acc
+
+                # Makes a copy of the best OPF classifier
+                best_opf = copy.deepcopy(self)
+
+                # And saves the iteration number
+                best_t = t
+
+            # Gathers which samples were missclassified
+            errors = np.argwhere(Y_val != preds)
+
+            # Defining the initial number of non-prototypes as 0
+            non_prototypes = 0
+
+            # For every possible subgraph's node
+            for n in self.subgraph.nodes:
+                # If the node is not a prototype
+                if n.status != c.PROTOTYPE:
+                    # Increments the number of non-prototypes
+                    non_prototypes += 1
+
+            # For every possible error
+            for e in errors:
+                # Counter will receive the number of non-prototypes
+                ctr = non_prototypes
+
+                # While the counter is bigger than zero
+                while ctr > 0:
+                    # Generates a random index
+                    j = int(r.generate_uniform_random_number(0, len(X_train)))
+
+                    # If the node on that particular index is not a prototype
+                    if self.subgraph.nodes[j].status != c.PROTOTYPE:
+                        # Swap the nodes
+                        X_train[j, :], X_val[e, :] = X_val[e, :], X_train[j, :]
+                        Y_train[j], Y_val[e] = Y_val[e], Y_train[j]
+
+                        # Decrements the number of non-prototypes
+                        non_prototypes -= 1
+
+                        # Resets the counter
+                        ctr = 0
+
+                    # If the node on that particular index is a prototype
+                    else:
+                        # Decrements the counter
+                        ctr -= 1
+
+            # Calculating difference between current accuracy and previous one
+            delta = np.fabs(acc - previous_acc)
+
+            # Replacing the previous accuracy as current accuracy
+            previous_acc = acc
+
+            # Incrementing the counter
+            t += 1
+
+            logger.info(f'Accuracy: {acc} | Delta: {delta} | Maximum Accuracy: {max_acc}')
+
+            # If the difference is smaller than 10e-4 or iterations are finished
+            if delta < 0.0001 and t == n_iterations:
+                # Replaces current class with the best OPF
+                self = best_opf
+
+                logger.info(f'Best classifier has been learned over iteration {best_t+1}.')
+
+                # Breaks the loop
+                break

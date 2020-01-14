@@ -25,8 +25,6 @@ class Subgraph:
 
         """
 
-        logger.debug('Creating class: Subgraph.')
-
         # Number of nodes
         self.n_nodes = 0
 
@@ -56,8 +54,6 @@ class Subgraph:
 
             # Now, we need to build this class up
             self._build(X, Y)
-
-            logger.debug('Class created.')
 
         # If data could not be loaded
         else:
@@ -153,8 +149,6 @@ class Subgraph:
 
         """
 
-        logger.debug('Running private method: load().')
-
         # Getting file extension
         extension = file_path.split('.')[-1]
 
@@ -196,8 +190,6 @@ class Subgraph:
 
         """
 
-        logger.debug('Running private method: build().')
-
         # Iterate over every possible sample
         for i, (feature, label) in enumerate(zip(X, Y)):
             # Creates a Node structure
@@ -211,10 +203,6 @@ class Subgraph:
 
         # Calculates the number of features
         self.n_features = self.nodes[0].features.shape[0]
-
-        # Logging attributes
-        logger.debug(
-            f'Nodes: {self.n_nodes} | Features: {self.n_features}.')
 
     def destroy_arcs(self):
         """Destroy the arcs present in the subgraph.
