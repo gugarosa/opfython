@@ -6,6 +6,8 @@
 
 ## Welcome to OPFython.
 
+*Note that this implementation relies purely on the standard [LibOPF](https://github.com/jppbsi/LibOPF). Therefore, if one uses our package, please also cite the original LibOPF [authors](https://github.com/jppbsi/LibOPF/wiki/Additional-information).*
+
 Have you ever wanted to classify data into labels? If yes, OPFython is for you! This package is an innovative way of dealing with an optimum-path forest classifier. From bottom to top, from samples and datasets to the actual classifier, we will foster all research related to this new trend.
 
 Use OPFython if you need a library or wish to:
@@ -26,6 +28,22 @@ OPFython is compatible with: **Python 3.6+** and **PyPy 3.5**.
 2. **Installing** is also easy if you wish to read the code and bump yourself into, follow along.
 3. Note that there might be some **additional** steps in order to use our solutions.
 4. If there is a problem, please do not **hesitate**. Call us.
+
+---
+
+## Citation
+
+If you use OPFython to fulfill any of your needs, please cite us:
+
+```
+
+```
+
+---
+
+## Datasets
+
+In search for datasets? We have some already pre-loaded into OPF file format. Just check them out at our [website](http://recogna.tech)!
 
 ---
 
