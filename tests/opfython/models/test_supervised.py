@@ -12,8 +12,9 @@ def test_supervised_opf_fit():
 
     opf.fit(X, Y)
 
-    opf.pre_computed_distance = True
+    assert opf.subgraph.trained == True
 
+    opf.pre_computed_distance = True
     try:
         opf.pre_distances = np.ones((99, 99))
         opf.fit(X, Y)
@@ -31,7 +32,9 @@ def test_supervised_opf_predict():
         _ = opf.predict(X)
     except:
         opf.fit(X, Y)
-        _ = opf.predict(X)
+        preds = opf.predict(X)
+
+    assert len(preds) == 100
 
     try:
         opf.fit(X, Y)
@@ -39,7 +42,9 @@ def test_supervised_opf_predict():
         _ = opf.predict(X)
     except:
         opf.fit(X, Y)
-        _ = opf.predict(X)
+        preds = opf.predict(X)
+
+    assert len(preds) == 100
 
     opf.pre_computed_distance = True
     opf.pre_distances = np.ones((100, 100))

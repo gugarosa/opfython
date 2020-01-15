@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 from opfython.models import unsupervised
-from opfython.stream import loader, parser, splitter
+from opfython.stream import loader, parser
 
 csv = loader.load_csv('data/boat.csv')
 X, Y = parser.parse_loader(csv)
@@ -66,8 +66,11 @@ def test_unsupervised_opf_max_k_setter():
 def test_unsupervised_opf_fit():
     opf = unsupervised.UnsupervisedOPF()
 
-    opf.pre_computed_distance = True
+    opf.fit(X, Y)
 
+    assert opf.subgraph.trained == True
+
+    opf.pre_computed_distance = True
     try:
         opf.pre_distances = np.ones((99, 99))
         opf.fit(X, Y)
@@ -85,7 +88,9 @@ def test_unsupervised_opf_predict():
         _ = opf.predict(X)
     except:
         opf.fit(X, Y)
-        _ = opf.predict(X)
+        preds = opf.predict(X)
+
+    assert len(preds) == 100
 
     try:
         opf.fit(X, Y)
@@ -93,7 +98,9 @@ def test_unsupervised_opf_predict():
         _ = opf.predict(X)
     except:
         opf.fit(X, Y)
-        _ = opf.predict(X)
+        preds = opf.predict(X)
+
+    assert len(preds) == 100
 
     opf.pre_computed_distance = True
     opf.pre_distances = np.ones((100, 100))

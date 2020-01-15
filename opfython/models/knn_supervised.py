@@ -89,10 +89,10 @@ class KNNSupervisedOPF(OPF):
                             # If yes, mark insertion flag as False
                             insert = False
 
-                        # If insertion flag is True
-                        if insert:
-                            # Inserts node `i` in the adjacency list of `j`
-                            self.subgraph.nodes[j].adjacency.insert(0, i)
+                    # If insertion flag is True
+                    if insert:
+                        # Inserts node `i` in the adjacency list of `j`
+                        self.subgraph.nodes[j].adjacency.insert(0, i)
 
         # Creating a maximum heap
         h = Heap(size=self.subgraph.n_nodes, policy='max')
@@ -181,6 +181,14 @@ class KNNSupervisedOPF(OPF):
         # Creating a subgraph
         self.subgraph = KNNSubgraph(X_train, Y_train)
 
+        # Checks if it is supposed to use pre-computed distances
+        if self.pre_computed_distance:
+            # Checks if its size is the same as the subgraph's amount of nodes
+            if self.pre_distances.shape[0] != self.subgraph.n_nodes or self.pre_distances.shape[1] != self.subgraph.n_nodes:
+                # If not, raises an error
+                raise e.BuildError(
+                    'Pre-computed distance matrix should have the size of `n_nodes x n_nodes`')
+
         # Defining initial maximum accuracy as 0
         max_acc = 0.0
 
@@ -236,14 +244,6 @@ class KNNSupervisedOPF(OPF):
 
         # Initializing the timer
         start = time.time()
-
-        # Checks if it is supposed to use pre-computed distances
-        if self.pre_computed_distance:
-            # Checks if its size is the same as the subgraph's amount of nodes
-            if self.pre_distances.shape[0] != self.subgraph.n_nodes or self.pre_distances.shape[0] != self.subgraph.n_nodes:
-                # If not, raises an error
-                raise e.BuildError(
-                    'Pre-computed distance matrix should have the size of `n_nodes x n_nodes`')
 
         # Performing the learning process in order to find the best `k` value
         self.subgraph.best_k = self._learn(X_train, Y_train, X_val, Y_val)
