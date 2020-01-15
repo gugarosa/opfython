@@ -21,6 +21,8 @@ def test_supervised_opf_fit():
         opf.pre_distances = np.ones((100, 100))
         opf.fit(X, Y)
 
+    assert opf.subgraph.trained == True
+
 
 def test_supervised_opf_predict():
     opf = supervised.SupervisedOPF()
@@ -43,7 +45,9 @@ def test_supervised_opf_predict():
     opf.pre_distances = np.ones((100, 100))
 
     opf.fit(X, Y)
-    _ = opf.predict(X)
+    preds = opf.predict(X)
+
+    assert len(preds) == 100
 
 
 def test_supervised_opf_learn():
@@ -54,6 +58,8 @@ def test_supervised_opf_learn():
 
     opf.learn(X_train, Y_train, X_val, Y_val, n_iterations=5)
 
+    assert isinstance(opf, supervised.SupervisedOPF)
+
 
 def test_supervised_opf_prune():
     opf = supervised.SupervisedOPF()
@@ -62,3 +68,5 @@ def test_supervised_opf_prune():
         X, Y, percentage=0.1, random_state=1)
 
     opf.prune(X_train, Y_train, X_val, Y_val, n_iterations=5)
+
+    assert opf.subgraph.n_nodes == 10

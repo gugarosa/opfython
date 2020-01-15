@@ -171,7 +171,7 @@ class OPF:
                 'File extension not recognized. It should be either `.csv` or .txt`')
 
         # Check if distances have been properly loaded
-        if not distances:
+        if distances is None:
             # If not, raises a ValueError
             raise e.ValueError(
                 'Pre-computed distances could not been properly loaded')

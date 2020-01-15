@@ -131,6 +131,9 @@ def test_knn_subgraph_calculate_pdf():
     subgraph.create_arcs(1, distance.euclidean_distance)
     subgraph.calculate_pdf(1, distance.euclidean_distance)
 
+    assert subgraph.min_density != 0
+    assert subgraph.max_density != 0
+
 
 def test_knn_subgraph_create_arcs():
     subgraph = knn.KNNSubgraph(X, Y)
@@ -142,10 +145,14 @@ def test_knn_subgraph_create_arcs():
     subgraph.create_arcs(1, distance.euclidean_distance,
                          pre_computed_distance=True, pre_distances=distances)
 
-    subgraph.create_arcs(1, distance.euclidean_distance)
+    max_distances = subgraph.create_arcs(1, distance.euclidean_distance)
+
+    assert len(max_distances) == 1
 
 
 def test_knn_subgraph_eliminate_maxima_height():
     subgraph = knn.KNNSubgraph(X, Y)
 
     subgraph.eliminate_maxima_height(2.5)
+
+    assert subgraph.nodes[0].cost == 0

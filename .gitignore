@@ -14,6 +14,9 @@ opfython.log.*
 /*.json
 /*.dat
 
+# Saved models
+*.pkl
+
 # Test data files outputs
 tests/opfython/data/*.txt
 tests/opfython/data/*.csv

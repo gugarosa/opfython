@@ -59,7 +59,7 @@ class Node:
         self.status = c.STANDARD
 
         # Identifier to the predecessor node
-        self.pred = 0
+        self.pred = c.NIL
 
         # Whether the node is relevant or not
         self.relevant = c.IRRELEVANT

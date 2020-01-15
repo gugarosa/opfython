@@ -20,3 +20,5 @@ def test_supervised_opf_fit():
     except:
         opf.pre_distances = np.ones((200, 200))
         opf.fit(X, Y, X)
+
+    assert opf.subgraph.trained == True
