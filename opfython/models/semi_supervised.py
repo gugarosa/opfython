@@ -56,14 +56,6 @@ class SemiSupervisedOPF(SupervisedOPF):
         # Creating a subgraph
         self.subgraph = Subgraph(X_train, Y_train)
 
-        # Checks if it is supposed to use pre-computed distances
-        if self.pre_computed_distance:
-            # Checks if its size is the same as the subgraph's amount of nodes
-            if self.pre_distances.shape[0] != self.subgraph.n_nodes or self.pre_distances.shape[0] != self.subgraph.n_nodes:
-                # If not, raises an error
-                raise e.BuildError(
-                    'Pre-computed distance matrix should have the size of `n_nodes x n_nodes`')
-
         # Finding prototypes
         self._find_prototypes()
 
@@ -77,6 +69,14 @@ class SemiSupervisedOPF(SupervisedOPF):
 
             # Appends the node to the list
             self.subgraph.nodes.append(node)
+
+        # Checks if it is supposed to use pre-computed distances
+        if self.pre_computed_distance:
+            # Checks if its size is the same as the subgraph's amount of nodes
+            if self.pre_distances.shape[0] != self.subgraph.n_nodes or self.pre_distances.shape[1] != self.subgraph.n_nodes:
+                # If not, raises an error
+                raise e.BuildError(
+                    'Pre-computed distance matrix should have the size of `n_nodes x n_nodes`')
 
         # Creating a minimum heap
         h = Heap(size=self.subgraph.n_nodes)

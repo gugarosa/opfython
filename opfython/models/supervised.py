@@ -138,7 +138,7 @@ class SupervisedOPF(OPF):
         # Checks if it is supposed to use pre-computed distances
         if self.pre_computed_distance:
             # Checks if its size is the same as the subgraph's amount of nodes
-            if self.pre_distances.shape[0] != self.subgraph.n_nodes or self.pre_distances.shape[0] != self.subgraph.n_nodes:
+            if self.pre_distances.shape[0] != self.subgraph.n_nodes or self.pre_distances.shape[1] != self.subgraph.n_nodes:
                 # If not, raises an error
                 raise e.BuildError(
                     'Pre-computed distance matrix should have the size of `n_nodes x n_nodes`')
@@ -442,7 +442,7 @@ class SupervisedOPF(OPF):
                 f'Accuracy: {acc} | Delta: {delta} | Maximum Accuracy: {max_acc}')
 
             # If the difference is smaller than 10e-4 or iterations are finished
-            if delta < 0.0001 and t == n_iterations:
+            if delta < 0.0001 or t == n_iterations:
                 # Replaces current class with the best OPF
                 self = best_opf
 
