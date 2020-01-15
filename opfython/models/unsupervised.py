@@ -337,7 +337,7 @@ class UnsupervisedOPF(OPF):
         # Checks if it is supposed to use pre-computed distances
         if self.pre_computed_distance:
             # Checks if its size is the same as the subgraph's amount of nodes
-            if self.pre_distances.shape[0] != self.subgraph.n_nodes or self.pre_distances.shape[0] != self.subgraph.n_nodes:
+            if self.pre_distances.shape[0] != self.subgraph.n_nodes or self.pre_distances.shape[1] != self.subgraph.n_nodes:
                 # If not, raises an error
                 raise e.BuildError(
                     'Pre-computed distance matrix should have the size of `n_nodes x n_nodes`')
@@ -453,7 +453,7 @@ class UnsupervisedOPF(OPF):
 
             # Scale the density between minimum and maximum values
             density = ((c.MAX_DENSITY - 1) * (density - self.subgraph.min_density) /
-                       (self.subgraph.max_density - self.subgraph.min_density)) + 1
+                       (self.subgraph.max_density - self.subgraph.min_density + c.EPSILON)) + 1
 
             # For every possible k
             for k in range(best_k):

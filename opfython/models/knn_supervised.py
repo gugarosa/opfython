@@ -358,7 +358,7 @@ class KNNSupervisedOPF(OPF):
 
             # Scale the density between minimum and maximum values
             density = ((c.MAX_DENSITY - 1) * (density - self.subgraph.min_density) /
-                       (self.subgraph.max_density - self.subgraph.min_density)) + 1
+                       (self.subgraph.max_density - self.subgraph.min_density + c.EPSILON)) + 1
 
             # For every possible k
             for k in range(best_k):
