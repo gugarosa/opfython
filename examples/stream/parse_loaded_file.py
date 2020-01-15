@@ -5,4 +5,4 @@ import opfython.stream.parser as p
 txt = l.load_txt('data/sample.txt')
 
 # Parsing a pre-loaded numpy array
-X, Y = p.parse_array(txt)
+X, Y = p.parse_loader(txt)

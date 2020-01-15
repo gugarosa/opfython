@@ -6,7 +6,7 @@ import opfython.utils.logging as l
 logger = l.get_logger(__name__)
 
 
-def parse_array(data):
+def parse_loader(data):
     """Parses data in OPF file format that was pre-loaded (.csv, .txt or .json).
 
     Args:

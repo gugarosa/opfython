@@ -6,23 +6,23 @@ import opfython.utils.logging as l
 logger = l.get_logger(__name__)
 
 
-def k_folds(X, Y, n_folds=2, random_state=1):
-    """Splits the data into k-folds for further cross-validation.
+# def k_folds(X, Y, n_folds=2, random_state=1):
+#     """Splits the data into k-folds for further cross-validation.
 
-    Args:
-        X (np.array): Array of features.
-        Y (np.array): Array of labels.
-        n_folds (int): Number of folds (`k` value).
-        random_state (int): An integer that fixes the random seed.
+#     Args:
+#         X (np.array): Array of features.
+#         Y (np.array): Array of labels.
+#         n_folds (int): Number of folds (`k` value).
+#         random_state (int): An integer that fixes the random seed.
 
-    Returns:
-        k-folds that were created from `X` and `Y`.
+#     Returns:
+#         k-folds that were created from `X` and `Y`.
 
-    """
+#     """
 
-    logger.info(f'Creating k-folds with k = {n_folds} ...')
+#     logger.info(f'Creating k-folds with k = {n_folds} ...')
 
-    logger.info('Folds created.')
+#     logger.info('Folds created.')
 
 
 def split(X, Y, percentage=0.5, random_state=1):

@@ -9,7 +9,7 @@ input_file = 'data/boat.txt'
 txt = l.load_txt(input_file)
 
 # Parsing a pre-loaded dataframe
-X, Y = p.parse_array(txt)
+X, Y = p.parse_loader(txt)
 
 # Creating a subgraph structure
 g = Subgraph(X, Y)

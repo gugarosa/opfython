@@ -8,7 +8,7 @@ from opfython.models.semi_supervised import SemiSupervisedOPF
 txt = l.load_txt('data/boat.txt')
 
 # Parsing a pre-loaded numpy array
-X, Y = p.parse_array(txt)
+X, Y = p.parse_loader(txt)
 
 # Splitting data into training and testing sets
 X_train, X_test, Y_train, Y_test = s.split(

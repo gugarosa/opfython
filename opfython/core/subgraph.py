@@ -174,7 +174,7 @@ class Subgraph:
                 'File extension not recognized. It should be `.csv`, `.json` or `.txt`')
 
         # Parsing array
-        X, Y = p.parse_array(data)
+        X, Y = p.parse_loader(data)
 
         return X, Y
 

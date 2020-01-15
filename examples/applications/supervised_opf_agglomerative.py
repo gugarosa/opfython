@@ -10,7 +10,7 @@ from opfython.models.supervised import SupervisedOPF
 txt = l.load_txt('data/boat.txt')
 
 # Parsing a pre-loaded numpy array
-X, Y = p.parse_array(txt)
+X, Y = p.parse_loader(txt)
 
 # Splitting data into training and validation sets
 X_train, X_val, Y_train, Y_val = s.split(
