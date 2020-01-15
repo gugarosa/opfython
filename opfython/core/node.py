@@ -157,7 +157,7 @@ class Node:
 
     @cost.setter
     def cost(self, cost):
-        if not (isinstance(cost, float) or isinstance(cost, int) or isinstance(cost, np.int32)):
+        if not (isinstance(cost, float) or isinstance(cost, int) or isinstance(cost, np.int64) or isinstance(cost, np.int64)):
             raise e.TypeError('`cost` should be a float or integer')
 
         self._cost = cost
