@@ -157,7 +157,7 @@ class Node:
 
     @cost.setter
     def cost(self, cost):
-        if not (isinstance(cost, float) or isinstance(cost, int) or isinstance(cost, np.int64) or isinstance(cost, np.int64)):
+        if not (isinstance(cost, float) or isinstance(cost, int) or isinstance(cost, np.int32) or isinstance(cost, np.int64)):
             raise e.TypeError('`cost` should be a float or integer')
 
         self._cost = cost
@@ -172,7 +172,7 @@ class Node:
 
     @density.setter
     def density(self, density):
-        if not (isinstance(density, float) or isinstance(density, int) or isinstance(density, np.int32)):
+        if not (isinstance(density, float) or isinstance(density, int) or isinstance(density, np.int32) or isinstance(density, np.int64)):
             raise e.TypeError('`density` should be a float or integer')
 
         self._density = density
@@ -187,7 +187,7 @@ class Node:
 
     @radius.setter
     def radius(self, radius):
-        if not (isinstance(radius, float) or isinstance(radius, int) or isinstance(radius, np.int32)):
+        if not (isinstance(radius, float) or isinstance(radius, int) or isinstance(radius, np.int32) or isinstance(radius, np.int64)):
             raise e.TypeError('`radius` should be a float or integer')
 
         self._radius = radius
