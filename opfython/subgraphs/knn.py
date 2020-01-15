@@ -335,33 +335,33 @@ class KNNSubgraph(Subgraph):
         # Checks if height is bigger than zero
         if height > 0:
             # For every possible node
-            for i in range(self.nodes):
+            for i in range(self.n_nodes):
                 # Calculates its new cost
                 self.nodes[i].cost = np.maximum(
                     self.nodes[i].density - height, 0)
 
         logger.debug('Maxima eliminated.')
 
-    def eliminate_maxima_area(self, area):
-        """Eliminates maxima values in the subgraph that are below the inputted area.
+    # def eliminate_maxima_area(self, area):
+    #     """Eliminates maxima values in the subgraph that are below the inputted area.
 
-        Args:
-            area (float): Area's threshold.
+    #     Args:
+    #         area (float): Area's threshold.
 
-        """
+    #     """
 
-        logger.debug(f'Eliminating maxima above area = {area} ...')
+    #     logger.debug(f'Eliminating maxima above area = {area} ...')
 
-        logger.debug('Maxima eliminated.')
+    #     logger.debug('Maxima eliminated.')
 
-    def eliminate_maxima_volume(self, volume):
-        """Eliminates maxima values in the subgraph that are below the inputted volume.
+    # def eliminate_maxima_volume(self, volume):
+    #     """Eliminates maxima values in the subgraph that are below the inputted volume.
 
-        Args:
-            volume (float): Volume's threshold.
+    #     Args:
+    #         volume (float): Volume's threshold.
 
-        """
+    #     """
 
-        logger.debug(f'Eliminating maxima above volume = {volume} ...')
+    #     logger.debug(f'Eliminating maxima above volume = {volume} ...')
 
-        logger.debug('Maxima eliminated.')
+    #     logger.debug('Maxima eliminated.')
