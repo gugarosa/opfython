@@ -6,10 +6,18 @@ from opfython.utils import constants
 def test_subgraph_n_nodes():
     s = subgraph.Subgraph()
 
+    assert s.n_nodes == 0
+
+
+def test_subgraph_n_nodes_setter():
+    s = subgraph.Subgraph()
+
     try:
         s.n_nodes = 10.5
     except:
         s.n_nodes = 0
+
+    assert s.n_nodes == 0
 
     try:
         s.n_nodes = -1
@@ -22,10 +30,18 @@ def test_subgraph_n_nodes():
 def test_subgraph_n_features():
     s = subgraph.Subgraph()
 
+    assert s.n_features == 0
+
+
+def test_subgraph_n_features_setter():
+    s = subgraph.Subgraph()
+
     try:
         s.n_features = 10.5
     except:
         s.n_features = 1
+
+    assert s.n_features == 1
 
     try:
         s.n_features = -1
@@ -36,6 +52,12 @@ def test_subgraph_n_features():
 
 
 def test_subgraph_nodes():
+    s = subgraph.Subgraph()
+
+    assert isinstance(s.nodes, list)
+
+
+def test_subgraph_nodes_setter():
     s = subgraph.Subgraph()
 
     try:
@@ -49,6 +71,12 @@ def test_subgraph_nodes():
 def test_subgraph_idx_nodes():
     s = subgraph.Subgraph()
 
+    assert isinstance(s.idx_nodes, list)
+
+
+def test_subgraph_idx_nodes_setter():
+    s = subgraph.Subgraph()
+
     try:
         s.idx_nodes = 10
     except:
@@ -58,6 +86,12 @@ def test_subgraph_idx_nodes():
 
 
 def test_subgraph_trained():
+    s = subgraph.Subgraph()
+
+    assert s.trained == False
+
+
+def test_subgraph_trained_setter():
     s = subgraph.Subgraph()
 
     try:

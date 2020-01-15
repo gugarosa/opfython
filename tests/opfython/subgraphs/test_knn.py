@@ -21,6 +21,9 @@ def test_knn_subgraph_n_clusters_setter():
         subgraph.n_clusters = 0.5
     except:
         subgraph.n_clusters = 1
+
+    assert subgraph.n_clusters == 1
+
     try:
         subgraph.n_clusters = -1
     except:
@@ -42,6 +45,9 @@ def test_knn_subgraph_best_k_setter():
         subgraph.best_k = 0.5
     except:
         subgraph.best_k = 1
+
+    assert subgraph.best_k == 1
+    
     try:
         subgraph.best_k = -1
     except:

@@ -12,7 +12,7 @@ class Node:
 
     """
 
-    def __init__(self, idx=0, label=1, features=None):
+    def __init__(self, idx=0, label=1, features=[]):
         """Initialization method.
 
         Args:
@@ -35,7 +35,7 @@ class Node:
         self.cluster_label = 0
 
         # Array of features
-        self.features = features
+        self.features = np.asarray(features)
 
         # Cost of the node
         self.cost = 0.0

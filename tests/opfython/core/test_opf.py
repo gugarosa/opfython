@@ -66,6 +66,8 @@ def test_opf_read_distances():
         clf = opf.OPF(pre_computed_distance='data/boat')
     except:
         clf = opf.OPF(pre_computed_distance='data/boat.txt')
+    
+    assert clf.pre_distances.shape == (100, 4)
 
     try:
         clf = opf.OPF(pre_computed_distance='data/boa.txt')
@@ -78,15 +80,15 @@ def test_opf_read_distances():
 def test_opf_save():
     clf = opf.OPF(distance='bray_curtis')
 
-    clf.save('tests/opfython/data/test.pkl')
+    clf.save('data/test.pkl')
 
-    assert os.path.isfile('tests/opfython/data/test.pkl')
+    assert os.path.isfile('data/test.pkl')
 
 
 def test_opf_load():
     clf = opf.OPF()
 
-    clf.load('tests/opfython/data/test.pkl')
+    clf.load('data/test.pkl')
 
     assert clf.distance == 'bray_curtis'
 

@@ -49,7 +49,7 @@ class Heap:
     def size(self, size):
         if not isinstance(size, int):
             raise e.TypeError('`size` should be an integer')
-        if size <= 0:
+        if size < 1:
             raise e.ValueError('`size` should be > 0')
 
         self._size = size
