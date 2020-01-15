@@ -14,7 +14,7 @@ opfython.log.*
 /*.json
 /*.dat
 
-# Testing data files outputs
+# Test data files outputs
 tests/opfython/data/*.txt
 tests/opfython/data/*.csv
 tests/opfython/data/*.json
