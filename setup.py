@@ -5,7 +5,7 @@ with open('README.md', 'r') as f:
 
 setup(name='opfython',
       version='1.0.4',
-      description='Python-Inspired Optimum-Path Forest',
+      description='Python-Inspired Optimum-Path Forest Classifier',
       long_description=long_description,
       long_description_content_type='text/markdown',
       author='Gustavo Rosa',
