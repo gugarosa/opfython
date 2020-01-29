@@ -36,7 +36,14 @@ OPFython is compatible with: **Python 3.6+** and **PyPy 3.5**.
 If you use OPFython to fulfill any of your needs, please cite us:
 
 ```
-
+@misc{rosa2020opfython,
+    title={OPFython: A Python-Inspired Optimum-Path Forest Classifier},
+    author={Gustavo Henrique de Rosa and João Paulo Papa and Alexandre Xavier Falcão},
+    year={2020},
+    eprint={2001.10420},
+    archivePrefix={arXiv},
+    primaryClass={cs.LG}
+}
 ```
 
 ---
