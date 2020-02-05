@@ -1,5 +1,10 @@
 import numpy as np
 
+import opfython.math.distance as d
+import opfython.utils.logging as l
+
+logger = l.get_logger(__name__)
+
 
 def confusion_matrix(labels, preds):
     """Calculates the confusion matrix between true and predicted labels.
@@ -149,6 +154,37 @@ def opf_accuracy_per_label(labels, preds):
     accuracy = 1 - errors
 
     return accuracy
+
+
+def pre_compute_distance(data, output, distance='log_squared_euclidean'):
+    """Pre-computes a matrix of distances based on an input data.
+
+    Args:
+        data (np.array): Array of samples.
+        output (str): File to be saved.
+        distance (str): Distance metric to be used.
+
+    """
+
+    logger.info('Pre-computing distances ...')
+
+    # Gathering the size of pre-computed matrix
+    size = data.shape[0]
+
+    # Creating an matrix of pre-computed distances
+    distances = np.zeros((size, size))
+
+    # For every possible size
+    for i in range(size):
+        # For every possible size
+        for j in range(size):
+            # Calculates the distance between nodes `i` and `j`
+            distances[i][j] = d.DISTANCES[distance](data[i], data[j])
+
+    # Saves the distance matrix to an output
+    np.savetxt(output, distances)
+
+    logger.info(f'Distances saved to: {output}.')
 
 
 def purity(labels, preds):
