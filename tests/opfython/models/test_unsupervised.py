@@ -88,27 +88,30 @@ def test_unsupervised_opf_predict():
         _ = opf.predict(X)
     except:
         opf.fit(X, Y)
-        preds = opf.predict(X)
+        preds, clusters = opf.predict(X)
 
     assert len(preds) == 100
+    assert len(clusters) == 100
 
     try:
         opf.fit(X, Y)
         opf.subgraph.trained = False
-        _ = opf.predict(X)
+        _, _ = opf.predict(X)
     except:
         opf.fit(X, Y)
-        preds = opf.predict(X)
+        preds, clusters = opf.predict(X)
 
     assert len(preds) == 100
+    assert len(clusters) == 100
 
     opf.pre_computed_distance = True
     opf.pre_distances = np.ones((100, 100))
 
     opf.fit(X, Y)
-    preds = opf.predict(X)
+    preds, clusters = opf.predict(X)
 
     assert len(preds) == 100
+    assert len(clusters) == 100
 
 
 def test_unsupervised_opf_propagate_labels():
