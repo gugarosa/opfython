@@ -25,7 +25,7 @@ opf.fit(X_train, Y_train)
 opf.propagate_labels()
 
 # Predicts new data
-preds = opf.predict(X_test)
+preds, clusters = opf.predict(X_test)
 
 # Calculating accuracy
 acc = g.opf_accuracy(Y_test, preds)

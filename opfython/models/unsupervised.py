@@ -471,11 +471,17 @@ class UnsupervisedOPF(OPF):
                         # Replaces the current cost
                         cost = temp_cost
 
-                        # And propagates the predicted label from the neighbour
+                        # Propagates the predicted label from the neighbour
                         pred_subgraph.nodes[i].predicted_label = self.subgraph.nodes[neighbour].predicted_label
+
+                        # Propagates the cluster label from the neighbour
+                        pred_subgraph.nodes[i].cluster_label = self.subgraph.nodes[neighbour].cluster_label
 
         # Creating the list of predictions
         preds = [pred.predicted_label for pred in pred_subgraph.nodes]
+
+        # Creating the list of clusters
+        clusters = [pred.cluster_label for pred in pred_subgraph.nodes]
 
         # Ending timer
         end = time.time()
@@ -486,7 +492,7 @@ class UnsupervisedOPF(OPF):
         logger.info('Data has been predicted.')
         logger.info(f'Prediction time: {predict_time} seconds.')
 
-        return preds
+        return preds, clusters
 
     def propagate_labels(self):
         """Runs through the clusters and propagate the clusters roots labels to the samples.
