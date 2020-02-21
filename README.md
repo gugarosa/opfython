@@ -19,7 +19,7 @@ Use OPFython if you need a library or wish to:
 
 Read the docs at [opfython.readthedocs.io](https://opfython.readthedocs.io).
 
-OPFython is compatible with: **Python 3.6+** and **PyPy 3.5**.
+OPFython is compatible with: **Python 3.6+**.
 
 ---
 
