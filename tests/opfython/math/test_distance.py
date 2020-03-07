@@ -54,7 +54,7 @@ def test_log_euclidean_distance():
 
     dist = distance.log_euclidean_distance(x, y)
 
-    assert dist == 103972.07708752733
+    assert dist == 134245.4046453526
 
 
 def test_log_squared_euclidean_distance():
