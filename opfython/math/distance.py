@@ -126,7 +126,7 @@ def log_euclidean_distance(x, y):
     # Calculates the squared euclidean distance for each dimension
     dist = (x - y) ** 2
 
-    return c.MAX_ARC_WEIGHT * np.log(np.sqrt(np.sum(dist)) + c.EPSILON)
+    return c.MAX_ARC_WEIGHT * np.log(np.sqrt(np.sum(dist)) + 1)
 
 
 def log_squared_euclidean_distance(x, y):
