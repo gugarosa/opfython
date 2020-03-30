@@ -1,5 +1,4 @@
 import numpy as np
-
 import opfython.utils.constants as c
 import opfython.utils.exception as e
 import opfython.utils.logging as l
@@ -24,7 +23,7 @@ class KNNSubgraph(Subgraph):
         """
 
         # Override its parent class with the receiving arguments
-        super(KNNSubgraph, self).__init__(X=X, Y=Y, from_file=from_file)
+        super(KNNSubgraph, self).__init__(X, Y, from_file)
 
         #  Number of assigned clusters
         self.n_clusters = 0
@@ -88,7 +87,8 @@ class KNNSubgraph(Subgraph):
 
     @constant.setter
     def constant(self, constant):
-        if not (isinstance(constant, float) or isinstance(constant, int) or isinstance(constant, np.int32) or isinstance(constant, np.int64)):
+        if not (isinstance(constant, float) or isinstance(constant, int)
+                or isinstance(constant, np.int32) or isinstance(constant, np.int64)):
             raise e.TypeError('`constant` should be a float or integer')
 
         self._constant = constant
@@ -103,7 +103,8 @@ class KNNSubgraph(Subgraph):
 
     @density.setter
     def density(self, density):
-        if not (isinstance(density, float) or isinstance(density, int) or isinstance(density, np.int32) or isinstance(density, np.int64)):
+        if not (isinstance(density, float) or isinstance(density, int)
+                or isinstance(density, np.int32) or isinstance(density, np.int64)):
             raise e.TypeError('`density` should be a float or integer')
 
         self._density = density
@@ -118,7 +119,8 @@ class KNNSubgraph(Subgraph):
 
     @min_density.setter
     def min_density(self, min_density):
-        if not (isinstance(min_density, float) or isinstance(min_density, int) or isinstance(min_density, np.int32) or isinstance(min_density, np.int64)):
+        if not (isinstance(min_density, float) or isinstance(min_density, int)
+                or isinstance(min_density, np.int32) or isinstance(min_density, np.int64)):
             raise e.TypeError('`min_density` should be a float or integer')
 
         self._min_density = min_density
@@ -133,7 +135,8 @@ class KNNSubgraph(Subgraph):
 
     @max_density.setter
     def max_density(self, max_density):
-        if not (isinstance(max_density, float) or isinstance(max_density, int) or isinstance(max_density, np.int32) or isinstance(max_density, np.int64)):
+        if not (isinstance(max_density, float) or isinstance(max_density, int)
+                or isinstance(max_density, np.int32) or isinstance(max_density, np.int64)):
             raise e.TypeError('`max_density` should be a float or integer')
 
         self._max_density = max_density
@@ -272,20 +275,18 @@ class KNNSubgraph(Subgraph):
                     neighbours_idx[k] = j
 
                     # Gathers current `k`
-                    current_k = k
+                    cur_k = k
 
                     # While current `k` is bigger than 0 and the `k` distance is smaller than `k-1` distance
-                    while current_k > 0 and distances[current_k] < distances[current_k - 1]:
+                    while cur_k > 0 and distances[cur_k] < distances[cur_k - 1]:
                         # Swaps the distance from `k` and `k-1`
-                        distances[current_k], distances[current_k -
-                                                        1] = distances[current_k - 1], distances[current_k]
+                        distances[cur_k], distances[cur_k - 1] = distances[cur_k - 1], distances[cur_k]
 
                         # Swaps the neighbours indexex from `k` and `k-1`
-                        neighbours_idx[current_k], neighbours_idx[current_k -
-                                                                  1] = neighbours_idx[current_k - 1], neighbours_idx[current_k]
+                        neighbours_idx[cur_k], neighbours_idx[cur_k - 1] = neighbours_idx[cur_k - 1], neighbours_idx[cur_k]
 
                         # Decrements `k`
-                        current_k -= 1
+                        cur_k -= 1
 
             # Make sure that current node's radius is 0
             self.nodes[i].radius = 0.0
@@ -337,8 +338,7 @@ class KNNSubgraph(Subgraph):
             # For every possible node
             for i in range(self.n_nodes):
                 # Calculates its new cost
-                self.nodes[i].cost = np.maximum(
-                    self.nodes[i].density - height, 0)
+                self.nodes[i].cost = np.maximum(self.nodes[i].density - height, 0)
 
         logger.debug('Maxima eliminated.')
 

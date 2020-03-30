@@ -2,7 +2,6 @@ import copy
 import time
 
 import numpy as np
-
 import opfython.math.general as g
 import opfython.math.random as r
 import opfython.utils.constants as c
@@ -19,7 +18,8 @@ class SupervisedOPF(OPF):
     """A SupervisedOPF which implements the supervised version of OPF classifier.
 
     References:
-        J. P. Papa, A. X. Falcão and C. T. N. Suzuki. Supervised Pattern Classification based on Optimum-Path Forest. International Journal of Imaging Systems and Technology (2009).
+        J. P. Papa, A. X. Falcão and C. T. N. Suzuki. Supervised Pattern Classification based on Optimum-Path Forest.
+        International Journal of Imaging Systems and Technology (2009).
 
     """
 
@@ -35,8 +35,7 @@ class SupervisedOPF(OPF):
         logger.info('Overriding class: OPF -> SupervisedOPF.')
 
         # Override its parent class with the receiving arguments
-        super(SupervisedOPF, self).__init__(
-            distance=distance, pre_computed_distance=pre_computed_distance)
+        super(SupervisedOPF, self).__init__(distance, pre_computed_distance)
 
         logger.info('Class overrided.')
 
@@ -99,8 +98,7 @@ class SupervisedOPF(OPF):
                         # If it is supposed to use pre-computed distances
                         if self.pre_computed_distance:
                             # Gathers the arc from the distances' matrix
-                            weight = self.pre_distances[self.subgraph.nodes[p]
-                                                        .idx][self.subgraph.nodes[q].idx]
+                            weight = self.pre_distances[self.subgraph.nodes[p].idx][self.subgraph.nodes[q].idx]
 
                         # If distance is supposed to be calculated
                         else:
@@ -190,8 +188,7 @@ class SupervisedOPF(OPF):
                         # Checks if we are using a pre-computed distance
                         if self.pre_computed_distance:
                             # Gathers the distance from the distance's matrix
-                            weight = self.pre_distances[self.subgraph.nodes[p]
-                                                        .idx][self.subgraph.nodes[q].idx]
+                            weight = self.pre_distances[self.subgraph.nodes[p].idx][self.subgraph.nodes[q].idx]
 
                         # If the distance is supposed to be calculated
                         else:
@@ -268,8 +265,7 @@ class SupervisedOPF(OPF):
             # Checks if we are using a pre-computed distance
             if self.pre_computed_distance:
                 # Gathers the distance from the distance's matrix
-                weight = self.pre_distances[self.subgraph.nodes[k]
-                                            .idx][pred_subgraph.nodes[i].idx]
+                weight = self.pre_distances[self.subgraph.nodes[k].idx][pred_subgraph.nodes[i].idx]
 
             # If the distance is supposed to be calculated
             else:
@@ -291,8 +287,7 @@ class SupervisedOPF(OPF):
                 # Checks if we are using a pre-computed distance
                 if self.pre_computed_distance:
                     # Gathers the distance from the distance's matrix
-                    weight = self.pre_distances[self.subgraph.nodes[l]
-                                                .idx][pred_subgraph.nodes[i].idx]
+                    weight = self.pre_distances[self.subgraph.nodes[l].idx][pred_subgraph.nodes[i].idx]
 
                 # If the distance is supposed to be calculated
                 else:
@@ -414,8 +409,10 @@ class SupervisedOPF(OPF):
 
                     # If the node on that particular index is not a prototype
                     if self.subgraph.nodes[j].status != c.PROTOTYPE:
-                        # Swap the nodes
+                        # Swap the input nodes
                         X_train[j, :], X_val[e, :] = X_val[e, :], X_train[j, :]
+
+                        # Swap the target nodes
                         Y_train[j], Y_val[e] = Y_val[e], Y_train[j]
 
                         # Decrements the number of non-prototypes

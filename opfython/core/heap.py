@@ -179,10 +179,13 @@ class Heap:
         return False
 
     def dad(self, i):
-        """Gathers the position of the dad's node.
+        """Gathers the position of the node's dad.
+
+        Args:
+            i (int): Node's position.
 
         Returns:
-            The position of dad's node.
+            The position of node's dad.
 
         """
 
@@ -190,10 +193,13 @@ class Heap:
         return int(((i - 1) / 2))
 
     def left_son(self, i):
-        """Gathers the position of the left son's node.
+        """Gathers the position of the node's left son.
+
+        Args:
+            i (int): Node's position.
 
         Returns:
-            The position of left son's node.
+            The position of node's left son
 
         """
 
@@ -201,10 +207,13 @@ class Heap:
         return int((2 * i + 1))
 
     def right_son(self, i):
-        """Gathers the position of the right son's node.
+        """Gathers the position of the node's right son.
+
+        Args:
+            i (int): Node's position.
 
         Returns:
-            The position of right son's node.
+            The position of node's right son.
 
         """
 

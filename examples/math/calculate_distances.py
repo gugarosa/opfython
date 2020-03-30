@@ -1,5 +1,4 @@
 import numpy as np
-
 import opfython.math.distance as d
 
 # Defining an array
@@ -10,3 +9,5 @@ y = np.asarray([1, 2, 3, 1])
 
 # Calculating their distance
 dist = d.euclidean_distance(x, y)
+
+print(dist)

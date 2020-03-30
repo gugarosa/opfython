@@ -1,6 +1,7 @@
 import pytest
 
 from opfython.math import general
+from opfython.stream import loader, parser, splitter
 
 
 def test_confusion_matrix():
@@ -36,6 +37,16 @@ def test_opf_accuracy_per_label():
     acc_per_label = general.opf_accuracy_per_label(labels, preds)
 
     assert acc_per_label.shape == (2,)
+
+
+def test_opf_pre_compute_distances():
+    txt = loader.load_txt('data/boat.txt')
+
+    X, Y = parser.parse_loader(txt)
+
+    X_train, _, _, _ = splitter.split(X, Y, 0.5, 1)
+
+    general.pre_compute_distance(X_train, 'boat_split_distances.txt', 'log_squared_euclidean')
 
 
 def test_purity():

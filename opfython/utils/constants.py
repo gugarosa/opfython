@@ -4,7 +4,7 @@ import sys
 # and any possible mathematical error
 EPSILON = 1e-10
 
-# When the agents are initialized, their fitness is defined as
+# When the costs are initialized, their value are defined as
 # the maximum float value possible
 FLOAT_MAX = sys.float_info.max
 

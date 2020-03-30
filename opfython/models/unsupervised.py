@@ -1,7 +1,6 @@
 import time
 
 import numpy as np
-
 import opfython.utils.constants as c
 import opfython.utils.exception as e
 import opfython.utils.logging as l
@@ -16,7 +15,9 @@ class UnsupervisedOPF(OPF):
     """An UnsupervisedOPF which implements the unsupervised version of OPF classifier.
 
     References:
-        L. M. Rocha, F. A. M. Cappabianco, A. X. Falcão. Data clustering as an optimum-path forest problem with applications in image analysis. International Journal of Imaging Systems and Technology (2009).
+        L. M. Rocha, F. A. M. Cappabianco, A. X. Falcão.
+        Data clustering as an optimum-path forest problem with applications in image analysis.
+        International Journal of Imaging Systems and Technology (2009).
 
     """
 
@@ -34,8 +35,7 @@ class UnsupervisedOPF(OPF):
         logger.info('Overriding class: OPF -> UnsupervisedOPF.')
 
         # Override its parent class with the receiving arguments
-        super(UnsupervisedOPF, self).__init__(
-            distance=distance, pre_computed_distance=pre_computed_distance)
+        super(UnsupervisedOPF, self).__init__(distance, pre_computed_distance)
 
         # Defining the minimum `k` value for cutting the subgraph
         self.min_k = min_k
@@ -425,20 +425,18 @@ class UnsupervisedOPF(OPF):
                     neighbours_idx[best_k] = j
 
                     # Gathers current `k`
-                    current_k = best_k
+                    cur_k = best_k
 
                     # While current `k` is bigger than 0 and the `k` distance is smaller than `k-1` distance
-                    while current_k > 0 and distances[current_k] < distances[current_k - 1]:
+                    while cur_k > 0 and distances[cur_k] < distances[cur_k - 1]:
                         # Swaps the distance from `k` and `k-1`
-                        distances[current_k], distances[current_k -
-                                                        1] = distances[current_k - 1], distances[current_k]
+                        distances[cur_k], distances[cur_k - 1] = distances[cur_k - 1], distances[cur_k]
 
                         # Swaps the neighbours indexex from `k` and `k-1`
-                        neighbours_idx[current_k], neighbours_idx[current_k -
-                                                                  1] = neighbours_idx[current_k - 1], neighbours_idx[current_k]
+                        neighbours_idx[cur_k], neighbours_idx[cur_k - 1] = neighbours_idx[cur_k - 1], neighbours_idx[cur_k]
 
                         # Decrements `k`
-                        current_k -= 1
+                        cur_k -= 1
 
             # Defining the density as 0
             density = 0.0

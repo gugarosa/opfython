@@ -1,7 +1,6 @@
 import pickle
 
 import numpy as np
-
 import opfython.math.distance as d
 import opfython.stream.loader as loader
 import opfython.utils.constants as c
@@ -17,7 +16,8 @@ class OPF:
     """A basic class to define all common OPF-related methods.
 
     References:
-        J. P. Papa, A. X. Falcão and C. T. N. Suzuki. LibOPF: A library for the design of optimum-path forest classifiers (2015).
+        J. P. Papa, A. X. Falcão and C. T. N. Suzuki.
+        LibOPF: A library for the design of optimum-path forest classifiers (2015).
 
     """
 
@@ -47,7 +47,7 @@ class OPF:
             self.pre_computed_distance = True
 
             # Apply the distances matrix
-            self.pre_distances = self._read_distances(pre_computed_distance)
+            self._read_distances(pre_computed_distance)
 
         # If OPF should not use a pre-computed distance
         else:
@@ -57,8 +57,7 @@ class OPF:
             # Marks the pre-distances property as None
             self.pre_distances = None
 
-        logger.debug(
-            f'Distance: {self.distance} | Pre-computed distance: {self.pre_computed_distance}.')
+        logger.debug(f'Distance: {self.distance} | Pre-computed distance: {self.pre_computed_distance}.')
         logger.info('Class created.')
 
     @property
@@ -87,8 +86,12 @@ class OPF:
 
     @distance.setter
     def distance(self, distance):
-        if distance not in ['bray_curtis', 'canberra', 'chi_squared', 'euclidean', 'gaussian', 'log_euclidean', 'log_squared_euclidean', 'manhattan', 'squared_chi_squared', 'squared_cord', 'squared_euclidean']:
-            raise e.TypeError('`distance` should be `bray_curtis`, `canberra`, `chi_squared`, `euclidean`, `gaussian`, `log_euclidean`, `log_squared_euclidean`, `manhattan`, `squared_chi_squared`, `squared_cord` or `squared_euclidean`')
+        if distance not in ['bray_curtis', 'canberra', 'chi_squared', 'euclidean',
+                            'gaussian', 'log_euclidean', 'log_squared_euclidean', 
+                            'manhattan', 'squared_chi_squared', 'squared_cord', 'squared_euclidean']:
+            raise e.TypeError('`distance` should be `bray_curtis`, `canberra`, `chi_squared`, '
+                              '`euclidean`, `gaussian`, `log_euclidean`, `log_squared_euclidean`, '
+                              '`manhattan`, `squared_chi_squared`, `squared_cord` or `squared_euclidean`')
 
         self._distance = distance
 
@@ -138,31 +141,28 @@ class OPF:
 
         self._pre_distances = pre_distances
 
-    def _read_distances(self, file_path):
+    def _read_distances(self, file_name):
         """Reads the distance between nodes from a pre-defined file.
 
         Args:
-            file_path (str): File to be loaded.
-
-        Returns:
-            A matrix with pre-computed distances.
+            file_name (str): File to be loaded.
 
         """
 
         logger.debug('Running private method: read_distances().')
 
         # Getting file extension
-        extension = file_path.split('.')[-1]
+        extension = file_name.split('.')[-1]
 
         # Check if extension is .csv
         if extension == 'csv':
             # If yes, call the method that actually loads csv
-            distances = loader.load_csv(file_path)
+            distances = loader.load_csv(file_name)
 
         # Check if extension is .txt
         elif extension == 'txt':
             # If yes, call the method that actually loads txt
-            distances = loader.load_txt(file_path)
+            distances = loader.load_txt(file_name)
 
         # If extension is not recognized
         else:
@@ -176,7 +176,8 @@ class OPF:
             raise e.ValueError(
                 'Pre-computed distances could not been properly loaded')
 
-        return distances
+        # Apply the distances matrix to the property
+        self.pre_distances = distances
 
     def load(self, file_name):
         """Loads the object from a pickle encoding.

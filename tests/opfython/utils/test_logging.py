@@ -8,7 +8,7 @@ def test_get_console_handler():
 
 
 def test_get_file_handler():
-    f = logging.get_file_handler()
+    f = logging.get_timed_file_handler()
 
     assert f != None
 

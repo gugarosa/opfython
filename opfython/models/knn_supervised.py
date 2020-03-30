@@ -1,7 +1,6 @@
 import time
 
 import numpy as np
-
 import opfython.math.general as g
 import opfython.utils.constants as c
 import opfython.utils.exception as e
@@ -34,8 +33,7 @@ class KNNSupervisedOPF(OPF):
         logger.info('Overriding class: OPF -> KNNSupervisedOPF.')
 
         # Override its parent class with the receiving arguments
-        super(KNNSupervisedOPF, self).__init__(
-            distance=distance, pre_computed_distance=pre_computed_distance)
+        super(KNNSupervisedOPF, self).__init__(distance, pre_computed_distance)
 
         # Defining the maximum `k` value for cutting the subgraph
         self.max_k = max_k
@@ -171,9 +169,6 @@ class KNNSupervisedOPF(OPF):
             X_val (np.array): Array of validation features.
             Y_val (np.array): Array of validation labels.
 
-        Returns:
-            The best `k` value found over the validation set.
-
         """
 
         logger.info('Learning best `k` value ...')
@@ -227,7 +222,8 @@ class KNNSupervisedOPF(OPF):
             # Destroy the arcs
             self.subgraph.destroy_arcs()
 
-        return best_k
+        # Applying the best k to the subgraph's property
+        self.subgraph.best_k = best_k
 
     def fit(self, X_train, Y_train, X_val, Y_val):
         """Fits data in the classifier.
@@ -246,7 +242,7 @@ class KNNSupervisedOPF(OPF):
         start = time.time()
 
         # Performing the learning process in order to find the best `k` value
-        self.subgraph.best_k = self._learn(X_train, Y_train, X_val, Y_val)
+        self._learn(X_train, Y_train, X_val, Y_val)
 
         # Creating arcs with the best `k` value
         self.subgraph.create_arcs(
@@ -271,8 +267,7 @@ class KNNSupervisedOPF(OPF):
         # Calculating training task time
         train_time = end - start
 
-        logger.info(
-            f'Classifier has been fitted with k = {self.subgraph.best_k}.')
+        logger.info(f'Classifier has been fitted with k = {self.subgraph.best_k}.')
         logger.info(f'Training time: {train_time} seconds.')
 
     def predict(self, X_test, verbose=False):
@@ -330,20 +325,18 @@ class KNNSupervisedOPF(OPF):
                     neighbours_idx[best_k] = j
 
                     # Gathers current `k`
-                    current_k = best_k
+                    cur_k = best_k
 
                     # While current `k` is bigger than 0 and the `k` distance is smaller than `k-1` distance
-                    while current_k > 0 and distances[current_k] < distances[current_k - 1]:
+                    while cur_k > 0 and distances[cur_k] < distances[cur_k - 1]:
                         # Swaps the distance from `k` and `k-1`
-                        distances[current_k], distances[current_k -
-                                                        1] = distances[current_k - 1], distances[current_k]
+                        distances[cur_k], distances[cur_k - 1] = distances[cur_k - 1], distances[cur_k]
 
                         # Swaps the neighbours indexex from `k` and `k-1`
-                        neighbours_idx[current_k], neighbours_idx[current_k -
-                                                                  1] = neighbours_idx[current_k - 1], neighbours_idx[current_k]
+                        neighbours_idx[cur_k], neighbours_idx[cur_k - 1] = neighbours_idx[cur_k - 1], neighbours_idx[cur_k]
 
                         # Decrements `k`
-                        current_k -= 1
+                        cur_k -= 1
 
             # Defining the density as 0
             density = 0.0

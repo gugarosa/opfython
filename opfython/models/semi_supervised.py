@@ -1,7 +1,6 @@
 import time
 
 import numpy as np
-
 import opfython.utils.constants as c
 import opfython.utils.exception as e
 import opfython.utils.logging as l
@@ -17,7 +16,8 @@ class SemiSupervisedOPF(SupervisedOPF):
     """A SemiSupervisedOPF which implements the semi-supervised version of OPF classifier.
 
     References:
-        W. P. Amorim, A. X. Falcão and M. H. Carvalho. Semi-supervised Pattern Classification Using Optimum-Path Forest. 27th SIBGRAPI Conference on Graphics, Patterns and Images (2014).   
+        W. P. Amorim, A. X. Falcão and M. H. Carvalho. Semi-supervised Pattern Classification Using Optimum-Path Forest.
+        27th SIBGRAPI Conference on Graphics, Patterns and Images (2014).   
 
     """
 
@@ -33,8 +33,7 @@ class SemiSupervisedOPF(SupervisedOPF):
         logger.info('Overriding class: SupervisedOPF -> SemiSupervisedOPF.')
 
         # Override its parent class with the receiving arguments
-        super(SemiSupervisedOPF, self).__init__(
-            distance=distance, pre_computed_distance=pre_computed_distance)
+        super(SemiSupervisedOPF, self).__init__(distance, pre_computed_distance)
 
         logger.info('Class overrided.')
 

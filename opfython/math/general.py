@@ -1,5 +1,4 @@
 import numpy as np
-
 import opfython.math.distance as d
 import opfython.utils.logging as l
 
@@ -33,7 +32,7 @@ def confusion_matrix(labels, preds):
     # For every label and prediction
     for label, pred in zip(labels, preds):
         # Increments the corresponding cell from the confusion matrix
-        c_matrix[label-1][pred-1] += 1
+        c_matrix[label - 1][pred - 1] += 1
 
     return c_matrix
 
@@ -93,10 +92,10 @@ def opf_accuracy(labels, preds):
         # If label is different from prediction
         if label != pred:
             # Increments the corresponding cell from the error matrix
-            errors[pred-1][0] += 1
+            errors[pred - 1][0] += 1
 
             # Increments the corresponding cell from the error matrix
-            errors[label-1][1] += 1
+            errors[label - 1][1] += 1
 
     # Calculating the float value of the true label errors
     errors[:, 1] /= counts
@@ -145,7 +144,7 @@ def opf_accuracy_per_label(labels, preds):
         # If label is different from prediction
         if label != pred:
             # Increments the corresponding cell from the error array
-            errors[label-1] += 1
+            errors[label - 1] += 1
 
     # Calculating the float value of the true label errors
     errors /= counts

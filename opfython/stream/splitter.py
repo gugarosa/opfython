@@ -1,5 +1,4 @@
 import numpy as np
-
 import opfython.utils.exception as e
 import opfython.utils.logging as l
 
@@ -62,8 +61,7 @@ def split(X, Y, percentage=0.5, random_state=1):
     # Gathering two new sets from `Y`
     Y_1, Y_2 = Y[idx[:halt]], Y[idx[halt:]]
 
-    logger.debug(
-        f'X_1: {X_1.shape} | X_2: {X_2.shape} | Y_1: {Y_1.shape} | Y_2: {Y_2.shape}.')
+    logger.debug(f'X_1: {X_1.shape} | X_2: {X_2.shape} | Y_1: {Y_1.shape} | Y_2: {Y_2.shape}.')
     logger.info('Data splitted.')
 
     return X_1, X_2, Y_1, Y_2
@@ -94,8 +92,7 @@ def merge(X_1, X_2, Y_1, Y_2):
     # Checks if `X` and `Y` have the same size
     if X.shape[0] != Y.shape[0]:
         # If not, raises a SizeError
-        raise e.SizeError(
-            f'`(X_1, X_2)` and `(Y_1, Y_2)` should have the same amount of samples')
+        raise e.SizeError(f'`(X_1, X_2)` and `(Y_1, Y_2)` should have the same amount of samples')
 
     logger.debug(f'X: {X.shape} | Y: {Y.shape}.')
     logger.info('Data merged.')
