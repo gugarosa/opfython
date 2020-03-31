@@ -1,4 +1,5 @@
 import pytest
+
 from opfython.core import subgraph
 from opfython.utils import constants
 

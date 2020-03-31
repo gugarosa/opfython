@@ -1,6 +1,7 @@
 import pickle
 
 import numpy as np
+
 import opfython.math.distance as d
 import opfython.stream.loader as loader
 import opfython.utils.constants as c

@@ -1,4 +1,5 @@
 import numpy as np
+
 import opfython.math.distance as d
 
 # Defining an array

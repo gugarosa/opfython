@@ -2,6 +2,7 @@ import json as j
 import struct
 
 import numpy as np
+
 import opfython.utils.logging as l
 
 logger = l.get_logger(__name__)

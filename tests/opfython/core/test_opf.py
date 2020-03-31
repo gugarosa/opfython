@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 import pytest
+
 from opfython.core import opf
 from opfython.core.subgraph import Subgraph
 

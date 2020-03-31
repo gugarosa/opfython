@@ -1,4 +1,5 @@
 import numpy as np
+
 from opfython.core.node import Node
 
 # Defining an index

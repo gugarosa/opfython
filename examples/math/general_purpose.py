@@ -1,4 +1,5 @@
 import numpy as np
+
 import opfython.math.general as g
 
 # Defining a general purpose array
