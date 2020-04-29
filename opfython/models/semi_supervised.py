@@ -5,10 +5,8 @@ import numpy as np
 import opfython.utils.constants as c
 import opfython.utils.exception as e
 import opfython.utils.logging as l
-from opfython.core.heap import Heap
-from opfython.core.node import Node
-from opfython.core.subgraph import Subgraph
-from opfython.models.supervised import SupervisedOPF
+from opfython.core import Heap, Node, Subgraph
+from opfython.models import SupervisedOPF
 
 logger = l.get_logger(__name__)
 

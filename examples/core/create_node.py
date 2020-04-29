@@ -1,6 +1,6 @@
 import numpy as np
 
-from opfython.core.node import Node
+from opfython.core import Node
 
 # Defining an index
 idx = 0

@@ -6,9 +6,8 @@ import opfython.math.general as g
 import opfython.utils.constants as c
 import opfython.utils.exception as e
 import opfython.utils.logging as l
-from opfython.core.heap import Heap
-from opfython.core.opf import OPF
-from opfython.subgraphs.knn import KNNSubgraph
+from opfython.core import OPF, Heap
+from opfython.subgraphs import KNNSubgraph
 
 logger = l.get_logger(__name__)
 

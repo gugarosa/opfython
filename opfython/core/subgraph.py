@@ -5,7 +5,7 @@ import opfython.stream.parser as p
 import opfython.utils.constants as c
 import opfython.utils.exception as e
 import opfython.utils.logging as l
-from opfython.core.node import Node
+from opfython.core import Node
 
 logger = l.get_logger(__name__)
 

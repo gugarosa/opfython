@@ -1,6 +1,6 @@
 import opfython.stream.loader as l
 import opfython.stream.parser as p
-from opfython.subgraphs.knn import KNNSubgraph
+from opfython.subgraphs import KNNSubgraph
 
 # Defining an input file
 input_file = 'data/boat.txt'

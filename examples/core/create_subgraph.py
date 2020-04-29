@@ -1,6 +1,6 @@
 import opfython.stream.loader as l
 import opfython.stream.parser as p
-from opfython.core.subgraph import Subgraph
+from opfython.core import Subgraph
 
 # Defining an input file
 input_file = 'data/boat.txt'

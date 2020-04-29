@@ -1,7 +1,7 @@
 import opfython.stream.loader as l
 import opfython.stream.parser as p
 import opfython.stream.splitter as s
-from opfython.models.supervised import SupervisedOPF
+from opfython.models import SupervisedOPF
 
 # Loading a .txt file to a numpy array
 txt = l.load_txt('data/boat.txt')

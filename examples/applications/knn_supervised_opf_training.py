@@ -2,7 +2,7 @@ import opfython.math.general as g
 import opfython.stream.loader as l
 import opfython.stream.parser as p
 import opfython.stream.splitter as s
-from opfython.models.knn_supervised import KNNSupervisedOPF
+from opfython.models import KNNSupervisedOPF
 
 # Loading a .txt file to a numpy array
 txt = l.load_txt('data/boat.txt')

@@ -1,4 +1,4 @@
-from opfython.core.heap import Heap
+from opfython.core import Heap
 
 # Defining the maximum size of heap
 size = 5

@@ -8,9 +8,7 @@ import opfython.math.random as r
 import opfython.utils.constants as c
 import opfython.utils.exception as e
 import opfython.utils.logging as l
-from opfython.core.heap import Heap
-from opfython.core.opf import OPF
-from opfython.core.subgraph import Subgraph
+from opfython.core import OPF, Heap, Subgraph
 
 logger = l.get_logger(__name__)
 
