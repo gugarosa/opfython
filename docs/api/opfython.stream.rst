@@ -8,6 +8,6 @@ Every pipeline has its first step, right? The stream package serves as primary m
     opfython.stream.parser
     opfython.stream.splitter
 
-.. automodule:: opfython.stream
+.. autoapimodule:: opfython.stream
    :members:
    :show-inheritance:

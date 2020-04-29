@@ -15,7 +15,6 @@
 import os
 import sys
 
-import opfython
 import sphinx_rtd_theme
 
 sys.path.insert(0, os.path.abspath('.'))
@@ -28,10 +27,10 @@ copyright = '2020, Gustavo de Rosa'
 author = 'Gustavo de Rosa'
 
 # The short X.Y version
-version = opfython.__version__
+version = '1.0.6'
 
 # The full version, including alpha/beta/rc tags
-release = opfython.__version__
+release = '1.0.6'
 
 
 # -- General configuration ---------------------------------------------------
@@ -46,7 +45,11 @@ release = opfython.__version__
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
+    'autoapi.extension'
 ]
+
+autoapi_dirs = ['../opfython']
+autoapi_generate_api_docs = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -167,7 +170,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'opfython', 'OPFython Documentation',
-     author, 'opfython', 'One line description of project.',
+     author, 'opfython', 'Python-Inspired Optimum-Path Forest Classifier.',
      'Miscellaneous'),
 ]
 

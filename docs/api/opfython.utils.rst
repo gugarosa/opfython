@@ -9,6 +9,6 @@ This is a utility package. Common things shared across the application should be
     opfython.utils.exception
     opfython.utils.logging
 
-.. automodule:: opfython.utils
+.. autoapimodule:: opfython.utils
    :members:
    :show-inheritance:

@@ -8,6 +8,6 @@ Just because we are computing stuff, it does not means that we do not need math.
     opfython.math.general
     opfython.math.random
 
-.. automodule:: opfython.math
+.. autoapimodule:: opfython.math
    :members:
    :show-inheritance:
