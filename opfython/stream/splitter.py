@@ -6,25 +6,6 @@ import opfython.utils.logging as l
 logger = l.get_logger(__name__)
 
 
-# def k_folds(X, Y, n_folds=2, random_state=1):
-#     """Splits the data into k-folds for further cross-validation.
-
-#     Args:
-#         X (np.array): Array of features.
-#         Y (np.array): Array of labels.
-#         n_folds (int): Number of folds (`k` value).
-#         random_state (int): An integer that fixes the random seed.
-
-#     Returns:
-#         k-folds that were created from `X` and `Y`.
-
-#     """
-
-#     logger.info(f'Creating k-folds with k = {n_folds} ...')
-
-#     logger.info('Folds created.')
-
-
 def split(X, Y, percentage=0.5, random_state=1):
     """Splits data into two new sets.
 
@@ -62,7 +43,8 @@ def split(X, Y, percentage=0.5, random_state=1):
     # Gathering two new sets from `Y`
     Y_1, Y_2 = Y[idx[:halt]], Y[idx[halt:]]
 
-    logger.debug(f'X_1: {X_1.shape} | X_2: {X_2.shape} | Y_1: {Y_1.shape} | Y_2: {Y_2.shape}.')
+    logger.debug(
+        f'X_1: {X_1.shape} | X_2: {X_2.shape} | Y_1: {Y_1.shape} | Y_2: {Y_2.shape}.')
     logger.info('Data splitted.')
 
     return X_1, X_2, Y_1, Y_2
@@ -93,7 +75,8 @@ def merge(X_1, X_2, Y_1, Y_2):
     # Checks if `X` and `Y` have the same size
     if X.shape[0] != Y.shape[0]:
         # If not, raises a SizeError
-        raise e.SizeError(f'`(X_1, X_2)` and `(Y_1, Y_2)` should have the same amount of samples')
+        raise e.SizeError(
+            f'`(X_1, X_2)` and `(Y_1, Y_2)` should have the same amount of samples')
 
     logger.debug(f'X: {X.shape} | Y: {Y.shape}.')
     logger.info('Data merged.')
