@@ -12,10 +12,10 @@ setup(name='opfython',
       author_email='gth.rosa@uol.com.br',
       url='https://github.com/gugarosa/opfython',
       license='GPL-3.0',
-      install_requires=['coverage>=5.0.3',
-                        'numpy>=1.18.1',
-                        'pylint>=2.4.4',
-                        'pytest>=5.3.3'
+      install_requires=['coverage>=5.1',
+                        'numpy>=1.18.4',
+                        'pylint>=2.5.2',
+                        'pytest>=5.4.2'
                        ],
       extras_require={
           'tests': ['coverage',
