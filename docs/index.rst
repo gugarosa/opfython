@@ -5,9 +5,9 @@ Have you ever wanted to classify data into labels? If yes, OPFython is for you! 
 
 Use OPFython if you need a library or wish to:
 
-* Create your own datasets.
-* Design or use pre-loaded state-of-art classifiers.
-* Mix-and-match different strategies to solve your problem.
+* Create your own datasets;
+* Design or use pre-loaded state-of-art classifiers;
+* Mix-and-match different strategies to solve your problem;
 * Because it is cool to classify things.
 
 OPFython is compatible with: **Python 3.6+** and **PyPy 3.5**.

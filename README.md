@@ -12,9 +12,10 @@
 Have you ever wanted to classify data into labels? If yes, OPFython is for you! This package is an innovative way of dealing with an optimum-path forest classifier. From bottom to top, from samples and datasets to the actual classifier, we will foster all research related to this new trend.
 
 Use OPFython if you need a library or wish to:
-* Create your datasets.
-* Design or use pre-loaded state-of-art classifiers.
-* Mix-and-match different strategies to solve your problem.
+
+* Create your datasets;
+* Design or use pre-loaded state-of-art classifiers;
+* Mix-and-match different strategies to solve your problem;
 * Because it is cool to classify things.
 
 Read the docs at [opfython.readthedocs.io](https://opfython.readthedocs.io).
