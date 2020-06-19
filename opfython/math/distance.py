@@ -1,3 +1,4 @@
+import math
 import numpy as np
 
 import opfython.utils.constants as c
@@ -18,13 +19,13 @@ def bray_curtis_distance(x, y):
     # Calculating the auxiliary term
     aux = x + y
 
-    # Gathering the conditional over the auxiliary term
-    cond = np.where(aux > 0, aux, 1)
+    # Replacing negative values with 1
+    aux[aux <= 0] = 1
 
     # Calculating the bray curtis distance for each dimension
-    dist = np.fabs(x - y) / cond
+    dist = np.fabs(x - y) / aux
 
-    return np.sum(dist)
+    return np.einsum('i->', dist)
 
 
 def canberra_distance(x, y):
@@ -42,13 +43,13 @@ def canberra_distance(x, y):
     # Calculating the auxiliary term
     aux = np.fabs(x + y)
 
-    # Gathering the conditional over the auxiliary term
-    cond = np.where(aux > 0, aux, 1)
+    # Replacing zero values with 1
+    aux[aux == 0] = 1
 
     # Calculating the canberra distance for each dimension
-    dist = np.fabs(x - y) / cond
+    dist = np.fabs(x - y) / aux
 
-    return np.sum(dist)
+    return np.einsum('i->', dist)
 
 
 def chi_squared_distance(x, y):
@@ -63,16 +64,46 @@ def chi_squared_distance(x, y):
 
     """
 
-    # Calculating the sum on `x` array
-    f = np.sum(x)
-
-    # Calculating the sum on `y` array
-    g = np.sum(y)
-
     # Calculating the chi-squared distance for each dimension
-    dist = 1 / (x + y + c.EPSILON) * ((x / f - y / g) ** 2)
+    dist = ((x - y) ** 2 / (x + y))
 
-    return np.sqrt(np.sum(dist))
+    return np.einsum('i->', dist) * 0.5
+
+
+def chord_distance(x, y):
+    """Calculates the Chord Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Chord Distance between x and y.
+
+    """
+
+    # Calculating the chord distance
+    dist = 2 - 2 * np.einsum('i->', x * y) / (np.einsum('i->', x ** 2) * np.einsum('i->', y ** 2))
+
+    return dist ** 0.5
+
+
+def cosine_distance(x, y):
+    """Calculates the Cosine Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The cosine Distance between x and y.
+
+    """
+
+    # Calculating the Cosine distance
+    dist = 1 - (np.einsum('i->', x * y) / (np.einsum('i->', x ** 2) ** 0.5 * np.einsum('i->', y ** 2) ** 0.5))
+
+    return dist
 
 
 def euclidean_distance(x, y):
@@ -90,7 +121,7 @@ def euclidean_distance(x, y):
     # Calculates the squared euclidean distance for each dimension
     dist = (x - y) ** 2
 
-    return np.sqrt(np.sum(dist))
+    return np.einsum('i->', dist) ** 0.5
 
 
 def gaussian_distance(x, y, gamma=1):
@@ -108,7 +139,7 @@ def gaussian_distance(x, y, gamma=1):
     # Calculates the squared euclidean distance for each dimension
     dist = (x - y) ** 2
 
-    return np.exp(-gamma * np.sqrt(np.sum(dist)))
+    return math.exp(-gamma * np.einsum('i->', dist) ** 0.5)
 
 
 def log_euclidean_distance(x, y):
@@ -126,7 +157,7 @@ def log_euclidean_distance(x, y):
     # Calculates the squared euclidean distance for each dimension
     dist = (x - y) ** 2
 
-    return c.MAX_ARC_WEIGHT * np.log(np.sqrt(np.sum(dist)) + 1)
+    return c.MAX_ARC_WEIGHT * math.log(np.einsum('i->', dist) ** 0.5 + 1)
 
 
 def log_squared_euclidean_distance(x, y):
@@ -144,7 +175,7 @@ def log_squared_euclidean_distance(x, y):
     # Calculates the squared euclidean distance for each dimension
     dist = (x - y) ** 2
 
-    return c.MAX_ARC_WEIGHT * np.log(np.sum(dist) + 1)
+    return c.MAX_ARC_WEIGHT * math.log(np.einsum('i->', dist) + 1)
 
 
 def manhattan_distance(x, y):
@@ -162,58 +193,25 @@ def manhattan_distance(x, y):
     # Calculates the manhattan distance for each dimension
     dist = np.fabs(x - y)
 
-    return np.sum(dist)
+    return np.einsum('i->', dist)
 
 
-def squared_chi_squared_distance(x, y):
-    """Calculates the Squared Chi-Squared Distance.
-
-    Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
-
-    Returns:
-        The Squared Chi-Squared Distance between x and y.
-
-    """
-
-    # Calculating the auxiliary term
-    aux = np.fabs(x + y)
-
-    # Gathering the conditional over the auxiliary term
-    cond = np.where(aux > 0, aux, 1)
-
-    # Calculating the squared chi-squared distance for each dimension
-    dist = ((x - y) ** 2) / cond
-
-    return np.sum(dist)
-
-
-def squared_cord_distance(x, y):
-    """Calculates the Squared Cord Distance.
+def squared_chord_distance(x, y):
+    """Calculates the Squared Chord Distance, where features must be positive.
 
     Args:
         x (np.array): N-dimensional array.
         y (np.array): N-dimensional array.
 
     Returns:
-        The Squared Cord Distance between x and y.
+        The Squared Chord Distance between x and y.
 
     """
 
-    # Calculating the first auxiliary term
-    aux1 = np.sqrt(x)
+    # Calculating the squared chord distance for each dimension
+    dist = (x ** 0.5 - y ** 0.5) ** 2
 
-    # Calculating the second auxiliary term
-    aux2 = np.sqrt(y)
-
-    # Gathering the conditional over the auxiliary term
-    cond = np.where((aux1 >= 0) & (aux2 >= 0), aux1 - aux2, 0)
-
-    # Calculating the squared cord distance for each dimension
-    dist = cond ** 2
-
-    return np.sum(dist)
+    return np.einsum('i->', dist)
 
 
 def squared_euclidean_distance(x, y):
@@ -231,7 +229,7 @@ def squared_euclidean_distance(x, y):
     # Calculates the squared euclidean distance for each dimension
     dist = (x - y) ** 2
 
-    return np.sum(dist)
+    return np.einsum('i->', dist)
 
 
 # A distances constant dictionary for selecting the desired
@@ -240,12 +238,13 @@ DISTANCES = {
     'bray_curtis': bray_curtis_distance,
     'canberra': canberra_distance,
     'chi_squared': chi_squared_distance,
+    'chord': chord_distance,
+    'cosine': cosine_distance,
     'euclidean': euclidean_distance,
     'gaussian': gaussian_distance,
     'log_euclidean': log_euclidean_distance,
     'log_squared_euclidean': log_squared_euclidean_distance,
     'manhattan': manhattan_distance,
-    'squared_chi_squared': squared_chi_squared_distance,
-    'squared_cord': squared_cord_distance,
+    'squared_chord': squared_chord_distance,
     'squared_euclidean': squared_euclidean_distance
 }

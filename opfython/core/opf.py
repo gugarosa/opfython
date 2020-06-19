@@ -86,12 +86,12 @@ class OPF:
 
     @distance.setter
     def distance(self, distance):
-        if distance not in ['bray_curtis', 'canberra', 'chi_squared', 'euclidean',
+        if distance not in ['bray_curtis', 'canberra', 'chi_squared', 'chord', 'cosine', 'euclidean',
                             'gaussian', 'log_euclidean', 'log_squared_euclidean', 
-                            'manhattan', 'squared_chi_squared', 'squared_cord', 'squared_euclidean']:
+                            'manhattan', 'squared_chord', 'squared_euclidean']:
             raise e.TypeError('`distance` should be `bray_curtis`, `canberra`, `chi_squared`, '
-                              '`euclidean`, `gaussian`, `log_euclidean`, `log_squared_euclidean`, '
-                              '`manhattan`, `squared_chi_squared`, `squared_cord` or `squared_euclidean`')
+                              '`chord`, `cosine`, `euclidean`, `gaussian`, `log_euclidean`, `log_squared_euclidean`, '
+                              '`manhattan`, `squared_chord` or `squared_euclidean`')
 
         self._distance = distance
 

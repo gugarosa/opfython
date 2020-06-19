@@ -28,7 +28,25 @@ def test_chi_squared_distance():
 
     dist = distance.chi_squared_distance(x, y)
 
-    assert dist == 0.06147592612961046
+    assert dist == 0.8333333333333333
+
+
+def test_chord_distance():
+    x = np.asarray([1, 2])
+    y = np.asarray([3, 4])
+
+    dist = distance.chord_distance(x, y)
+
+    assert dist == 1.3505554412907306
+
+
+def test_cosine_distance():
+    x = np.asarray([1, 2])
+    y = np.asarray([3, 4])
+
+    dist = distance.cosine_distance(x, y)
+
+    assert dist == 0.01613008990009257
 
 
 def test_euclidean_distance():
@@ -74,24 +92,6 @@ def test_manhattan_distance():
     dist = distance.manhattan_distance(x, y)
 
     assert dist == 4
-
-
-def test_squared_chi_squared_distance():
-    x = np.asarray([1, 2])
-    y = np.asarray([3, 4])
-
-    dist = distance.squared_chi_squared_distance(x, y)
-
-    assert dist == 1.6666666666666665
-
-
-def test_squared_cord_distance():
-    x = np.asarray([1, 2])
-    y = np.asarray([3, 4])
-
-    dist = distance.squared_cord_distance(x, y)
-
-    assert dist == 0.879044135369865
 
 
 def test_squared_euclidean_distance():
