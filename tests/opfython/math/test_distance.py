@@ -94,6 +94,15 @@ def test_manhattan_distance():
     assert dist == 4
 
 
+def test_squared_chord_distance():
+    x = np.asarray([1, 2])
+    y = np.asarray([3, 4])
+
+    dist = distance.squared_chord_distance(x, y)
+
+    assert dist == 0.879044135369865
+
+
 def test_squared_euclidean_distance():
     x = np.asarray([1, 2])
     y = np.asarray([3, 4])
