@@ -10,7 +10,7 @@ def test_bray_curtis_distance():
 
     dist = distance.bray_curtis_distance(x, y)
 
-    assert dist == 0.8333333333333333
+    assert dist == 0.4
 
 
 def test_canberra_distance():

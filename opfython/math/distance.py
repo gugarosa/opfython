@@ -5,27 +5,21 @@ import opfython.utils.constants as c
 
 
 def bray_curtis_distance(x, y):
-    """Calculates the Bray Curtis Distance.
+    """Calculates the Bray-Curtis Distance.
 
     Args:
         x (np.array): N-dimensional array.
         y (np.array): N-dimensional array.
 
     Returns:
-        The Bray Curtis Distance between x and y.
+        The Bray-Curtis Distance between x and y.
 
     """
 
-    # Calculating the auxiliary term
-    aux = x + y
+    # Calculating the Bray-Curtis distance for each dimension
+    dist = np.einsum('i->', np.fabs(x - y)) / np.einsum('i->', x + y)
 
-    # Replacing negative values with 1
-    aux[aux <= 0] = 1
-
-    # Calculating the bray curtis distance for each dimension
-    dist = np.fabs(x - y) / aux
-
-    return np.einsum('i->', dist)
+    return dist
 
 
 def canberra_distance(x, y):
@@ -40,16 +34,28 @@ def canberra_distance(x, y):
 
     """
 
-    # Calculating the auxiliary term
-    aux = np.fabs(x + y)
-
-    # Replacing zero values with 1
-    aux[aux == 0] = 1
-
-    # Calculating the canberra distance for each dimension
-    dist = np.fabs(x - y) / aux
+    # Calculating the Canberra distance for each dimension
+    dist = np.fabs(x - y) / (np.fabs(x) + np.fabs(y))
 
     return np.einsum('i->', dist)
+
+
+def chebyshev_distance(x, y):
+    """Calculates the Chebyshev Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Chebyshev Distance between x and y.
+
+    """
+
+    # Calculates the Chebyshev distance for each dimension
+    dist = np.fabs(x - y)
+
+    return np.amax(dist)
 
 
 def chi_squared_distance(x, y):
@@ -64,7 +70,7 @@ def chi_squared_distance(x, y):
 
     """
 
-    # Calculating the chi-squared distance for each dimension
+    # Calculating the Chi-Squared distance for each dimension
     dist = ((x - y) ** 2 / (x + y))
 
     return np.einsum('i->', dist) * 0.5
@@ -82,7 +88,7 @@ def chord_distance(x, y):
 
     """
 
-    # Calculating the chord distance
+    # Calculating the Chord distance
     dist = 2 - 2 * np.einsum('i->', x * y) / (np.einsum('i->', x ** 2) * np.einsum('i->', y ** 2))
 
     return dist ** 0.5
@@ -118,7 +124,7 @@ def euclidean_distance(x, y):
 
     """
 
-    # Calculates the squared euclidean distance for each dimension
+    # Calculates the Euclidean distance for each dimension
     dist = (x - y) ** 2
 
     return np.einsum('i->', dist) ** 0.5
@@ -136,32 +142,68 @@ def gaussian_distance(x, y, gamma=1):
 
     """
 
-    # Calculates the squared euclidean distance for each dimension
+    # Calculates the Gaussian distance for each dimension
     dist = (x - y) ** 2
 
     return math.exp(-gamma * np.einsum('i->', dist) ** 0.5)
 
 
-def log_euclidean_distance(x, y):
-    """Calculates the Log Euclidean Distance.
+def gower_distance(x, y):
+    """Calculates the Gower Distance.
 
     Args:
         x (np.array): N-dimensional array.
         y (np.array): N-dimensional array.
 
     Returns:
-        The Log Euclidean Distance between x and y.
+        The Gower Distance between x and y.
 
     """
 
-    # Calculates the squared euclidean distance for each dimension
-    dist = (x - y) ** 2
+    # Calculates the Gower distance for each dimension
+    dist = np.fabs(x - y)
 
-    return c.MAX_ARC_WEIGHT * math.log(np.einsum('i->', dist) ** 0.5 + 1)
+    return np.einsum('i->', dist) / x.shape[0]
+
+
+def kulczynski_distance(x, y):
+    """Calculates the Kulczynski Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Kulczynski Distance between x and y.
+
+    """
+
+    # Calculating the Kulczynski distance for each dimension
+    dist = np.einsum('i->', np.fabs(x - y)) / np.einsum('i->', np.amin(x, y))
+
+    return dist
+
+
+def log_euclidean_distance(x, y):
+    """Calculates the log-Euclidean Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The log-Euclidean Distance between x and y.
+
+    """
+
+    # Calculates the log-Euclidean distance for each dimension
+    dist = euclidean_distance(x, y)
+
+    return c.MAX_ARC_WEIGHT * math.log(dist + 1)
 
 
 def log_squared_euclidean_distance(x, y):
-    """Calculates the Log Squared Euclidean Distance.
+    """Calculates the log-Squared Euclidean Distance.
 
     Args:
         x (np.array): N-dimensional array.
@@ -172,10 +214,28 @@ def log_squared_euclidean_distance(x, y):
 
     """
 
-    # Calculates the squared euclidean distance for each dimension
-    dist = (x - y) ** 2
+    # Calculates the log-Squared Euclidean distance for each dimension
+    dist = squared_euclidean_distance(x, y)
 
-    return c.MAX_ARC_WEIGHT * math.log(np.einsum('i->', dist) + 1)
+    return c.MAX_ARC_WEIGHT * math.log(dist + 1)
+
+
+def lorentzian_distance(x, y):
+    """Calculates the Lorentzian Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Lorentzian Distance between x and y.
+
+    """
+
+    # Calculates the Lorentzian distance for each dimension
+    dist = np.log(1 + np.fabs(x - y))
+
+    return np.einsum('i->', dist)
 
 
 def manhattan_distance(x, y):
@@ -190,10 +250,46 @@ def manhattan_distance(x, y):
 
     """
 
-    # Calculates the manhattan distance for each dimension
+    # Calculates the Manhattan distance for each dimension
     dist = np.fabs(x - y)
 
     return np.einsum('i->', dist)
+
+
+def non_intersection_distance(x, y):
+    """Calculates the Non-Intersection Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Non-Intersection Distance between x and y.
+
+    """
+
+    # Calculates the Non-Intersection distance for each dimension
+    dist = np.fabs(x - y)
+
+    return np.einsum('i->', dist) * 0.5
+
+
+def soergel_distance(x, y):
+    """Calculates the Soergel Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Soergel Distance between x and y.
+
+    """
+
+    # Calculating the Soergel distance for each dimension
+    dist = np.einsum('i->', np.fabs(x - y)) / np.einsum('i->', np.amax(x, y))
+
+    return dist
 
 
 def squared_chord_distance(x, y):
@@ -208,7 +304,7 @@ def squared_chord_distance(x, y):
 
     """
 
-    # Calculating the squared chord distance for each dimension
+    # Calculating the Squared Chord distance for each dimension
     dist = (x ** 0.5 - y ** 0.5) ** 2
 
     return np.einsum('i->', dist)
@@ -226,7 +322,7 @@ def squared_euclidean_distance(x, y):
 
     """
 
-    # Calculates the squared euclidean distance for each dimension
+    # Calculates the Squared Euclidean distance for each dimension
     dist = (x - y) ** 2
 
     return np.einsum('i->', dist)
@@ -237,6 +333,7 @@ def squared_euclidean_distance(x, y):
 DISTANCES = {
     'bray_curtis': bray_curtis_distance,
     'canberra': canberra_distance,
+    'chebyshev': chebyshev_distance,
     'chi_squared': chi_squared_distance,
     'chord': chord_distance,
     'cosine': cosine_distance,
