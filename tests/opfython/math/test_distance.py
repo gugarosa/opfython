@@ -139,6 +139,24 @@ def test_gower_distance():
     assert dist == 0.2000000000000002
 
 
+def test_hamming_distance():
+    x = np.asarray([5.1, 3.5, 1.4, 0.3])
+    y = np.asarray([5.4, 3.4, 1.7, 0.2])
+
+    dist = distance.hamming_distance(x, y)
+
+    assert dist == 4
+
+
+def test_hassanat_distance():
+    x = np.asarray([5.1, 3.5, 1.4, 0.3])
+    y = np.asarray([5.4, 3.4, 1.7, 0.2])
+
+    dist = distance.hassanat_distance(x, y)
+
+    assert dist == 0.2571314102564104
+
+
 def test_hellinger_distance():
     x = np.asarray([5.1, 3.5, 1.4, 0.3])
     y = np.asarray([5.4, 3.4, 1.7, 0.2])
@@ -353,6 +371,15 @@ def test_squared_euclidean_distance():
     dist = distance.squared_euclidean_distance(x, y)
 
     assert dist == 0.20000000000000046
+
+
+def test_statistic_distance():
+    x = np.asarray([5.1, 3.5, 1.4, 0.3])
+    y = np.asarray([5.4, 3.4, 1.7, 0.2])
+
+    dist = distance.statistic_distance(x, y)
+
+    assert dist == 0.08914713150337263
 
 
 def test_topsoe_distance():

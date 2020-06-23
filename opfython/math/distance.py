@@ -143,8 +143,7 @@ def chord_distance(x, y):
     """
 
     # Calculates the Chord distance
-    dist = 2 - 2 * (np.einsum('i->', x * y) /
-                    (np.einsum('i->', x ** 2) * np.einsum('i->', y ** 2)))
+    dist = 2 - 2 * (np.einsum('i->', x * y) / (np.einsum('i->', x ** 2) * np.einsum('i->', y ** 2)))
 
     return dist ** 0.5
 
@@ -274,6 +273,57 @@ def gower_distance(x, y):
     dist = np.fabs(x - y)
 
     return np.einsum('i->', dist) / x.shape[0]
+
+
+def hamming_distance(x, y):
+    """Calculates the Hamming Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Hamming Distance between x and y.
+
+    """
+
+    # Calculates number of occurences `x != y`
+    dist = np.count_nonzero(x != y)
+
+    return dist
+
+
+def hassanat_distance(x, y):
+    """Calculates the Hassanat Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Hassanat Distance between x and y.
+
+    """
+
+    # Creates an empty variable to hold each dimension's
+    dist = np.zeros(x.shape[0])
+
+    # Creates a binary mask
+    mask = np.minimum(x, y) >= 0
+
+    # Gathers the true and false indexes
+    true_idx, false_idx = np.argwhere(mask == True), np.argwhere(mask == False)
+
+    # Calculates the Hassanat Distance for true indexes
+    dist[true_idx] = 1 - (1 + np.minimum(x[true_idx], y[true_idx])) / \
+        (1 + np.maximum(x[true_idx], y[true_idx]))
+
+    # Calculates the Hassanat Distance for false indexes
+    dist[false_idx] = 1 - (1 + np.minimum(x[false_idx], y[false_idx]) + np.fabs(np.minimum(x[false_idx], y[false_idx]))) / \
+        (1 + np.maximum(x[false_idx], y[false_idx]) +
+         np.fabs(np.minimum(x[false_idx], y[false_idx])))
+
+    return np.einsum('i->', dist)
 
 
 def hellinger_distance(x, y):
@@ -721,6 +771,27 @@ def squared_euclidean_distance(x, y):
     return np.einsum('i->', dist)
 
 
+def statistic_distance(x, y):
+    """Calculates the Statistic Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Statistic Distance between x and y.
+
+    """
+
+    # Calculates the `m` coefficient
+    m = (x + y) / 2
+
+    # Calculates the Statistic distance for each dimension
+    dist = (x - m) / m
+
+    return np.einsum('i->', dist)
+
+
 def topsoe_distance(x, y):
     """Calculates the Topsoe Distance (Information Statistics).
 
@@ -832,6 +903,8 @@ DISTANCES = {
     'euclidean': euclidean_distance,
     'gaussian': gaussian_distance,
     'gower': gower_distance,
+    'hamming': hamming_distance,
+    'hassanat': hassanat_distance,
     'hellinger': hellinger_distance,
     'jaccard': jaccard_distance,
     'jeffreys': jeffreys_distance,
@@ -856,6 +929,7 @@ DISTANCES = {
     'squared': squared_distance,
     'squared_chord': squared_chord_distance,
     'squared_euclidean': squared_euclidean_distance,
+    'statistic': statistic_distance,
     'topsoe': topsoe_distance,
     'vicis_symmetric1': vicis_symmetric1_distance,
     'vicis_symmetric2': vicis_symmetric2_distance,
