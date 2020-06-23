@@ -256,6 +256,15 @@ def test_matusita_distance():
     assert dist == 0.17223121769698138
 
 
+def test_max_symmetric_distance():
+    x = np.asarray([5.1, 3.5, 1.4, 0.3])
+    y = np.asarray([5.4, 3.4, 1.7, 0.2])
+
+    dist = distance.max_symmetric_distance(x, y)
+
+    assert dist == 0.12254901960784322
+
+
 def test_mean_censored_euclidean_distance():
     x = np.asarray([5.1, 3.5, 1.4, 0.3])
     y = np.asarray([5.4, 3.4, 1.7, 0.2])
@@ -263,6 +272,15 @@ def test_mean_censored_euclidean_distance():
     dist = distance.mean_censored_euclidean_distance(x, y)
 
     assert dist == 0.2236067977499792
+
+
+def test_min_symmetric_distance():
+    x = np.asarray([5.1, 3.5, 1.4, 0.3])
+    y = np.asarray([5.4, 3.4, 1.7, 0.2])
+
+    dist = distance.min_symmetric_distance(x, y)
+
+    assert dist == 0.11812324929972
 
 
 def test_neyman_distance():
@@ -344,3 +362,39 @@ def test_topsoe_distance():
     dist = distance.topsoe_distance(x, y)
 
     assert dist == 0.029617589581153514
+
+
+def test_vicis_symmetric1_distance():
+    x = np.asarray([5.1, 3.5, 1.4, 0.3])
+    y = np.asarray([5.4, 3.4, 1.7, 0.2])
+
+    dist = distance.vicis_symmetric1_distance(x, y)
+
+    assert dist == 0.30024362686250955
+
+
+def test_vicis_symmetric2_distance():
+    x = np.asarray([5.1, 3.5, 1.4, 0.3])
+    y = np.asarray([5.4, 3.4, 1.7, 0.2])
+
+    dist = distance.vicis_symmetric2_distance(x, y)
+
+    assert dist == 0.134873949579832
+
+
+def test_vicis_symmetric3_distance():
+    x = np.asarray([5.1, 3.5, 1.4, 0.3])
+    y = np.asarray([5.4, 3.4, 1.7, 0.2])
+
+    dist = distance.vicis_symmetric3_distance(x, y)
+
+    assert dist == 0.10579831932773118
+
+
+def test_vicis_wave_hedges_distance():
+    x = np.asarray([5.1, 3.5, 1.4, 0.3])
+    y = np.asarray([5.4, 3.4, 1.7, 0.2])
+
+    dist = distance.vicis_wave_hedges_distance(x, y)
+
+    assert dist == 0.8025210084033614

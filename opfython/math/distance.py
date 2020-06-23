@@ -12,7 +12,7 @@ def additive_symmetric_distance(x, y):
         y (np.array): N-dimensional array.
 
     Returns:
-        The Symmetric Distance between x and y.
+        The Additive Symmetric Distance between x and y.
 
     """
 
@@ -514,6 +514,27 @@ def matusita_distance(x, y):
     return np.einsum('i->', dist) ** 0.5
 
 
+def max_symmetric_distance(x, y):
+    """Calculates the Max Symmetric Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Max Symmetric Distance between x and y.
+
+    """
+
+    # Calculates the first partial Max Symmetric distance for each dimension
+    dist1 = (x - y) ** 2 / x
+
+    # Calculates the second partial Max Symmetric distance for each dimension
+    dist2 = (x - y) ** 2 / y
+
+    return np.maximum(np.einsum('i->', dist1), np.einsum('i->', dist2))
+
+
 def mean_censored_euclidean_distance(x, y):
     """Calculates the Mean Censored Euclidean Distance.
 
@@ -533,6 +554,27 @@ def mean_censored_euclidean_distance(x, y):
     diff = np.count_nonzero(x + y != 0)
 
     return (dist / diff) ** 0.5
+
+
+def min_symmetric_distance(x, y):
+    """Calculates the Min Symmetric Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Min Symmetric Distance between x and y.
+
+    """
+
+    # Calculates the first partial Min Symmetric distance for each dimension
+    dist1 = (x - y) ** 2 / x
+
+    # Calculates the second partial Min Symmetric distance for each dimension
+    dist2 = (x - y) ** 2 / y
+
+    return np.minimum(np.einsum('i->', dist1), np.einsum('i->', dist2))
 
 
 def neyman_distance(x, y):
@@ -700,6 +742,78 @@ def topsoe_distance(x, y):
     return np.einsum('i->', dist1) + np.einsum('i->', dist2)
 
 
+def vicis_symmetric1_distance(x, y):
+    """Calculates the Vicis Symmetric 1 Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Vicis Symmetric 1 Distance between x and y.
+
+    """
+
+    # Calculates the Vicis Symmetric 1 distance for each dimension
+    dist = (x - y) ** 2 / np.minimum(x, y) ** 2
+
+    return np.einsum('i->', dist)
+
+
+def vicis_symmetric2_distance(x, y):
+    """Calculates the Vicis Symmetric 2 Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Vicis Symmetric 2 Distance between x and y.
+
+    """
+
+    # Calculates the Vicis Symmetric 2 distance for each dimension
+    dist = (x - y) ** 2 / np.minimum(x, y)
+
+    return np.einsum('i->', dist)
+
+
+def vicis_symmetric3_distance(x, y):
+    """Calculates the Vicis Symmetric 3 Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Vicis Symmetric 3 Distance between x and y.
+
+    """
+
+    # Calculates the Vicis Symmetric 3 distance for each dimension
+    dist = (x - y) ** 2 / np.maximum(x, y)
+
+    return np.einsum('i->', dist)
+
+
+def vicis_wave_hedges_distance(x, y):
+    """Calculates the Vicis-Wave Hedges Distance (Wave-Hedges).
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Vicis-Wave Hedges Distance between x and y.
+
+    """
+
+    # Calculates the Vicis-Wave Hedges distance for each dimension
+    dist = np.fabs(x - y) / np.minimum(x, y)
+
+    return np.einsum('i->', dist)
+
+
 # A distances constant dictionary for selecting the desired
 # distance metric to be used
 DISTANCES = {
@@ -731,7 +845,9 @@ DISTANCES = {
     'lorentzian': lorentzian_distance,
     'manhattan': manhattan_distance,
     'matusita': matusita_distance,
+    'max_symmetric': max_symmetric_distance,
     'mean_censored_euclidean': mean_censored_euclidean_distance,
+    'min_symmetric': min_symmetric_distance,
     'neyman': neyman_distance,
     'non_intersection': non_intersection_distance,
     'pearson': pearson_distance,
@@ -740,5 +856,9 @@ DISTANCES = {
     'squared': squared_distance,
     'squared_chord': squared_chord_distance,
     'squared_euclidean': squared_euclidean_distance,
-    'topsoe': topsoe_distance
+    'topsoe': topsoe_distance,
+    'vicis_symmetric1': vicis_symmetric1_distance,
+    'vicis_symmetric2': vicis_symmetric2_distance,
+    'vicis_symmetric3': vicis_symmetric3_distance,
+    'vicis_wave_hedges': vicis_wave_hedges_distance
 }
