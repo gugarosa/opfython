@@ -4,6 +4,42 @@ import numpy as np
 import opfython.utils.constants as c
 
 
+def additive_symmetric_distance(x, y):
+    """Calculates the Additive Symmetric Distance (Symmetric Divergence).
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Symmetric Distance between x and y.
+
+    """
+
+    # Calculates the Additive Symmetric distance for each dimension
+    dist = ((x - y) ** 2 * (x + y)) / (x * y)
+
+    return 2 * np.einsum('i->', dist)
+
+
+def average_euclidean_distance(x, y):
+    """Calculates the Average Euclidean Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Average Euclidean Distance between x and y.
+
+    """
+
+    # Calculates the Average Euclidean distance for each dimension
+    dist = squared_euclidean_distance(x, y)
+
+    return (dist / x.shape[0]) ** 0.5
+
+
 def bhattacharyya_distance(x, y):
     """Calculates the Bhattacharyya Distance.
 
@@ -16,14 +52,14 @@ def bhattacharyya_distance(x, y):
 
     """
 
-    # Calculating the Bhattacharyya distance for each dimension
+    # Calculates the Bhattacharyya distance
     dist = -math.log(np.einsum('i->', (x * y) ** 0.5))
 
     return dist
 
 
 def bray_curtis_distance(x, y):
-    """Calculates the Bray-Curtis Distance.
+    """Calculates the Bray-Curtis Distance (Sorensen Distance).
 
     Args:
         x (np.array): N-dimensional array.
@@ -34,7 +70,7 @@ def bray_curtis_distance(x, y):
 
     """
 
-    # Calculating the Bray-Curtis distance for each dimension
+    # Calculates the Bray-Curtis distance
     dist = np.einsum('i->', np.fabs(x - y)) / np.einsum('i->', x + y)
 
     return dist
@@ -52,14 +88,14 @@ def canberra_distance(x, y):
 
     """
 
-    # Calculating the Canberra distance for each dimension
+    # Calculates the Canberra distance for each dimension
     dist = np.fabs(x - y) / (np.fabs(x) + np.fabs(y))
 
     return np.einsum('i->', dist)
 
 
 def chebyshev_distance(x, y):
-    """Calculates the Chebyshev Distance.
+    """Calculates the Chebyshev Distance (Maximum Value Distance, Lagrange, Chessboard Distance).
 
     Args:
         x (np.array): N-dimensional array.
@@ -88,7 +124,7 @@ def chi_squared_distance(x, y):
 
     """
 
-    # Calculating the Chi-Squared distance for each dimension
+    # Calculates the Chi-Squared distance for each dimension
     dist = ((x - y) ** 2 / (x + y))
 
     return np.einsum('i->', dist) * 0.5
@@ -106,11 +142,29 @@ def chord_distance(x, y):
 
     """
 
-    # Calculating the Chord distance
+    # Calculates the Chord distance
     dist = 2 - 2 * (np.einsum('i->', x * y) /
                     (np.einsum('i->', x ** 2) * np.einsum('i->', y ** 2)))
 
     return dist ** 0.5
+
+
+def clark_distance(x, y):
+    """Calculates the Clark Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Clark Distance between x and y.
+
+    """
+
+    # Calculates the Clark distance for each dimension
+    dist = ((x - y) / np.fabs(x + y)) ** 2
+
+    return np.einsum('i->', dist) ** 0.5
 
 
 def cosine_distance(x, y):
@@ -125,7 +179,7 @@ def cosine_distance(x, y):
 
     """
 
-    # Calculating the Cosine distance
+    # Calculates the Cosine distance
     dist = 1 - (np.einsum('i->', x * y) / (np.einsum('i->', x ** 2)
                                            ** 0.5 * np.einsum('i->', y ** 2) ** 0.5))
 
@@ -144,14 +198,32 @@ def dice_distance(x, y):
 
     """
 
-    # Calculating the Dice distance
+    # Calculates the Dice distance
     dist = 2 * np.einsum('i->', x * y) / (np.einsum('i->', x ** 2) + np.einsum('i->', y ** 2))
 
     return 1 - dist
 
 
+def divergence_distance(x, y):
+    """Calculates the Divergence Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Divergence Distance between x and y.
+
+    """
+
+    # Calculates the Divergence distance for each dimension
+    dist = (x - y) ** 2 / (x + y) ** 2
+
+    return 2 * np.einsum('i->', dist)
+
+
 def euclidean_distance(x, y):
-    """Calculates the Euclidean Distance.
+    """Calculates the Euclidean Distance (L2 Norm, Ruler Distance).
 
     Args:
         x (np.array): N-dimensional array.
@@ -187,7 +259,7 @@ def gaussian_distance(x, y, gamma=1):
 
 
 def gower_distance(x, y):
-    """Calculates the Gower Distance.
+    """Calculates the Gower Distance (Average Manhattan, Mean Character Distance).
 
     Args:
         x (np.array): N-dimensional array.
@@ -205,7 +277,7 @@ def gower_distance(x, y):
 
 
 def hellinger_distance(x, y):
-    """Calculates the Hellinger Distance, where features must be positive.
+    """Calculates the Hellinger Distance (Jeffries-Matusita Distance).
 
     Args:
         x (np.array): N-dimensional array.
@@ -216,7 +288,7 @@ def hellinger_distance(x, y):
 
     """
 
-    # Calculating the Hellinger distance for each dimension
+    # Calculates the Hellinger distance for each dimension
     dist = 2 * (x ** 0.5 - y ** 0.5) ** 2
 
     return np.einsum('i->', dist) ** 0.5
@@ -234,7 +306,7 @@ def jaccard_distance(x, y):
 
     """
 
-    # Calculating the Jaccard distance
+    # Calculates the Jaccard distance
     dist = np.einsum('i->', (x - y) ** 2) / (np.einsum('i->', x ** 2) +
                                              np.einsum('i->', y ** 2) - np.einsum('i->', x * y))
 
@@ -253,7 +325,7 @@ def kulczynski_distance(x, y):
 
     """
 
-    # Calculating the Kulczynski distance for each dimension
+    # Calculates the Kulczynski distance
     dist = np.einsum('i->', np.fabs(x - y)) / np.einsum('i->', np.minimum(x, y))
 
     return dist
@@ -314,7 +386,7 @@ def lorentzian_distance(x, y):
 
 
 def manhattan_distance(x, y):
-    """Calculates the Manhattan Distance.
+    """Calculates the Manhattan Distance (L1 Norm, Taxicab Norm, City Block Distance).
 
     Args:
         x (np.array): N-dimensional array.
@@ -331,20 +403,38 @@ def manhattan_distance(x, y):
     return np.einsum('i->', dist)
 
 
-def squared_chord_distance(x, y):
-    """Calculates the Squared Chord Distance, where features must be positive.
+def matusita_distance(x, y):
+    """Calculates the Matusita Distance, where features must be positive.
 
     Args:
         x (np.array): N-dimensional array.
         y (np.array): N-dimensional array.
 
     Returns:
-        The Squared Chord Distance between x and y.
+        The Matusita Distance between x and y.
 
     """
 
-    # Calculating the Squared Chord distance for each dimension
+    # Calculates the Matusita distance for each dimension
     dist = (x ** 0.5 - y ** 0.5) ** 2
+
+    return np.einsum('i->', dist) ** 0.5
+
+
+def neyman_distance(x, y):
+    """Calculates the Neyman Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Neyman Distance between x and y.
+
+    """
+
+    # Calculates the Neyman distance for each dimension
+    dist = (x - y) ** 2 / x
 
     return np.einsum('i->', dist)
 
@@ -367,8 +457,44 @@ def non_intersection_distance(x, y):
     return np.einsum('i->', dist) * 0.5
 
 
+def pearson_distance(x, y):
+    """Calculates the Pearson Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Pearson Distance between x and y.
+
+    """
+
+    # Calculates the Pearson distance for each dimension
+    dist = (x - y) ** 2 / y
+
+    return np.einsum('i->', dist)
+
+
+def sangvi_distance(x, y):
+    """Calculates the Sangvi Distance (Probabilistic Symmetric).
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Sangvi Distance between x and y.
+
+    """
+
+    # Calculates the Sangvi distance for each dimension
+    dist = (x - y) ** 2 / (x + y)
+
+    return 2 * np.einsum('i->', dist)
+
+
 def soergel_distance(x, y):
-    """Calculates the Soergel Distance.
+    """Calculates the Soergel Distance (Ruzicka Distance).
 
     Args:
         x (np.array): N-dimensional array.
@@ -379,28 +505,46 @@ def soergel_distance(x, y):
 
     """
 
-    # Calculating the Soergel distance for each dimension
+    # Calculates the Soergel distance
     dist = np.einsum('i->', np.fabs(x - y)) / np.einsum('i->', np.maximum(x, y))
 
     return dist
 
 
-def matusita_distance(x, y):
-    """Calculates the Matusita Distance, where features must be positive.
+def squared_distance(x, y):
+    """Calculates the Squared Distance (Triangular Discrimination Distance).
 
     Args:
         x (np.array): N-dimensional array.
         y (np.array): N-dimensional array.
 
     Returns:
-        The Matusita Distance between x and y.
+        The Squared Distance between x and y.
 
     """
 
-    # Calculating the Matusita distance for each dimension
+    # Calculates the Squared distance for each dimension
+    dist = (x - y) ** 2 / (x + y)
+
+    return np.einsum('i->', dist)
+
+
+def squared_chord_distance(x, y):
+    """Calculates the Squared Chord Distance, where features must be positive.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Squared Chord Distance between x and y.
+
+    """
+
+    # Calculates the Squared Chord distance for each dimension
     dist = (x ** 0.5 - y ** 0.5) ** 2
 
-    return np.einsum('i->', dist) ** 0.5
+    return np.einsum('i->', dist)
 
 
 def squared_euclidean_distance(x, y):
@@ -424,13 +568,17 @@ def squared_euclidean_distance(x, y):
 # A distances constant dictionary for selecting the desired
 # distance metric to be used
 DISTANCES = {
+    'additive_symmetric': additive_symmetric_distance,
+    'average_euclidean': average_euclidean_distance,
     'bhattacharyya': bhattacharyya_distance,
     'bray_curtis': bray_curtis_distance,
     'canberra': canberra_distance,
     'chebyshev': chebyshev_distance,
     'chi_squared': chi_squared_distance,
     'chord': chord_distance,
+    'clark': clark_distance,
     'cosine': cosine_distance,
+    'divergence': divergence_distance,
     'euclidean': euclidean_distance,
     'gaussian': gaussian_distance,
     'gower': gower_distance,
@@ -441,8 +589,11 @@ DISTANCES = {
     'lorentzian': lorentzian_distance,
     'manhattan': manhattan_distance,
     'matusita': matusita_distance,
+    'neyman': neyman_distance,
     'non_intersection': non_intersection_distance,
+    'pearson': pearson_distance,
     'soergel': soergel_distance,
+    'squared': squared_distance,
     'squared_chord': squared_chord_distance,
     'squared_euclidean': squared_euclidean_distance
 }
