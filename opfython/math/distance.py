@@ -4,6 +4,24 @@ import numpy as np
 import opfython.utils.constants as c
 
 
+def bhattacharyya_distance(x, y):
+    """Calculates the Bhattacharyya Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Bhattacharyya Distance between x and y.
+
+    """
+
+    # Calculating the Bhattacharyya distance for each dimension
+    dist = -math.log(np.einsum('i->', (x * y) ** 0.5))
+
+    return dist
+
+
 def bray_curtis_distance(x, y):
     """Calculates the Bray-Curtis Distance.
 
@@ -89,7 +107,8 @@ def chord_distance(x, y):
     """
 
     # Calculating the Chord distance
-    dist = 2 - 2 * np.einsum('i->', x * y) / (np.einsum('i->', x ** 2) * np.einsum('i->', y ** 2))
+    dist = 2 - 2 * (np.einsum('i->', x * y) /
+                    (np.einsum('i->', x ** 2) * np.einsum('i->', y ** 2)))
 
     return dist ** 0.5
 
@@ -107,9 +126,28 @@ def cosine_distance(x, y):
     """
 
     # Calculating the Cosine distance
-    dist = 1 - (np.einsum('i->', x * y) / (np.einsum('i->', x ** 2) ** 0.5 * np.einsum('i->', y ** 2) ** 0.5))
+    dist = 1 - (np.einsum('i->', x * y) / (np.einsum('i->', x ** 2)
+                                           ** 0.5 * np.einsum('i->', y ** 2) ** 0.5))
 
     return dist
+
+
+def dice_distance(x, y):
+    """Calculates the Dice Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Dice Distance between x and y.
+
+    """
+
+    # Calculating the Dice distance
+    dist = 2 * np.einsum('i->', x * y) / (np.einsum('i->', x ** 2) + np.einsum('i->', y ** 2))
+
+    return 1 - dist
 
 
 def euclidean_distance(x, y):
@@ -166,6 +204,43 @@ def gower_distance(x, y):
     return np.einsum('i->', dist) / x.shape[0]
 
 
+def hellinger_distance(x, y):
+    """Calculates the Hellinger Distance, where features must be positive.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Hellinger Distance between x and y.
+
+    """
+
+    # Calculating the Hellinger distance for each dimension
+    dist = 2 * (x ** 0.5 - y ** 0.5) ** 2
+
+    return np.einsum('i->', dist) ** 0.5
+
+
+def jaccard_distance(x, y):
+    """Calculates the Jaccard Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Jaccard Distance between x and y.
+
+    """
+
+    # Calculating the Jaccard distance
+    dist = np.einsum('i->', (x - y) ** 2) / (np.einsum('i->', x ** 2) +
+                                             np.einsum('i->', y ** 2) - np.einsum('i->', x * y))
+
+    return dist
+
+
 def kulczynski_distance(x, y):
     """Calculates the Kulczynski Distance.
 
@@ -179,7 +254,7 @@ def kulczynski_distance(x, y):
     """
 
     # Calculating the Kulczynski distance for each dimension
-    dist = np.einsum('i->', np.fabs(x - y)) / np.einsum('i->', np.amin(x, y))
+    dist = np.einsum('i->', np.fabs(x - y)) / np.einsum('i->', np.minimum(x, y))
 
     return dist
 
@@ -256,6 +331,24 @@ def manhattan_distance(x, y):
     return np.einsum('i->', dist)
 
 
+def squared_chord_distance(x, y):
+    """Calculates the Squared Chord Distance, where features must be positive.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Squared Chord Distance between x and y.
+
+    """
+
+    # Calculating the Squared Chord distance for each dimension
+    dist = (x ** 0.5 - y ** 0.5) ** 2
+
+    return np.einsum('i->', dist)
+
+
 def non_intersection_distance(x, y):
     """Calculates the Non-Intersection Distance.
 
@@ -287,27 +380,27 @@ def soergel_distance(x, y):
     """
 
     # Calculating the Soergel distance for each dimension
-    dist = np.einsum('i->', np.fabs(x - y)) / np.einsum('i->', np.amax(x, y))
+    dist = np.einsum('i->', np.fabs(x - y)) / np.einsum('i->', np.maximum(x, y))
 
     return dist
 
 
-def squared_chord_distance(x, y):
-    """Calculates the Squared Chord Distance, where features must be positive.
+def matusita_distance(x, y):
+    """Calculates the Matusita Distance, where features must be positive.
 
     Args:
         x (np.array): N-dimensional array.
         y (np.array): N-dimensional array.
 
     Returns:
-        The Squared Chord Distance between x and y.
+        The Matusita Distance between x and y.
 
     """
 
-    # Calculating the Squared Chord distance for each dimension
+    # Calculating the Matusita distance for each dimension
     dist = (x ** 0.5 - y ** 0.5) ** 2
 
-    return np.einsum('i->', dist)
+    return np.einsum('i->', dist) ** 0.5
 
 
 def squared_euclidean_distance(x, y):
@@ -331,6 +424,7 @@ def squared_euclidean_distance(x, y):
 # A distances constant dictionary for selecting the desired
 # distance metric to be used
 DISTANCES = {
+    'bhattacharyya': bhattacharyya_distance,
     'bray_curtis': bray_curtis_distance,
     'canberra': canberra_distance,
     'chebyshev': chebyshev_distance,
@@ -339,9 +433,16 @@ DISTANCES = {
     'cosine': cosine_distance,
     'euclidean': euclidean_distance,
     'gaussian': gaussian_distance,
+    'gower': gower_distance,
+    'hellinger': hellinger_distance,
+    'kulczynski': kulczynski_distance,
     'log_euclidean': log_euclidean_distance,
     'log_squared_euclidean': log_squared_euclidean_distance,
+    'lorentzian': lorentzian_distance,
     'manhattan': manhattan_distance,
+    'matusita': matusita_distance,
+    'non_intersection': non_intersection_distance,
+    'soergel': soergel_distance,
     'squared_chord': squared_chord_distance,
     'squared_euclidean': squared_euclidean_distance
 }
