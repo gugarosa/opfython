@@ -34,7 +34,7 @@ def average_euclidean_distance(x, y):
 
     """
 
-    # Calculates the Average Euclidean distance for each dimension
+    # Calculates the Squared Euclidean distance for each dimension
     dist = squared_euclidean_distance(x, y)
 
     return (dist / x.shape[0]) ** 0.5
@@ -313,6 +313,81 @@ def jaccard_distance(x, y):
     return dist
 
 
+def jeffreys_distance(x, y):
+    """Calculates the Jeffreys Distance (J-Divergence, KL2 Divergence).
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Jeffreys Distance between x and y.
+
+    """
+
+    # Calculates the Jeffreys distance for each dimension
+    dist = (x - y) * np.log(x / y)
+
+    return np.einsum('i->', dist)
+
+
+def jensen_distance(x, y):
+    """Calculates the Jensen Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Jensen Distance between x and y.
+
+    """
+
+    # Calculates the Jensen distance for each dimension
+    dist = (x * np.log(x) + y * np.log(y)) / 2 - ((x + y) / 2) * np.log((x + y) / 2)
+
+    return np.einsum('i->', dist) * 0.5
+
+
+def jensen_shannon_distance(x, y):
+    """Calculates the Jensen-Shannon Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Jensen-Shannon Distance between x and y.
+
+    """
+
+    # Calculates the first part Jensen-Shannon distance for each dimension
+    dist1 = x * np.log((2 * x) / (x + y))
+
+    # Calculates the second part Jensen-Shannon distance for each dimension
+    dist2 = y * np.log((2 * y) / (x + y))
+
+    return (np.einsum('i->', dist1) + np.einsum('i->', dist2)) * 0.5
+
+
+def k_divergence_distance(x, y):
+    """Calculates the K Divergence Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The K Divergence Distance between x and y.
+
+    """
+
+    # Calculates the K Divergence distance for each dimension
+    dist = x * np.log((2 * x) / (x + y))
+
+    return np.einsum('i->', dist)
+
+
 def kulczynski_distance(x, y):
     """Calculates the Kulczynski Distance.
 
@@ -329,6 +404,24 @@ def kulczynski_distance(x, y):
     dist = np.einsum('i->', np.fabs(x - y)) / np.einsum('i->', np.minimum(x, y))
 
     return dist
+
+
+def kullback_leibler_distance(x, y):
+    """Calculates the Kullback-Leibler Distance (KL Divergence).
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Kullback-Leibler Distance between x and y.
+
+    """
+
+    # Calculates the Kullback-Leibler distance for each dimension
+    dist = x * np.log(x / y)
+
+    return np.einsum('i->', dist)
 
 
 def log_euclidean_distance(x, y):
@@ -419,6 +512,27 @@ def matusita_distance(x, y):
     dist = (x ** 0.5 - y ** 0.5) ** 2
 
     return np.einsum('i->', dist) ** 0.5
+
+
+def mean_censored_euclidean_distance(x, y):
+    """Calculates the Mean Censored Euclidean Distance.
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Mean Censored Euclidean Distance between x and y.
+
+    """
+
+    # Calculates the Squared Euclidean distance for each dimension
+    dist = squared_euclidean_distance(x, y)
+
+    # Calculates number of occurences `x + y != 0`
+    diff = np.count_nonzero(x + y != 0)
+
+    return (dist / diff) ** 0.5
 
 
 def neyman_distance(x, y):
@@ -565,6 +679,27 @@ def squared_euclidean_distance(x, y):
     return np.einsum('i->', dist)
 
 
+def topsoe_distance(x, y):
+    """Calculates the Topsoe Distance (Information Statistics).
+
+    Args:
+        x (np.array): N-dimensional array.
+        y (np.array): N-dimensional array.
+
+    Returns:
+        The Topsoe Distance between x and y.
+
+    """
+
+    # Calculates the first part Topsoe distance for each dimension
+    dist1 = x * np.log((2 * x) / (x + y))
+
+    # Calculates the second part Topsoe distance for each dimension
+    dist2 = y * np.log((2 * y) / (x + y))
+
+    return np.einsum('i->', dist1) + np.einsum('i->', dist2)
+
+
 # A distances constant dictionary for selecting the desired
 # distance metric to be used
 DISTANCES = {
@@ -578,22 +713,32 @@ DISTANCES = {
     'chord': chord_distance,
     'clark': clark_distance,
     'cosine': cosine_distance,
+    'dice': dice_distance,
     'divergence': divergence_distance,
     'euclidean': euclidean_distance,
     'gaussian': gaussian_distance,
     'gower': gower_distance,
     'hellinger': hellinger_distance,
+    'jaccard': jaccard_distance,
+    'jeffreys': jeffreys_distance,
+    'jensen': jensen_distance,
+    'jensen_shannon': jensen_shannon_distance,
+    'k_divergence': k_divergence_distance,
     'kulczynski': kulczynski_distance,
+    'kullback_leibler': kullback_leibler_distance,
     'log_euclidean': log_euclidean_distance,
     'log_squared_euclidean': log_squared_euclidean_distance,
     'lorentzian': lorentzian_distance,
     'manhattan': manhattan_distance,
     'matusita': matusita_distance,
+    'mean_censored_euclidean': mean_censored_euclidean_distance,
     'neyman': neyman_distance,
     'non_intersection': non_intersection_distance,
     'pearson': pearson_distance,
+    'sangvi': sangvi_distance,
     'soergel': soergel_distance,
     'squared': squared_distance,
     'squared_chord': squared_chord_distance,
-    'squared_euclidean': squared_euclidean_distance
+    'squared_euclidean': squared_euclidean_distance,
+    'topsoe': topsoe_distance
 }

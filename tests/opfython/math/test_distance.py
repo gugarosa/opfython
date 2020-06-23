@@ -157,6 +157,42 @@ def test_jaccard_distance():
     assert dist == 0.004752851711026625
 
 
+def test_jeffreys_distance():
+    x = np.asarray([5.1, 3.5, 1.4, 0.3])
+    y = np.asarray([5.4, 3.4, 1.7, 0.2])
+
+    dist = distance.jeffreys_distance(x, y)
+
+    assert dist == 0.11883959298241359
+
+
+def test_jensen_distance():
+    x = np.asarray([5.1, 3.5, 1.4, 0.3])
+    y = np.asarray([5.4, 3.4, 1.7, 0.2])
+
+    dist = distance.jensen_distance(x, y)
+
+    assert dist == 0.0074043973952890585
+
+
+def test_jensen_shannon_distance():
+    x = np.asarray([5.1, 3.5, 1.4, 0.3])
+    y = np.asarray([5.4, 3.4, 1.7, 0.2])
+
+    dist = distance.jensen_shannon_distance(x, y)
+
+    assert dist == 0.014808794790576757
+
+
+def test_k_divergence_distance():
+    x = np.asarray([5.1, 3.5, 1.4, 0.3])
+    y = np.asarray([5.4, 3.4, 1.7, 0.2])
+
+    dist = distance.k_divergence_distance(x, y)
+
+    assert dist == -0.18527516196697194
+
+
 def test_kulczynski_distance():
     x = np.asarray([5.1, 3.5, 1.4, 0.3])
     y = np.asarray([5.4, 3.4, 1.7, 0.2])
@@ -164,6 +200,15 @@ def test_kulczynski_distance():
     dist = distance.kulczynski_distance(x, y)
 
     assert dist == 0.07920792079207929
+
+
+def test_kullback_leibler_distance():
+    x = np.asarray([5.1, 3.5, 1.4, 0.3])
+    y = np.asarray([5.4, 3.4, 1.7, 0.2])
+
+    dist = distance.kullback_leibler_distance(x, y)
+
+    assert dist == -0.34023041931224646
 
 
 def test_log_euclidean_distance():
@@ -211,6 +256,15 @@ def test_matusita_distance():
     assert dist == 0.17223121769698138
 
 
+def test_mean_censored_euclidean_distance():
+    x = np.asarray([5.1, 3.5, 1.4, 0.3])
+    y = np.asarray([5.4, 3.4, 1.7, 0.2])
+
+    dist = distance.mean_censored_euclidean_distance(x, y)
+
+    assert dist == 0.2236067977499792
+
+
 def test_neyman_distance():
     x = np.asarray([5.1, 3.5, 1.4, 0.3])
     y = np.asarray([5.4, 3.4, 1.7, 0.2])
@@ -256,15 +310,6 @@ def test_soergel_distance():
     assert dist == 0.07339449541284411
 
 
-def test_squared_chord_distance():
-    x = np.asarray([5.1, 3.5, 1.4, 0.3])
-    y = np.asarray([5.4, 3.4, 1.7, 0.2])
-
-    dist = distance.squared_chord_distance(x, y)
-
-    assert dist == 0.029663592349384992
-
-
 def test_squared_distance():
     x = np.asarray([5.1, 3.5, 1.4, 0.3])
     y = np.asarray([5.4, 3.4, 1.7, 0.2])
@@ -274,6 +319,15 @@ def test_squared_distance():
     assert dist == 0.059052961998263584
 
 
+def test_squared_chord_distance():
+    x = np.asarray([5.1, 3.5, 1.4, 0.3])
+    y = np.asarray([5.4, 3.4, 1.7, 0.2])
+
+    dist = distance.squared_chord_distance(x, y)
+
+    assert dist == 0.029663592349384992
+
+
 def test_squared_euclidean_distance():
     x = np.asarray([5.1, 3.5, 1.4, 0.3])
     y = np.asarray([5.4, 3.4, 1.7, 0.2])
@@ -281,3 +335,12 @@ def test_squared_euclidean_distance():
     dist = distance.squared_euclidean_distance(x, y)
 
     assert dist == 0.20000000000000046
+
+
+def test_topsoe_distance():
+    x = np.asarray([5.1, 3.5, 1.4, 0.3])
+    y = np.asarray([5.4, 3.4, 1.7, 0.2])
+
+    dist = distance.topsoe_distance(x, y)
+
+    assert dist == 0.029617589581153514
