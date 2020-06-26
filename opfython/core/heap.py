@@ -71,7 +71,7 @@ class Heap:
 
     @property
     def cost(self):
-        """list: List of node's costs.
+        """list: List of nodes' costs.
 
         """
 
@@ -86,7 +86,7 @@ class Heap:
 
     @property
     def color(self):
-        """list: List of node's colors.
+        """list: List of nodes' colors.
 
         """
 
@@ -101,7 +101,7 @@ class Heap:
 
     @property
     def p(self):
-        """list: List of node's values.
+        """list: List of nodes' values.
 
         """
 
@@ -116,7 +116,7 @@ class Heap:
 
     @property
     def pos(self):
-        """list: List of node's positioning markers.
+        """list: List of nodes' positioning markers.
 
         """
 

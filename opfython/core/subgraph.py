@@ -95,7 +95,7 @@ class Subgraph:
 
     @property
     def nodes(self):
-        """list: List of Nodes that belongs to the Subgraph.
+        """list: List of nodes that belongs to the Subgraph.
 
         """
 
@@ -110,7 +110,7 @@ class Subgraph:
 
     @property
     def idx_nodes(self):
-        """list: List of indexes of ordered nodes.
+        """list: List of ordered nodes indexes.
 
         """
 

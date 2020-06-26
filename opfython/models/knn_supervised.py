@@ -16,7 +16,8 @@ class KNNSupervisedOPF(OPF):
     """A KNNSupervisedOPF which implements the supervised version of OPF classifier with a KNN subgraph.
 
     References:
-        J. P. Papa and A. X. Falcão. A Learning Algorithm for the Optimum-Path Forest Classifier. Graph-Based Representations in Pattern Recognition (2009).
+        J. P. Papa and A. X. Falcão. A Learning Algorithm for the Optimum-Path Forest Classifier.
+        Graph-Based Representations in Pattern Recognition (2009).
 
     """
 
