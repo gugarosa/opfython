@@ -161,21 +161,23 @@ class KNNSupervisedOPF(OPF):
                         # Updates node `q` on the heap with the current cost
                         h.update(q, current_cost)
 
-    def _learn(self, X_train, Y_train, X_val, Y_val):
+    def _learn(self, X_train, Y_train, I_train, X_val, Y_val, I_val):
         """Learns the best `k` value over the validation set.
 
         Args:
             X_train (np.array): Array of training features.
             Y_train (np.array): Array of training labels.
+            I_train (np.array): Array of training indexes.
             X_val (np.array): Array of validation features.
             Y_val (np.array): Array of validation labels.
+            I_val (np.array): Array of validation indexes.
 
         """
 
         logger.info('Learning best `k` value ...')
 
         # Creating a subgraph
-        self.subgraph = KNNSubgraph(X_train, Y_train)
+        self.subgraph = KNNSubgraph(X_train, Y_train, I_train)
 
         # Checks if it is supposed to use pre-computed distances
         if self.pre_computed_distance:
@@ -205,7 +207,7 @@ class KNNSupervisedOPF(OPF):
             self._clustering()
 
             # Calculate the predictions over the validation set
-            preds = self.predict(X_val)
+            preds = self.predict(X_val, I_val)
 
             # Calculating the accuracy
             acc = g.opf_accuracy(Y_val, preds)
@@ -226,7 +228,7 @@ class KNNSupervisedOPF(OPF):
         # Applying the best k to the subgraph's property
         self.subgraph.best_k = best_k
 
-    def fit(self, X_train, Y_train, X_val, Y_val):
+    def fit(self, X_train, Y_train, X_val, Y_val, I_train=None, I_val=None):
         """Fits data in the classifier.
 
         Args:
@@ -234,6 +236,8 @@ class KNNSupervisedOPF(OPF):
             Y_train (np.array): Array of training labels.
             X_val (np.array): Array of validation features.
             Y_val (np.array): Array of validation labels.
+            I_train (np.array): Array of training indexes.
+            I_val (np.array): Array of validation indexes.
 
         """
 
@@ -243,7 +247,7 @@ class KNNSupervisedOPF(OPF):
         start = time.time()
 
         # Performing the learning process in order to find the best `k` value
-        self._learn(X_train, Y_train, X_val, Y_val)
+        self._learn(X_train, Y_train, I_train, X_val, Y_val, I_val)
 
         # Creating arcs with the best `k` value
         self.subgraph.create_arcs(
@@ -271,11 +275,12 @@ class KNNSupervisedOPF(OPF):
         logger.info(f'Classifier has been fitted with k = {self.subgraph.best_k}.')
         logger.info(f'Training time: {train_time} seconds.')
 
-    def predict(self, X_test, verbose=False):
+    def predict(self, X_test, I_test=None, verbose=False):
         """Predicts new data using the pre-trained classifier.
 
         Args:
             X_test (np.array): Array of features.
+            I_test (np.array): Array of indexes.
 
         Returns:
             A list of predictions for each record of the data.
@@ -288,7 +293,7 @@ class KNNSupervisedOPF(OPF):
         start = time.time()
 
         # Creating a prediction subgraph
-        pred_subgraph = KNNSubgraph(X_test)
+        pred_subgraph = KNNSubgraph(X_test, I=I_test)
 
         # Gathering the best `k` value
         best_k = self.subgraph.best_k

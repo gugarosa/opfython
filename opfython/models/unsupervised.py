@@ -317,12 +317,13 @@ class UnsupervisedOPF(OPF):
 
         logger.debug(f'Best: {best_k} | Minimum cut: {min_cut}.')
 
-    def fit(self, X_train, Y_train=None):
+    def fit(self, X_train, Y_train=None, I_train=None):
         """Fits data in the classifier.
 
         Args:
             X_train (np.array): Array of training features.
             Y_train (np.array): Array of training labels.
+            I_train (np.array): Array of training indexes.
 
         """
 
@@ -332,15 +333,7 @@ class UnsupervisedOPF(OPF):
         start = time.time()
 
         # Creating a subgraph
-        self.subgraph = KNNSubgraph(X_train, Y_train)
-
-        # Checks if it is supposed to use pre-computed distances
-        if self.pre_computed_distance:
-            # Checks if its size is the same as the subgraph's amount of nodes
-            if self.pre_distances.shape[0] != self.subgraph.n_nodes or self.pre_distances.shape[1] != self.subgraph.n_nodes:
-                # If not, raises an error
-                raise e.BuildError(
-                    'Pre-computed distance matrix should have the size of `n_nodes x n_nodes`')
+        self.subgraph = KNNSubgraph(X_train, Y_train, I_train)
 
         # Performing the best minimum cut on the subgraph
         self._best_minimum_cut(self.min_k, self.max_k)
@@ -361,11 +354,12 @@ class UnsupervisedOPF(OPF):
         logger.info(f'Number of clusters: {self.subgraph.n_clusters}.')
         logger.info(f'Clustering time: {train_time} seconds.')
 
-    def predict(self, X_val):
+    def predict(self, X_val, I_val=None):
         """Predicts new data using the pre-trained classifier.
 
         Args:
             X_val (np.array): Array of validation features.
+            I_val (np.array): Array of validation indexes.
 
         Returns:
             A list of predictions for each record of the data.
@@ -388,7 +382,7 @@ class UnsupervisedOPF(OPF):
         start = time.time()
 
         # Creating a prediction subgraph
-        pred_subgraph = KNNSubgraph(X_val)
+        pred_subgraph = KNNSubgraph(X_val, I=I_val)
 
         # Gathering the best `k` value
         best_k = self.subgraph.best_k

@@ -122,7 +122,20 @@ def test_subgraph_build():
 
     X, Y = s._load('data/boat.txt')
 
-    s._build(X, Y)
+    s._build(X, Y, None)
+
+    assert len(s.nodes) == 100
+    assert s.n_features == 2
+
+
+def test_subgraph_build_with_index():
+    s = subgraph.Subgraph()
+
+    X, Y = s._load('data/boat.txt')
+
+    I = Y
+
+    s._build(X, Y, I)
 
     assert len(s.nodes) == 100
     assert s.n_features == 2

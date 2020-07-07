@@ -115,12 +115,13 @@ class SupervisedOPF(OPF):
 
         logger.debug(f'Prototypes: {prototypes}.')
 
-    def fit(self, X_train, Y_train):
+    def fit(self, X_train, Y_train, I_train=None):
         """Fits data in the classifier.
 
         Args:
             X_train (np.array): Array of training features.
             Y_train (np.array): Array of training labels.
+            I_train (np.array): Array of training indexes.
 
         """
 
@@ -130,15 +131,15 @@ class SupervisedOPF(OPF):
         start = time.time()
 
         # Creating a subgraph
-        self.subgraph = Subgraph(X_train, Y_train)
+        self.subgraph = Subgraph(X_train, Y_train, I=I_train)
 
-        # Checks if it is supposed to use pre-computed distances
-        if self.pre_computed_distance:
-            # Checks if its size is the same as the subgraph's amount of nodes
-            if self.pre_distances.shape[0] != self.subgraph.n_nodes or self.pre_distances.shape[1] != self.subgraph.n_nodes:
-                # If not, raises an error
-                raise e.BuildError(
-                    'Pre-computed distance matrix should have the size of `n_nodes x n_nodes`')
+        # # Checks if it is supposed to use pre-computed distances
+        # if self.pre_computed_distance:
+        #     # Checks if its size is the same as the subgraph's amount of nodes
+        #     if self.pre_distances.shape[0] != self.subgraph.n_nodes or self.pre_distances.shape[1] != self.subgraph.n_nodes:
+        #         # If not, raises an error
+        #         raise e.BuildError(
+        #             'Pre-computed distance matrix should have the size of `n_nodes x n_nodes`')
 
         # Finding prototypes
         self._find_prototypes()
@@ -221,11 +222,12 @@ class SupervisedOPF(OPF):
         logger.info('Classifier has been fitted.')
         logger.info(f'Training time: {train_time} seconds.')
 
-    def predict(self, X_val):
+    def predict(self, X_val, I_val=None):
         """Predicts new data using the pre-trained classifier.
 
         Args:
             X_val (np.array): Array of validation or test features.
+            I_val (np.array): Array of validation or test indexes.
 
         Returns:
             A list of predictions for each record of the data.
@@ -248,7 +250,7 @@ class SupervisedOPF(OPF):
         start = time.time()
 
         # Creating a prediction subgraph
-        pred_subgraph = Subgraph(X_val)
+        pred_subgraph = Subgraph(X_val, I=I_val)
 
         # For every possible node
         for i in range(pred_subgraph.n_nodes):

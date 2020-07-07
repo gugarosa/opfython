@@ -13,18 +13,19 @@ class KNNSubgraph(Subgraph):
 
     """
 
-    def __init__(self, X=None, Y=None, from_file=None):
+    def __init__(self, X=None, Y=None, I=None, from_file=None):
         """Initialization method.
 
         Args:
             X (np.array): Array of features.
             Y (np.array): Array of labels.
+            I (np.array): Array of indexes.
             from_file (bool): Whether Subgraph should be directly created from a file.
 
         """
 
         # Override its parent class with the receiving arguments
-        super(KNNSubgraph, self).__init__(X, Y, from_file)
+        super(KNNSubgraph, self).__init__(X, Y, I, from_file)
 
         #  Number of assigned clusters
         self.n_clusters = 0

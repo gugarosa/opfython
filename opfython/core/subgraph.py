@@ -15,12 +15,13 @@ class Subgraph:
 
     """
 
-    def __init__(self, X=None, Y=None, from_file=None):
+    def __init__(self, X=None, Y=None, I=None, from_file=None):
         """Initialization method.
 
         Args:
             X (np.array): Array of features.
             Y (np.array): Array of labels.
+            I (np.array): Array of indexes.
             from_file (bool): Whether Subgraph should be directly created from a file.
 
         """
@@ -53,7 +54,7 @@ class Subgraph:
                 Y = np.ones(len(X), dtype=int)
 
             # Now, we need to build this class up
-            self._build(X, Y)
+            self._build(X, Y, I)
 
         # If data could not be loaded
         else:
@@ -178,7 +179,7 @@ class Subgraph:
 
         return X, Y
 
-    def _build(self, X, Y):
+    def _build(self, X, Y, I):
         """This method serves as the object building process.
 
         One can define several commands here that does not necessarily
@@ -192,8 +193,14 @@ class Subgraph:
 
         # Iterate over every possible sample
         for i, (feature, label) in enumerate(zip(X, Y)):
-            # Creates a Node structure
-            node = Node(i, label.item(), feature)
+            # Checks if indexes are supplied
+            if I is not None:
+                # Creates the Node with its index
+                node = Node(I[i].item(), label.item(), feature)
+            
+            # If not, just creates the Node
+            else:
+                node = Node(i, label.item(), feature)
 
             # Appends the node to the list
             self.nodes.append(node)
