@@ -1,5 +1,4 @@
 import numpy as np
-import pytest
 
 from opfython.models import unsupervised
 from opfython.stream import loader, parser

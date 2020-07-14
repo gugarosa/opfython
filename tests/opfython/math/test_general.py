@@ -1,5 +1,3 @@
-import pytest
-
 from opfython.math import general
 from opfython.stream import loader, parser, splitter
 

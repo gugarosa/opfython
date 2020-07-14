@@ -1,5 +1,3 @@
-import pytest
-
 from opfython.utils import exception
 
 

@@ -1,5 +1,4 @@
 import numpy as np
-import pytest
 
 from opfython.math import distance
 from opfython.stream import loader, parser

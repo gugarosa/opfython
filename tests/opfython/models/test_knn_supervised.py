@@ -1,5 +1,4 @@
 import numpy as np
-import pytest
 
 from opfython.models import knn_supervised
 from opfython.stream import loader, parser, splitter

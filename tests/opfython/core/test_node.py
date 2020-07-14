@@ -1,5 +1,4 @@
 import numpy as np
-import pytest
 
 from opfython.core import node
 from opfython.utils import constants
