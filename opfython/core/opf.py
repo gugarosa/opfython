@@ -1,10 +1,12 @@
+"""Optimum-Path Forest standard definitions.
+"""
+
 import pickle
 
 import numpy as np
 
 import opfython.math.distance as d
 import opfython.stream.loader as loader
-import opfython.utils.constants as c
 import opfython.utils.exception as e
 import opfython.utils.logging as l
 from opfython.core import Subgraph
@@ -57,7 +59,7 @@ class OPF:
             # Marks the pre-distances property as None
             self.pre_distances = None
 
-        logger.debug(f'Distance: {self.distance} | Pre-computed distance: {self.pre_computed_distance}.')
+        logger.debug('Distance: %s | Pre-computed distance: %s.', self.distance, self.pre_computed_distance)
         logger.info('Class created.')
 
     @property
@@ -199,7 +201,7 @@ class OPF:
 
         """
 
-        logger.info(f'Loading model from file: {file_name} ...')
+        logger.info('Loading model from file: %s ...', file_name)
 
         # Trying to open the file
         with open(file_name, "rb") as origin_file:
@@ -219,7 +221,7 @@ class OPF:
 
         """
 
-        logger.info(f'Saving model to file: {file_name} ...')
+        logger.info('Saving model to file: %s ...', file_name)
 
         # Opening a destination file
         with open(file_name, 'wb') as dest_file:

@@ -1,3 +1,6 @@
+"""Distance-based metrics.
+"""
+
 import math
 
 import numpy as np

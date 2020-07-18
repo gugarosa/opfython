@@ -1,3 +1,6 @@
+"""Subgraph structure that belongs to the Optimum-Path Forest.
+"""
+
 import numpy as np
 
 import opfython.stream.loader as loader
@@ -197,7 +200,7 @@ class Subgraph:
             if I is not None:
                 # Creates the Node with its index
                 node = Node(I[i].item(), label.item(), feature)
-            
+
             # If not, just creates the Node
             else:
                 node = Node(i, label.item(), feature)

@@ -1,3 +1,6 @@
+"""KNN-Supervised Optimum-Path Forest.
+"""
+
 import time
 
 import numpy as np
@@ -5,11 +8,11 @@ import numpy as np
 import opfython.math.general as g
 import opfython.utils.constants as c
 import opfython.utils.exception as e
-import opfython.utils.logging as l
+import opfython.utils.logging as log
 from opfython.core import OPF, Heap
 from opfython.subgraphs import KNNSubgraph
 
-logger = l.get_logger(__name__)
+logger = log.get_logger(__name__)
 
 
 class KNNSupervisedOPF(OPF):
@@ -184,8 +187,7 @@ class KNNSupervisedOPF(OPF):
             # Checks if its size is the same as the subgraph's amount of nodes
             if self.pre_distances.shape[0] != self.subgraph.n_nodes or self.pre_distances.shape[1] != self.subgraph.n_nodes:
                 # If not, raises an error
-                raise e.BuildError(
-                    'Pre-computed distance matrix should have the size of `n_nodes x n_nodes`')
+                raise e.BuildError('Pre-computed distance matrix should have the size of `n_nodes x n_nodes`')
 
         # Defining initial maximum accuracy as 0
         max_acc = 0.0
@@ -220,7 +222,7 @@ class KNNSupervisedOPF(OPF):
                 # Defines current `k` as the best `k` value
                 best_k = k
 
-            logger.info(f'Accuracy over k = {k}: {acc}')
+            logger.info('Accuracy over k = %d: %f', k, acc)
 
             # Destroy the arcs
             self.subgraph.destroy_arcs()
@@ -272,10 +274,10 @@ class KNNSupervisedOPF(OPF):
         # Calculating training task time
         train_time = end - start
 
-        logger.info(f'Classifier has been fitted with k = {self.subgraph.best_k}.')
-        logger.info(f'Training time: {train_time} seconds.')
+        logger.info('Classifier has been fitted with k = %d.', self.subgraph.best_k)
+        logger.info('Training time: %f seconds.', train_time)
 
-    def predict(self, X_test, I_test=None, verbose=False):
+    def predict(self, X_test, I_test=None):
         """Predicts new data using the pre-trained classifier.
 
         Args:
@@ -336,10 +338,12 @@ class KNNSupervisedOPF(OPF):
                     # While current `k` is bigger than 0 and the `k` distance is smaller than `k-1` distance
                     while cur_k > 0 and distances[cur_k] < distances[cur_k - 1]:
                         # Swaps the distance from `k` and `k-1`
-                        distances[cur_k], distances[cur_k - 1] = distances[cur_k - 1], distances[cur_k]
+                        distances[cur_k], distances[cur_k -
+                                                    1] = distances[cur_k - 1], distances[cur_k]
 
                         # Swaps the neighbours indexex from `k` and `k-1`
-                        neighbours_idx[cur_k], neighbours_idx[cur_k - 1] = neighbours_idx[cur_k - 1], neighbours_idx[cur_k]
+                        neighbours_idx[cur_k], neighbours_idx[cur_k -
+                                                              1] = neighbours_idx[cur_k - 1], neighbours_idx[cur_k]
 
                         # Decrements `k`
                         cur_k -= 1
@@ -388,6 +392,6 @@ class KNNSupervisedOPF(OPF):
         predict_time = end - start
 
         logger.info('Data has been predicted.')
-        logger.info(f'Prediction time: {predict_time} seconds.')
+        logger.info('Prediction time: %f seconds.', predict_time)
 
         return preds

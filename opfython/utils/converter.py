@@ -1,3 +1,6 @@
+"""Converts OPF binary data to a variety of extensions.
+"""
+
 import json as j
 import struct
 
@@ -17,7 +20,7 @@ def opf2txt(opf_path, output_file=None):
 
     """
 
-    logger.info(f'Converting file: {opf_path} ...')
+    logger.info('Converting file: %s ...', opf_path)
 
     # Defining header format
     header_format = '<iii'
@@ -69,7 +72,7 @@ def opf2txt(opf_path, output_file=None):
     # Saving output .txt file
     np.savetxt(output_file, samples, delimiter=' ')
 
-    logger.info(f'File converted to {output_file}.')
+    logger.info('File converted to %s.', output_file)
 
 
 def opf2csv(opf_path, output_file=None):
@@ -81,7 +84,7 @@ def opf2csv(opf_path, output_file=None):
 
     """
 
-    logger.info(f'Converting file: {opf_path} ...')
+    logger.info('Converting file: %s ...', opf_path)
 
     # Defining header format
     header_format = '<iii'
@@ -133,7 +136,7 @@ def opf2csv(opf_path, output_file=None):
     # Saving output .txt file
     np.savetxt(output_file, samples, delimiter=',')
 
-    logger.info(f'File converted to {output_file}.')
+    logger.info('File converted to %s.', output_file)
 
 
 def opf2json(opf_path, output_file=None):
@@ -145,7 +148,7 @@ def opf2json(opf_path, output_file=None):
 
     """
 
-    logger.info(f'Converting file: {opf_path} ...')
+    logger.info('Converting file: %s ...', opf_path)
 
     # Defining header format
     header_format = '<iii'
@@ -205,4 +208,4 @@ def opf2json(opf_path, output_file=None):
         # Dumping JSON to file
         j.dump(json, f)
 
-    logger.info(f'File converted to {output_file}.')
+    logger.info('File converted to %s.', output_file)

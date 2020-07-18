@@ -1,3 +1,6 @@
+"""Data parsing utilities.
+"""
+
 import numpy as np
 
 import opfython.utils.exception as e
@@ -42,7 +45,7 @@ def parse_loader(data):
             raise e.ValueError(
                 'Parsed data should have sequential labels, e.g., 1, 2, ..., n')
 
-        logger.info(f'Data parsed.')
+        logger.info('Data parsed.')
 
         return X, Y.astype(int)
 

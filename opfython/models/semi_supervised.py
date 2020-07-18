@@ -1,9 +1,11 @@
+"""Semi-Supervised Optimum-Path Forest.
+"""
+
 import time
 
 import numpy as np
 
 import opfython.utils.constants as c
-import opfython.utils.exception as e
 import opfython.utils.logging as l
 from opfython.core import Heap, Node, Subgraph
 from opfython.models import SupervisedOPF
@@ -32,7 +34,8 @@ class SemiSupervisedOPF(SupervisedOPF):
         logger.info('Overriding class: SupervisedOPF -> SemiSupervisedOPF.')
 
         # Override its parent class with the receiving arguments
-        super(SemiSupervisedOPF, self).__init__(distance, pre_computed_distance)
+        super(SemiSupervisedOPF, self).__init__(
+            distance, pre_computed_distance)
 
         logger.info('Class overrided.')
 
@@ -87,7 +90,7 @@ class SemiSupervisedOPF(SupervisedOPF):
 
                 # Inserts the node into the heap
                 h.insert(i)
-            
+
             # If node is not a prototype
             else:
                 # Its cost equals to maximum possible value
@@ -149,4 +152,4 @@ class SemiSupervisedOPF(SupervisedOPF):
         train_time = end - start
 
         logger.info('Semi-supervised classifier has been fitted.')
-        logger.info(f'Training time: {train_time} seconds.')
+        logger.info('Training time: %f seconds.', train_time)

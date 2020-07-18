@@ -1,3 +1,6 @@
+"""General-based mathematical methods.
+"""
+
 import numpy as np
 
 import opfython.math.distance as d
@@ -184,7 +187,7 @@ def pre_compute_distance(data, output, distance='log_squared_euclidean'):
     # Saves the distance matrix to an output
     np.savetxt(output, distances)
 
-    logger.info(f'Distances saved to: {output}.')
+    logger.info('Distances saved to: %s.', output)
 
 
 def purity(labels, preds):
@@ -203,6 +206,6 @@ def purity(labels, preds):
     c_matrix = confusion_matrix(labels, preds)
 
     # Calculating the purity measure
-    purity = np.sum(np.max(c_matrix, axis=0)) / len(labels)
+    _purity = np.sum(np.max(c_matrix, axis=0)) / len(labels)
 
-    return purity
+    return _purity

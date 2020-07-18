@@ -1,3 +1,6 @@
+"""Standard Heap implementation.
+"""
+
 import opfython.utils.constants as c
 import opfython.utils.exception as e
 

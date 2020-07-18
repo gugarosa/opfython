@@ -1,3 +1,6 @@
+"""Supervised Optimum-Path Forest.
+"""
+
 import copy
 import time
 
@@ -7,10 +10,10 @@ import opfython.math.general as g
 import opfython.math.random as r
 import opfython.utils.constants as c
 import opfython.utils.exception as e
-import opfython.utils.logging as l
+import opfython.utils.logging as log
 from opfython.core import OPF, Heap, Subgraph
 
-logger = l.get_logger(__name__)
+logger = log.get_logger(__name__)
 
 
 class SupervisedOPF(OPF):
@@ -113,7 +116,7 @@ class SupervisedOPF(OPF):
                             # Updates the arc on the heap
                             h.update(q, weight)
 
-        logger.debug(f'Prototypes: {prototypes}.')
+        logger.debug('Prototypes: %s.', prototypes)
 
     def fit(self, X_train, Y_train, I_train=None):
         """Fits data in the classifier.
@@ -132,14 +135,6 @@ class SupervisedOPF(OPF):
 
         # Creating a subgraph
         self.subgraph = Subgraph(X_train, Y_train, I=I_train)
-
-        # # Checks if it is supposed to use pre-computed distances
-        # if self.pre_computed_distance:
-        #     # Checks if its size is the same as the subgraph's amount of nodes
-        #     if self.pre_distances.shape[0] != self.subgraph.n_nodes or self.pre_distances.shape[1] != self.subgraph.n_nodes:
-        #         # If not, raises an error
-        #         raise e.BuildError(
-        #             'Pre-computed distance matrix should have the size of `n_nodes x n_nodes`')
 
         # Finding prototypes
         self._find_prototypes()
@@ -162,7 +157,7 @@ class SupervisedOPF(OPF):
 
                 # Inserts the node into the heap
                 h.insert(i)
-            
+
             # If node is not a prototype
             else:
                 # Its cost equals to maximum possible value
@@ -220,7 +215,7 @@ class SupervisedOPF(OPF):
         train_time = end - start
 
         logger.info('Classifier has been fitted.')
-        logger.info(f'Training time: {train_time} seconds.')
+        logger.info('Training time: %f seconds.', train_time)
 
     def predict(self, X_val, I_val=None):
         """Predicts new data using the pre-trained classifier.
@@ -334,7 +329,7 @@ class SupervisedOPF(OPF):
         predict_time = end - start
 
         logger.info('Data has been predicted.')
-        logger.info(f'Prediction time: {predict_time} seconds.')
+        logger.info('Prediction time: %f seconds.', predict_time)
 
         return preds
 
@@ -363,7 +358,7 @@ class SupervisedOPF(OPF):
 
         # An always true loop
         while True:
-            logger.info(f'Running iteration {t+1}/{n_iterations} ...')
+            logger.info('Running iteration %d/%d ...', t+1, n_iterations)
 
             # Fits training data into the classifier
             self.fit(X_train, Y_train)
@@ -399,7 +394,7 @@ class SupervisedOPF(OPF):
                     non_prototypes += 1
 
             # For every possible error
-            for e in errors:
+            for err in errors:
                 # Counter will receive the number of non-prototypes
                 ctr = non_prototypes
 
@@ -411,10 +406,10 @@ class SupervisedOPF(OPF):
                     # If the node on that particular index is not a prototype
                     if self.subgraph.nodes[j].status != c.PROTOTYPE:
                         # Swap the input nodes
-                        X_train[j, :], X_val[e, :] = X_val[e, :], X_train[j, :]
+                        X_train[j, :], X_val[err, :] = X_val[err, :], X_train[j, :]
 
                         # Swap the target nodes
-                        Y_train[j], Y_val[e] = Y_val[e], Y_train[j]
+                        Y_train[j], Y_val[err] = Y_val[err], Y_train[j]
 
                         # Decrements the number of non-prototypes
                         non_prototypes -= 1
@@ -436,16 +431,14 @@ class SupervisedOPF(OPF):
             # Incrementing the counter
             t += 1
 
-            logger.info(
-                f'Accuracy: {acc} | Delta: {delta} | Maximum Accuracy: {max_acc}')
+            logger.info('Accuracy: %f | Delta: %f | Maximum Accuracy: %f', acc, delta, max_acc)
 
             # If the difference is smaller than 10e-4 or iterations are finished
             if delta < 0.0001 or t == n_iterations:
                 # Replaces current class with the best OPF
                 self = best_opf
 
-                logger.info(
-                    f'Best classifier has been learned over iteration {best_t+1}.')
+                logger.info('Best classifier has been learned over iteration %d.', best_t+1)
 
                 # Breaks the loop
                 break
@@ -475,7 +468,7 @@ class SupervisedOPF(OPF):
 
         # For every possible iteration
         for t in range(n_iterations):
-            logger.info(f'Running iteration {t+1}/{n_iterations} ...')
+            logger.info('Running iteration %d/%d ...', t+1, n_iterations)
 
             # Creating temporary lists
             X_temp, Y_temp = [], []
@@ -499,7 +492,7 @@ class SupervisedOPF(OPF):
             # Calculating accuracy
             acc = g.opf_accuracy(Y_val, preds)
 
-            logger.info(f'Current accuracy: {acc}.')
+            logger.info('Current accuracy: %f.', acc)
 
         # Gathering final number of nodes
         final_nodes = self.subgraph.n_nodes
@@ -507,4 +500,4 @@ class SupervisedOPF(OPF):
         # Calculating pruning ratio
         prune_ratio = 1 - final_nodes / initial_nodes
 
-        logger.info(f'Prune ratio: {prune_ratio}.')
+        logger.info('Prune ratio: %f.', prune_ratio)

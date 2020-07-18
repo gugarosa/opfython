@@ -1,14 +1,17 @@
+"""Unsupervised Optimum-Path Forest.
+"""
+
 import time
 
 import numpy as np
 
 import opfython.utils.constants as c
 import opfython.utils.exception as e
-import opfython.utils.logging as l
+import opfython.utils.logging as log
 from opfython.core import OPF, Heap
 from opfython.subgraphs import KNNSubgraph
 
-logger = l.get_logger(__name__)
+logger = log.get_logger(__name__)
 
 
 class UnsupervisedOPF(OPF):
@@ -101,10 +104,10 @@ class UnsupervisedOPF(OPF):
                     # Turns on the insertion flag
                     insert = True
 
-                    # For every possible `k` value
-                    for k in range(n_neighbours):
+                    # For every possible `l` value
+                    for l in range(n_neighbours):
                         # Gathers node `j` adjacent node
-                        adj = int(self.subgraph.nodes[j].adjacency[k])
+                        adj = int(self.subgraph.nodes[j].adjacency[l])
 
                         # If the nodes are the same
                         if i == adj:
@@ -250,7 +253,8 @@ class UnsupervisedOPF(OPF):
             # If the sum of internal and external clusters is bigger than 0
             if internal_cluster[l] + external_cluster[l] > 0.0:
                 # Increments the value of the cut
-                cut += external_cluster[l] / (internal_cluster[l] + external_cluster[l])
+                cut += external_cluster[l] / \
+                    (internal_cluster[l] + external_cluster[l])
 
         return cut
 
@@ -264,7 +268,7 @@ class UnsupervisedOPF(OPF):
         """
 
         logger.debug(
-            f'Calculating the best minimum cut within [{min_k}, {max_k}] ...')
+            'Calculating the best minimum cut within [%d, %d] ...', min_k, max_k)
 
         # Calculates the maximum possible distances
         max_distances = self.subgraph.create_arcs(
@@ -315,7 +319,7 @@ class UnsupervisedOPF(OPF):
         self.subgraph.calculate_pdf(
             best_k, self.distance_fn, self.pre_computed_distance, self.pre_distances)
 
-        logger.debug(f'Best: {best_k} | Minimum cut: {min_cut}.')
+        logger.debug('Best: %d | Minimum cut: %d.', best_k, min_cut)
 
     def fit(self, X_train, Y_train=None, I_train=None):
         """Fits data in the classifier.
@@ -351,8 +355,8 @@ class UnsupervisedOPF(OPF):
         train_time = end - start
 
         logger.info('Classifier has been clustered with.')
-        logger.info(f'Number of clusters: {self.subgraph.n_clusters}.')
-        logger.info(f'Clustering time: {train_time} seconds.')
+        logger.info('Number of clusters: %d.', self.subgraph.n_clusters)
+        logger.info('Clustering time: %f seconds.', train_time)
 
     def predict(self, X_val, I_val=None):
         """Predicts new data using the pre-trained classifier.
@@ -413,7 +417,8 @@ class UnsupervisedOPF(OPF):
                     # If it is supposed to calculate the distance
                     else:
                         # Calculates the distance between nodes `i` and `j`
-                        distances[best_k] = self.distance_fn(pred_subgraph.nodes[i].features, self.subgraph.nodes[j].features)
+                        distances[best_k] = self.distance_fn(
+                            pred_subgraph.nodes[i].features, self.subgraph.nodes[j].features)
 
                     # Apply node `j` as a neighbour
                     neighbours_idx[best_k] = j
@@ -424,10 +429,12 @@ class UnsupervisedOPF(OPF):
                     # While current `k` is bigger than 0 and the `k` distance is smaller than `k-1` distance
                     while cur_k > 0 and distances[cur_k] < distances[cur_k - 1]:
                         # Swaps the distance from `k` and `k-1`
-                        distances[cur_k], distances[cur_k - 1] = distances[cur_k - 1], distances[cur_k]
+                        distances[cur_k], distances[cur_k -
+                                                    1] = distances[cur_k - 1], distances[cur_k]
 
                         # Swaps the neighbours indexex from `k` and `k-1`
-                        neighbours_idx[cur_k], neighbours_idx[cur_k - 1] = neighbours_idx[cur_k - 1], neighbours_idx[cur_k]
+                        neighbours_idx[cur_k], neighbours_idx[cur_k -
+                                                              1] = neighbours_idx[cur_k - 1], neighbours_idx[cur_k]
 
                         # Decrements `k`
                         cur_k -= 1
@@ -482,7 +489,7 @@ class UnsupervisedOPF(OPF):
         predict_time = end - start
 
         logger.info('Data has been predicted.')
-        logger.info(f'Prediction time: {predict_time} seconds.')
+        logger.info('Prediction time: %f seconds.', predict_time)
 
         return preds, clusters
 

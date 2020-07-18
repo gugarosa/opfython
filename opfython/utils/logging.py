@@ -1,3 +1,6 @@
+"""Logging-based methods and helpers.
+"""
+
 import logging
 import sys
 from logging.handlers import TimedRotatingFileHandler
@@ -45,7 +48,7 @@ def get_logger(logger_name):
 
     Returns:
         A handler to output information into console's.
-        
+
     """
 
     # Creates a logger object

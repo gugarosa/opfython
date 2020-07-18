@@ -1,3 +1,6 @@
+"""Random numbers generators.
+"""
+
 import numpy as np
 
 

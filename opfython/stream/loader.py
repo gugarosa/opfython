@@ -1,3 +1,6 @@
+"""Data loading utilities.
+"""
+
 import json as j
 
 import numpy as np
@@ -20,7 +23,7 @@ def load_csv(csv_path):
 
     """
 
-    logger.info(f'Loading file: {csv_path} ...')
+    logger.info('Loading file: %s ...', csv_path)
 
     # Tries to invoke a function
     try:
@@ -34,7 +37,7 @@ def load_csv(csv_path):
 
         return None
 
-    logger.info(f'File loaded.')
+    logger.info('File loaded.')
 
     return csv
 
@@ -52,7 +55,7 @@ def load_txt(txt_path):
 
     """
 
-    logger.info(f'Loading file: {txt_path} ...')
+    logger.info('Loading file: %s...', txt_path)
 
     # Tries to invoke a function
     try:
@@ -66,7 +69,7 @@ def load_txt(txt_path):
 
         return None
 
-    logger.info(f'File loaded.')
+    logger.info('File loaded.')
 
     return txt
 
@@ -84,7 +87,7 @@ def load_json(json_path):
 
     """
 
-    logger.info(f'Loading file: {json_path} ...')
+    logger.info('Loading file: %s ...', json_path)
 
     # Tries to invoke a function
     try:
@@ -100,7 +103,7 @@ def load_json(json_path):
 
         return None
 
-    logger.info(f'File loaded.')
+    logger.info('File loaded.')
 
     # Creating a list to hold the parsed JSON
     json = []

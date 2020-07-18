@@ -1,11 +1,14 @@
+"""KNN-based Subgraph.
+"""
+
 import numpy as np
 
 import opfython.utils.constants as c
 import opfython.utils.exception as e
-import opfython.utils.logging as l
+import opfython.utils.logging as log
 from opfython.core import Subgraph
 
-logger = l.get_logger(__name__)
+logger = log.get_logger(__name__)
 
 
 class KNNSubgraph(Subgraph):
@@ -89,8 +92,7 @@ class KNNSubgraph(Subgraph):
 
     @constant.setter
     def constant(self, constant):
-        if not (isinstance(constant, float) or isinstance(constant, int)
-                or isinstance(constant, np.int32) or isinstance(constant, np.int64)):
+        if not isinstance(constant, (float, int, np.int32, np.int64)):
             raise e.TypeError('`constant` should be a float or integer')
 
         self._constant = constant
@@ -105,8 +107,7 @@ class KNNSubgraph(Subgraph):
 
     @density.setter
     def density(self, density):
-        if not (isinstance(density, float) or isinstance(density, int)
-                or isinstance(density, np.int32) or isinstance(density, np.int64)):
+        if not isinstance(density, (float, int, np.int32, np.int64)):
             raise e.TypeError('`density` should be a float or integer')
 
         self._density = density
@@ -121,8 +122,7 @@ class KNNSubgraph(Subgraph):
 
     @min_density.setter
     def min_density(self, min_density):
-        if not (isinstance(min_density, float) or isinstance(min_density, int)
-                or isinstance(min_density, np.int32) or isinstance(min_density, np.int64)):
+        if not isinstance(min_density, (float, int, np.int32, np.int64)):
             raise e.TypeError('`min_density` should be a float or integer')
 
         self._min_density = min_density
@@ -137,8 +137,7 @@ class KNNSubgraph(Subgraph):
 
     @max_density.setter
     def max_density(self, max_density):
-        if not (isinstance(max_density, float) or isinstance(max_density, int)
-                or isinstance(max_density, np.int32) or isinstance(max_density, np.int64)):
+        if not isinstance(max_density, (float, int, np.int32, np.int64)):
             raise e.TypeError('`max_density` should be a float or integer')
 
         self._max_density = max_density
@@ -333,7 +332,7 @@ class KNNSubgraph(Subgraph):
 
         """
 
-        logger.debug(f'Eliminating maxima above height = {height} ...')
+        logger.debug('Eliminating maxima above height = %f ...', height)
 
         # Checks if height is bigger than zero
         if height > 0:
