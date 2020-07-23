@@ -152,4 +152,4 @@ class SemiSupervisedOPF(SupervisedOPF):
         train_time = end - start
 
         logger.info('Semi-supervised classifier has been fitted.')
-        logger.info('Training time: %f seconds.', train_time)
+        logger.info('Training time: %s seconds.', train_time)

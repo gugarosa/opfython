@@ -332,7 +332,7 @@ class KNNSubgraph(Subgraph):
 
         """
 
-        logger.debug('Eliminating maxima above height = %f ...', height)
+        logger.debug('Eliminating maxima above height = %s ...', height)
 
         # Checks if height is bigger than zero
         if height > 0:

@@ -356,7 +356,7 @@ class UnsupervisedOPF(OPF):
 
         logger.info('Classifier has been clustered with.')
         logger.info('Number of clusters: %d.', self.subgraph.n_clusters)
-        logger.info('Clustering time: %f seconds.', train_time)
+        logger.info('Clustering time: %s seconds.', train_time)
 
     def predict(self, X_val, I_val=None):
         """Predicts new data using the pre-trained classifier.
@@ -489,7 +489,7 @@ class UnsupervisedOPF(OPF):
         predict_time = end - start
 
         logger.info('Data has been predicted.')
-        logger.info('Prediction time: %f seconds.', predict_time)
+        logger.info('Prediction time: %s seconds.', predict_time)
 
         return preds, clusters
 

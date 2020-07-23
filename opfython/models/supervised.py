@@ -215,7 +215,7 @@ class SupervisedOPF(OPF):
         train_time = end - start
 
         logger.info('Classifier has been fitted.')
-        logger.info('Training time: %f seconds.', train_time)
+        logger.info('Training time: %s seconds.', train_time)
 
     def predict(self, X_val, I_val=None):
         """Predicts new data using the pre-trained classifier.
@@ -329,7 +329,7 @@ class SupervisedOPF(OPF):
         predict_time = end - start
 
         logger.info('Data has been predicted.')
-        logger.info('Prediction time: %f seconds.', predict_time)
+        logger.info('Prediction time: %s seconds.', predict_time)
 
         return preds
 
@@ -431,7 +431,7 @@ class SupervisedOPF(OPF):
             # Incrementing the counter
             t += 1
 
-            logger.info('Accuracy: %f | Delta: %f | Maximum Accuracy: %f', acc, delta, max_acc)
+            logger.info('Accuracy: %s | Delta: %s | Maximum Accuracy: %s', acc, delta, max_acc)
 
             # If the difference is smaller than 10e-4 or iterations are finished
             if delta < 0.0001 or t == n_iterations:
@@ -492,7 +492,7 @@ class SupervisedOPF(OPF):
             # Calculating accuracy
             acc = g.opf_accuracy(Y_val, preds)
 
-            logger.info('Current accuracy: %f.', acc)
+            logger.info('Current accuracy: %s.', acc)
 
         # Gathering final number of nodes
         final_nodes = self.subgraph.n_nodes
@@ -500,4 +500,4 @@ class SupervisedOPF(OPF):
         # Calculating pruning ratio
         prune_ratio = 1 - final_nodes / initial_nodes
 
-        logger.info('Prune ratio: %f.', prune_ratio)
+        logger.info('Prune ratio: %s.', prune_ratio)

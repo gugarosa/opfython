@@ -222,7 +222,7 @@ class KNNSupervisedOPF(OPF):
                 # Defines current `k` as the best `k` value
                 best_k = k
 
-            logger.info('Accuracy over k = %d: %f', k, acc)
+            logger.info('Accuracy over k = %d: %s', k, acc)
 
             # Destroy the arcs
             self.subgraph.destroy_arcs()
@@ -275,7 +275,7 @@ class KNNSupervisedOPF(OPF):
         train_time = end - start
 
         logger.info('Classifier has been fitted with k = %d.', self.subgraph.best_k)
-        logger.info('Training time: %f seconds.', train_time)
+        logger.info('Training time: %s seconds.', train_time)
 
     def predict(self, X_test, I_test=None):
         """Predicts new data using the pre-trained classifier.
@@ -392,6 +392,6 @@ class KNNSupervisedOPF(OPF):
         predict_time = end - start
 
         logger.info('Data has been predicted.')
-        logger.info('Prediction time: %f seconds.', predict_time)
+        logger.info('Prediction time: %s seconds.', predict_time)
 
         return preds
