@@ -6,6 +6,7 @@ This is a utility package. Common things shared across the application should be
 .. toctree::
     opfython.utils.constants
     opfython.utils.converter
+    opfython.utils.decorator
     opfython.utils.exception
     opfython.utils.logging
 

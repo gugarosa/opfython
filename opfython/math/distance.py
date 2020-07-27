@@ -6,8 +6,10 @@ import math
 import numpy as np
 
 import opfython.utils.constants as c
+import opfython.utils.decorator as d
 
 
+@d.avoid_zeros
 def additive_symmetric_distance(x, y):
     """Calculates the Additive Symmetric Distance (Symmetric Divergence).
 
@@ -21,11 +23,12 @@ def additive_symmetric_distance(x, y):
     """
 
     # Calculates the Additive Symmetric distance for each dimension
-    dist = ((x - y) ** 2 * (x + y)) / (x * y + c.EPSILON)
+    dist = ((x - y) ** 2 * (x + y)) / (x * y)
 
     return 2 * np.einsum('i->', dist)
 
 
+@d.avoid_zeros
 def average_euclidean_distance(x, y):
     """Calculates the Average Euclidean Distance.
 
@@ -44,6 +47,7 @@ def average_euclidean_distance(x, y):
     return (dist / x.shape[0]) ** 0.5
 
 
+@d.avoid_zeros
 def bhattacharyya_distance(x, y):
     """Calculates the Bhattacharyya Distance.
 
@@ -57,11 +61,12 @@ def bhattacharyya_distance(x, y):
     """
 
     # Calculates the Bhattacharyya distance
-    dist = -math.log(np.einsum('i->', (x * y) ** 0.5) + c.EPSILON)
+    dist = -math.log(np.einsum('i->', (x * y) ** 0.5))
 
     return dist
 
 
+@d.avoid_zeros
 def bray_curtis_distance(x, y):
     """Calculates the Bray-Curtis Distance (Sorensen Distance).
 
@@ -75,11 +80,12 @@ def bray_curtis_distance(x, y):
     """
 
     # Calculates the Bray-Curtis distance
-    dist = np.einsum('i->', np.fabs(x - y)) / (np.einsum('i->', x + y) + c.EPSILON)
+    dist = np.einsum('i->', np.fabs(x - y)) / np.einsum('i->', x + y)
 
     return dist
 
 
+@d.avoid_zeros
 def canberra_distance(x, y):
     """Calculates the Canberra Distance.
 
@@ -93,11 +99,12 @@ def canberra_distance(x, y):
     """
 
     # Calculates the Canberra distance for each dimension
-    dist = np.fabs(x - y) / (np.fabs(x) + np.fabs(y) + c.EPSILON)
+    dist = np.fabs(x - y) / (np.fabs(x) + np.fabs(y))
 
     return np.einsum('i->', dist)
 
 
+@d.avoid_zeros
 def chebyshev_distance(x, y):
     """Calculates the Chebyshev Distance (Maximum Value Distance, Lagrange, Chessboard Distance).
 
@@ -116,6 +123,7 @@ def chebyshev_distance(x, y):
     return np.amax(dist)
 
 
+@d.avoid_zeros
 def chi_squared_distance(x, y):
     """Calculates the Chi-Squared Distance.
 
@@ -129,11 +137,12 @@ def chi_squared_distance(x, y):
     """
 
     # Calculates the Chi-Squared distance for each dimension
-    dist = ((x - y) ** 2 / (x + y + c.EPSILON))
+    dist = ((x - y) ** 2 / (x + y))
 
     return np.einsum('i->', dist) * 0.5
 
 
+@d.avoid_zeros
 def chord_distance(x, y):
     """Calculates the Chord Distance.
 
@@ -148,11 +157,12 @@ def chord_distance(x, y):
 
     # Calculates the Chord distance
     dist = 2 - 2 * (np.einsum('i->', x * y) / (np.einsum('i->', x ** 2)
-                                               ** 0.5 * np.einsum('i->', y ** 2) ** 0.5 + c.EPSILON))
+                                               ** 0.5 * np.einsum('i->', y ** 2) ** 0.5))
 
     return dist ** 0.5
 
 
+@d.avoid_zeros
 def clark_distance(x, y):
     """Calculates the Clark Distance.
 
@@ -166,11 +176,12 @@ def clark_distance(x, y):
     """
 
     # Calculates the Clark distance for each dimension
-    dist = ((x - y) / (np.fabs(x + y) + c.EPSILON)) ** 2
+    dist = ((x - y) / np.fabs(x + y)) ** 2
 
     return np.einsum('i->', dist) ** 0.5
 
 
+@d.avoid_zeros
 def cosine_distance(x, y):
     """Calculates the Cosine Distance.
 
@@ -185,11 +196,12 @@ def cosine_distance(x, y):
 
     # Calculates the Cosine distance
     dist = 1 - (np.einsum('i->', x * y) / (np.einsum('i->', x ** 2)
-                                           ** 0.5 * np.einsum('i->', y ** 2) ** 0.5 + c.EPSILON))
+                                           ** 0.5 * np.einsum('i->', y ** 2) ** 0.5))
 
     return dist
 
 
+@d.avoid_zeros
 def dice_distance(x, y):
     """Calculates the Dice Distance.
 
@@ -203,11 +215,12 @@ def dice_distance(x, y):
     """
 
     # Calculates the Dice distance
-    dist = 2 * np.einsum('i->', x * y) / (np.einsum('i->', x ** 2) + np.einsum('i->', y ** 2) + c.EPSILON)
+    dist = 2 * np.einsum('i->', x * y) / (np.einsum('i->', x ** 2) + np.einsum('i->', y ** 2))
 
     return 1 - dist
 
 
+@d.avoid_zeros
 def divergence_distance(x, y):
     """Calculates the Divergence Distance.
 
@@ -221,11 +234,12 @@ def divergence_distance(x, y):
     """
 
     # Calculates the Divergence distance for each dimension
-    dist = (x - y) ** 2 / ((x + y) ** 2 + c.EPSILON)
+    dist = (x - y) ** 2 / (x + y) ** 2
 
     return 2 * np.einsum('i->', dist)
 
 
+@d.avoid_zeros
 def euclidean_distance(x, y):
     """Calculates the Euclidean Distance (L2 Norm, Ruler Distance).
 
@@ -244,6 +258,7 @@ def euclidean_distance(x, y):
     return np.einsum('i->', dist) ** 0.5
 
 
+@d.avoid_zeros
 def gaussian_distance(x, y, gamma=1):
     """Calculates the Gaussian Distance.
 
@@ -262,6 +277,7 @@ def gaussian_distance(x, y, gamma=1):
     return math.exp(-gamma * np.einsum('i->', dist) ** 0.5)
 
 
+@d.avoid_zeros
 def gower_distance(x, y):
     """Calculates the Gower Distance (Average Manhattan, Mean Character Distance).
 
@@ -280,6 +296,7 @@ def gower_distance(x, y):
     return np.einsum('i->', dist) / x.shape[0]
 
 
+@d.avoid_zeros
 def hamming_distance(x, y):
     """Calculates the Hamming Distance.
 
@@ -298,6 +315,7 @@ def hamming_distance(x, y):
     return dist
 
 
+@d.avoid_zeros
 def hassanat_distance(x, y):
     """Calculates the Hassanat Distance.
 
@@ -331,6 +349,7 @@ def hassanat_distance(x, y):
     return np.einsum('i->', dist)
 
 
+@d.avoid_zeros
 def hellinger_distance(x, y):
     """Calculates the Hellinger Distance (Jeffries-Matusita Distance).
 
@@ -349,6 +368,7 @@ def hellinger_distance(x, y):
     return np.einsum('i->', dist) ** 0.5
 
 
+@d.avoid_zeros
 def jaccard_distance(x, y):
     """Calculates the Jaccard Distance.
 
@@ -363,11 +383,12 @@ def jaccard_distance(x, y):
 
     # Calculates the Jaccard distance
     dist = np.einsum('i->', (x - y) ** 2) / (np.einsum('i->', x ** 2) +
-                                             np.einsum('i->', y ** 2) - np.einsum('i->', x * y) + c.EPSILON)
+                                             np.einsum('i->', y ** 2) - np.einsum('i->', x * y))
 
     return dist
 
 
+@d.avoid_zeros
 def jeffreys_distance(x, y):
     """Calculates the Jeffreys Distance (J-Divergence, KL2 Divergence).
 
@@ -381,11 +402,12 @@ def jeffreys_distance(x, y):
     """
 
     # Calculates the Jeffreys distance for each dimension
-    dist = (x - y) * np.log(x / (y + c.EPSILON))
+    dist = (x - y) * np.log(x / y)
 
     return np.einsum('i->', dist)
 
 
+@d.avoid_zeros
 def jensen_distance(x, y):
     """Calculates the Jensen Distance.
 
@@ -404,6 +426,7 @@ def jensen_distance(x, y):
     return np.einsum('i->', dist) * 0.5
 
 
+@d.avoid_zeros
 def jensen_shannon_distance(x, y):
     """Calculates the Jensen-Shannon Distance.
 
@@ -417,14 +440,15 @@ def jensen_shannon_distance(x, y):
     """
 
     # Calculates the first part Jensen-Shannon distance for each dimension
-    dist1 = x * np.log((2 * x) / (x + y + c.EPSILON))
+    dist1 = x * np.log((2 * x) / (x + y))
 
     # Calculates the second part Jensen-Shannon distance for each dimension
-    dist2 = y * np.log((2 * y) / (x + y + c.EPSILON))
+    dist2 = y * np.log((2 * y) / (x + y))
 
     return (np.einsum('i->', dist1) + np.einsum('i->', dist2)) * 0.5
 
 
+@d.avoid_zeros
 def k_divergence_distance(x, y):
     """Calculates the K Divergence Distance.
 
@@ -438,11 +462,12 @@ def k_divergence_distance(x, y):
     """
 
     # Calculates the K Divergence distance for each dimension
-    dist = x * np.log((2 * x) / (x + y + c.EPSILON))
+    dist = x * np.log((2 * x) / (x + y))
 
     return np.einsum('i->', dist)
 
 
+@d.avoid_zeros
 def kulczynski_distance(x, y):
     """Calculates the Kulczynski Distance.
 
@@ -456,11 +481,12 @@ def kulczynski_distance(x, y):
     """
 
     # Calculates the Kulczynski distance
-    dist = np.einsum('i->', np.fabs(x - y)) / (np.einsum('i->', np.minimum(x, y)) + c.EPSILON)
+    dist = np.einsum('i->', np.fabs(x - y)) / np.einsum('i->', np.minimum(x, y))
 
     return dist
 
 
+@d.avoid_zeros
 def kullback_leibler_distance(x, y):
     """Calculates the Kullback-Leibler Distance (KL Divergence).
 
@@ -474,11 +500,12 @@ def kullback_leibler_distance(x, y):
     """
 
     # Calculates the Kullback-Leibler distance for each dimension
-    dist = x * np.log(x / (y + c.EPSILON))
+    dist = x * np.log(x / y)
 
     return np.einsum('i->', dist)
 
 
+@d.avoid_zeros
 def log_euclidean_distance(x, y):
     """Calculates the log-Euclidean Distance.
 
@@ -497,6 +524,7 @@ def log_euclidean_distance(x, y):
     return c.MAX_ARC_WEIGHT * math.log(dist + 1)
 
 
+@d.avoid_zeros
 def log_squared_euclidean_distance(x, y):
     """Calculates the log-Squared Euclidean Distance.
 
@@ -515,6 +543,7 @@ def log_squared_euclidean_distance(x, y):
     return c.MAX_ARC_WEIGHT * math.log(dist + 1)
 
 
+@d.avoid_zeros
 def lorentzian_distance(x, y):
     """Calculates the Lorentzian Distance.
 
@@ -533,6 +562,7 @@ def lorentzian_distance(x, y):
     return np.einsum('i->', dist)
 
 
+@d.avoid_zeros
 def manhattan_distance(x, y):
     """Calculates the Manhattan Distance (L1 Norm, Taxicab Norm, City Block Distance).
 
@@ -551,6 +581,7 @@ def manhattan_distance(x, y):
     return np.einsum('i->', dist)
 
 
+@d.avoid_zeros
 def matusita_distance(x, y):
     """Calculates the Matusita Distance, where features must be positive.
 
@@ -569,6 +600,7 @@ def matusita_distance(x, y):
     return np.einsum('i->', dist) ** 0.5
 
 
+@d.avoid_zeros
 def max_symmetric_distance(x, y):
     """Calculates the Max Symmetric Distance.
 
@@ -582,14 +614,15 @@ def max_symmetric_distance(x, y):
     """
 
     # Calculates the first partial Max Symmetric distance for each dimension
-    dist1 = (x - y) ** 2 / (x + c.EPSILON)
+    dist1 = (x - y) ** 2 / x
 
     # Calculates the second partial Max Symmetric distance for each dimension
-    dist2 = (x - y) ** 2 / (y + c.EPSILON)
+    dist2 = (x - y) ** 2 / y
 
     return np.maximum(np.einsum('i->', dist1), np.einsum('i->', dist2))
 
 
+@d.avoid_zeros
 def mean_censored_euclidean_distance(x, y):
     """Calculates the Mean Censored Euclidean Distance.
 
@@ -611,6 +644,7 @@ def mean_censored_euclidean_distance(x, y):
     return (dist / diff) ** 0.5
 
 
+@d.avoid_zeros
 def min_symmetric_distance(x, y):
     """Calculates the Min Symmetric Distance.
 
@@ -624,14 +658,15 @@ def min_symmetric_distance(x, y):
     """
 
     # Calculates the first partial Min Symmetric distance for each dimension
-    dist1 = (x - y) ** 2 / (x + c.EPSILON)
+    dist1 = (x - y) ** 2 / x
 
     # Calculates the second partial Min Symmetric distance for each dimension
-    dist2 = (x - y) ** 2 / (y + c.EPSILON)
+    dist2 = (x - y) ** 2 / y
 
     return np.minimum(np.einsum('i->', dist1), np.einsum('i->', dist2))
 
 
+@d.avoid_zeros
 def neyman_distance(x, y):
     """Calculates the Neyman Distance.
 
@@ -645,11 +680,12 @@ def neyman_distance(x, y):
     """
 
     # Calculates the Neyman distance for each dimension
-    dist = (x - y) ** 2 / (x + c.EPSILON)
+    dist = (x - y) ** 2 / x
 
     return np.einsum('i->', dist)
 
 
+@d.avoid_zeros
 def non_intersection_distance(x, y):
     """Calculates the Non-Intersection Distance.
 
@@ -668,6 +704,7 @@ def non_intersection_distance(x, y):
     return np.einsum('i->', dist) * 0.5
 
 
+@d.avoid_zeros
 def pearson_distance(x, y):
     """Calculates the Pearson Distance.
 
@@ -681,11 +718,12 @@ def pearson_distance(x, y):
     """
 
     # Calculates the Pearson distance for each dimension
-    dist = (x - y) ** 2 / (y + c.EPSILON)
+    dist = (x - y) ** 2 / y
 
     return np.einsum('i->', dist)
 
 
+@d.avoid_zeros
 def sangvi_distance(x, y):
     """Calculates the Sangvi Distance (Probabilistic Symmetric).
 
@@ -699,11 +737,12 @@ def sangvi_distance(x, y):
     """
 
     # Calculates the Sangvi distance for each dimension
-    dist = (x - y) ** 2 / (x + y + c.EPSILON)
+    dist = (x - y) ** 2 / (x + y)
 
     return 2 * np.einsum('i->', dist)
 
 
+@d.avoid_zeros
 def soergel_distance(x, y):
     """Calculates the Soergel Distance (Ruzicka Distance).
 
@@ -717,11 +756,12 @@ def soergel_distance(x, y):
     """
 
     # Calculates the Soergel distance
-    dist = np.einsum('i->', np.fabs(x - y)) / (np.einsum('i->', np.maximum(x, y)) + c.EPSILON)
+    dist = np.einsum('i->', np.fabs(x - y)) / np.einsum('i->', np.maximum(x, y))
 
     return dist
 
 
+@d.avoid_zeros
 def squared_distance(x, y):
     """Calculates the Squared Distance (Triangular Discrimination Distance).
 
@@ -735,11 +775,12 @@ def squared_distance(x, y):
     """
 
     # Calculates the Squared distance for each dimension
-    dist = (x - y) ** 2 / (x + y + c.EPSILON)
+    dist = (x - y) ** 2 / (x + y)
 
     return np.einsum('i->', dist)
 
 
+@d.avoid_zeros
 def squared_chord_distance(x, y):
     """Calculates the Squared Chord Distance, where features must be positive.
 
@@ -758,6 +799,7 @@ def squared_chord_distance(x, y):
     return np.einsum('i->', dist)
 
 
+@d.avoid_zeros
 def squared_euclidean_distance(x, y):
     """Calculates the Squared Euclidean Distance.
 
@@ -776,6 +818,7 @@ def squared_euclidean_distance(x, y):
     return np.einsum('i->', dist)
 
 
+@d.avoid_zeros
 def statistic_distance(x, y):
     """Calculates the Statistic Distance.
 
@@ -792,11 +835,12 @@ def statistic_distance(x, y):
     m = (x + y) / 2
 
     # Calculates the Statistic distance for each dimension
-    dist = (x - m) / (m + c.EPSILON)
+    dist = (x - m) / m
 
     return np.einsum('i->', dist)
 
 
+@d.avoid_zeros
 def topsoe_distance(x, y):
     """Calculates the Topsoe Distance (Information Statistics).
 
@@ -810,14 +854,15 @@ def topsoe_distance(x, y):
     """
 
     # Calculates the first part Topsoe distance for each dimension
-    dist1 = x * np.log((2 * x) / (x + y + c.EPSILON))
+    dist1 = x * np.log((2 * x) / (x + y))
 
     # Calculates the second part Topsoe distance for each dimension
-    dist2 = y * np.log((2 * y) / (x + y + c.EPSILON))
+    dist2 = y * np.log((2 * y) / (x + y))
 
     return np.einsum('i->', dist1) + np.einsum('i->', dist2)
 
 
+@d.avoid_zeros
 def vicis_symmetric1_distance(x, y):
     """Calculates the Vicis Symmetric 1 Distance.
 
@@ -831,11 +876,12 @@ def vicis_symmetric1_distance(x, y):
     """
 
     # Calculates the Vicis Symmetric 1 distance for each dimension
-    dist = (x - y) ** 2 / (np.minimum(x, y) ** 2 + c.EPSILON)
+    dist = (x - y) ** 2 / np.minimum(x, y) ** 2
 
     return np.einsum('i->', dist)
 
 
+@d.avoid_zeros
 def vicis_symmetric2_distance(x, y):
     """Calculates the Vicis Symmetric 2 Distance.
 
@@ -849,11 +895,12 @@ def vicis_symmetric2_distance(x, y):
     """
 
     # Calculates the Vicis Symmetric 2 distance for each dimension
-    dist = (x - y) ** 2 / (np.minimum(x, y) + c.EPSILON)
+    dist = (x - y) ** 2 / np.minimum(x, y)
 
     return np.einsum('i->', dist)
 
 
+@d.avoid_zeros
 def vicis_symmetric3_distance(x, y):
     """Calculates the Vicis Symmetric 3 Distance.
 
@@ -867,11 +914,13 @@ def vicis_symmetric3_distance(x, y):
     """
 
     # Calculates the Vicis Symmetric 3 distance for each dimension
-    dist = (x - y) ** 2 / (np.maximum(x, y) + c.EPSILON)
+    dist = (x - y) ** 2 / np.maximum(x, y)
 
     return np.einsum('i->', dist)
 
 
+@d.avoid_zeros
+@d.avoid_zeros
 def vicis_wave_hedges_distance(x, y):
     """Calculates the Vicis-Wave Hedges Distance (Wave-Hedges).
 
@@ -885,7 +934,7 @@ def vicis_wave_hedges_distance(x, y):
     """
 
     # Calculates the Vicis-Wave Hedges distance for each dimension
-    dist = np.fabs(x - y) / (np.minimum(x, y) + c.EPSILON)
+    dist = np.fabs(x - y) / np.minimum(x, y)
 
     return np.einsum('i->', dist)
 

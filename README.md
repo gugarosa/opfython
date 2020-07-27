@@ -89,6 +89,7 @@ OPFython is based on the following structure, and you should pay attention to it
     - utils
         - constants
         - converter
+        - decorator
         - exception
         - logging
 ```
