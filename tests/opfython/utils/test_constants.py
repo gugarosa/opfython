@@ -4,7 +4,7 @@ from opfython.utils import constants
 
 
 def test_constants():
-    assert constants.EPSILON == 1e-10
+    assert constants.EPSILON == 1e-20
 
     assert constants.FLOAT_MAX == sys.float_info.max
 

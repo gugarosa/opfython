@@ -21,7 +21,7 @@ def additive_symmetric_distance(x, y):
     """
 
     # Calculates the Additive Symmetric distance for each dimension
-    dist = ((x - y) ** 2 * (x + y)) / (x * y)
+    dist = ((x - y) ** 2 * (x + y)) / (x * y + c.EPSILON)
 
     return 2 * np.einsum('i->', dist)
 
@@ -57,7 +57,7 @@ def bhattacharyya_distance(x, y):
     """
 
     # Calculates the Bhattacharyya distance
-    dist = -math.log(np.einsum('i->', (x * y) ** 0.5))
+    dist = -math.log(np.einsum('i->', (x * y) ** 0.5) + c.EPSILON)
 
     return dist
 
@@ -75,7 +75,7 @@ def bray_curtis_distance(x, y):
     """
 
     # Calculates the Bray-Curtis distance
-    dist = np.einsum('i->', np.fabs(x - y)) / np.einsum('i->', x + y)
+    dist = np.einsum('i->', np.fabs(x - y)) / (np.einsum('i->', x + y) + c.EPSILON)
 
     return dist
 
@@ -93,7 +93,7 @@ def canberra_distance(x, y):
     """
 
     # Calculates the Canberra distance for each dimension
-    dist = np.fabs(x - y) / (np.fabs(x) + np.fabs(y))
+    dist = np.fabs(x - y) / (np.fabs(x) + np.fabs(y) + c.EPSILON)
 
     return np.einsum('i->', dist)
 
@@ -129,7 +129,7 @@ def chi_squared_distance(x, y):
     """
 
     # Calculates the Chi-Squared distance for each dimension
-    dist = ((x - y) ** 2 / (x + y))
+    dist = ((x - y) ** 2 / (x + y + c.EPSILON))
 
     return np.einsum('i->', dist) * 0.5
 
@@ -147,7 +147,8 @@ def chord_distance(x, y):
     """
 
     # Calculates the Chord distance
-    dist = 2 - 2 * (np.einsum('i->', x * y) / (np.einsum('i->', x ** 2) * np.einsum('i->', y ** 2)))
+    dist = 2 - 2 * (np.einsum('i->', x * y) / (np.einsum('i->', x ** 2)
+                                               ** 0.5 * np.einsum('i->', y ** 2) ** 0.5 + c.EPSILON))
 
     return dist ** 0.5
 
@@ -165,7 +166,7 @@ def clark_distance(x, y):
     """
 
     # Calculates the Clark distance for each dimension
-    dist = ((x - y) / np.fabs(x + y)) ** 2
+    dist = ((x - y) / (np.fabs(x + y) + c.EPSILON)) ** 2
 
     return np.einsum('i->', dist) ** 0.5
 
@@ -184,7 +185,7 @@ def cosine_distance(x, y):
 
     # Calculates the Cosine distance
     dist = 1 - (np.einsum('i->', x * y) / (np.einsum('i->', x ** 2)
-                                           ** 0.5 * np.einsum('i->', y ** 2) ** 0.5))
+                                           ** 0.5 * np.einsum('i->', y ** 2) ** 0.5 + c.EPSILON))
 
     return dist
 
@@ -202,7 +203,7 @@ def dice_distance(x, y):
     """
 
     # Calculates the Dice distance
-    dist = 2 * np.einsum('i->', x * y) / (np.einsum('i->', x ** 2) + np.einsum('i->', y ** 2))
+    dist = 2 * np.einsum('i->', x * y) / (np.einsum('i->', x ** 2) + np.einsum('i->', y ** 2) + c.EPSILON)
 
     return 1 - dist
 
@@ -220,7 +221,7 @@ def divergence_distance(x, y):
     """
 
     # Calculates the Divergence distance for each dimension
-    dist = (x - y) ** 2 / (x + y) ** 2
+    dist = (x - y) ** 2 / ((x + y) ** 2 + c.EPSILON)
 
     return 2 * np.einsum('i->', dist)
 
@@ -362,7 +363,7 @@ def jaccard_distance(x, y):
 
     # Calculates the Jaccard distance
     dist = np.einsum('i->', (x - y) ** 2) / (np.einsum('i->', x ** 2) +
-                                             np.einsum('i->', y ** 2) - np.einsum('i->', x * y))
+                                             np.einsum('i->', y ** 2) - np.einsum('i->', x * y) + c.EPSILON)
 
     return dist
 
@@ -380,7 +381,7 @@ def jeffreys_distance(x, y):
     """
 
     # Calculates the Jeffreys distance for each dimension
-    dist = (x - y) * np.log(x / y)
+    dist = (x - y) * np.log(x / (y + c.EPSILON))
 
     return np.einsum('i->', dist)
 
@@ -416,10 +417,10 @@ def jensen_shannon_distance(x, y):
     """
 
     # Calculates the first part Jensen-Shannon distance for each dimension
-    dist1 = x * np.log((2 * x) / (x + y))
+    dist1 = x * np.log((2 * x) / (x + y + c.EPSILON))
 
     # Calculates the second part Jensen-Shannon distance for each dimension
-    dist2 = y * np.log((2 * y) / (x + y))
+    dist2 = y * np.log((2 * y) / (x + y + c.EPSILON))
 
     return (np.einsum('i->', dist1) + np.einsum('i->', dist2)) * 0.5
 
@@ -437,7 +438,7 @@ def k_divergence_distance(x, y):
     """
 
     # Calculates the K Divergence distance for each dimension
-    dist = x * np.log((2 * x) / (x + y))
+    dist = x * np.log((2 * x) / (x + y + c.EPSILON))
 
     return np.einsum('i->', dist)
 
@@ -455,7 +456,7 @@ def kulczynski_distance(x, y):
     """
 
     # Calculates the Kulczynski distance
-    dist = np.einsum('i->', np.fabs(x - y)) / np.einsum('i->', np.minimum(x, y))
+    dist = np.einsum('i->', np.fabs(x - y)) / (np.einsum('i->', np.minimum(x, y)) + c.EPSILON)
 
     return dist
 
@@ -473,7 +474,7 @@ def kullback_leibler_distance(x, y):
     """
 
     # Calculates the Kullback-Leibler distance for each dimension
-    dist = x * np.log(x / y)
+    dist = x * np.log(x / (y + c.EPSILON))
 
     return np.einsum('i->', dist)
 
@@ -581,10 +582,10 @@ def max_symmetric_distance(x, y):
     """
 
     # Calculates the first partial Max Symmetric distance for each dimension
-    dist1 = (x - y) ** 2 / x
+    dist1 = (x - y) ** 2 / (x + c.EPSILON)
 
     # Calculates the second partial Max Symmetric distance for each dimension
-    dist2 = (x - y) ** 2 / y
+    dist2 = (x - y) ** 2 / (y + c.EPSILON)
 
     return np.maximum(np.einsum('i->', dist1), np.einsum('i->', dist2))
 
@@ -623,10 +624,10 @@ def min_symmetric_distance(x, y):
     """
 
     # Calculates the first partial Min Symmetric distance for each dimension
-    dist1 = (x - y) ** 2 / x
+    dist1 = (x - y) ** 2 / (x + c.EPSILON)
 
     # Calculates the second partial Min Symmetric distance for each dimension
-    dist2 = (x - y) ** 2 / y
+    dist2 = (x - y) ** 2 / (y + c.EPSILON)
 
     return np.minimum(np.einsum('i->', dist1), np.einsum('i->', dist2))
 
@@ -644,7 +645,7 @@ def neyman_distance(x, y):
     """
 
     # Calculates the Neyman distance for each dimension
-    dist = (x - y) ** 2 / x
+    dist = (x - y) ** 2 / (x + c.EPSILON)
 
     return np.einsum('i->', dist)
 
@@ -680,7 +681,7 @@ def pearson_distance(x, y):
     """
 
     # Calculates the Pearson distance for each dimension
-    dist = (x - y) ** 2 / y
+    dist = (x - y) ** 2 / (y + c.EPSILON)
 
     return np.einsum('i->', dist)
 
@@ -698,7 +699,7 @@ def sangvi_distance(x, y):
     """
 
     # Calculates the Sangvi distance for each dimension
-    dist = (x - y) ** 2 / (x + y)
+    dist = (x - y) ** 2 / (x + y + c.EPSILON)
 
     return 2 * np.einsum('i->', dist)
 
@@ -716,7 +717,7 @@ def soergel_distance(x, y):
     """
 
     # Calculates the Soergel distance
-    dist = np.einsum('i->', np.fabs(x - y)) / np.einsum('i->', np.maximum(x, y))
+    dist = np.einsum('i->', np.fabs(x - y)) / (np.einsum('i->', np.maximum(x, y)) + c.EPSILON)
 
     return dist
 
@@ -734,7 +735,7 @@ def squared_distance(x, y):
     """
 
     # Calculates the Squared distance for each dimension
-    dist = (x - y) ** 2 / (x + y)
+    dist = (x - y) ** 2 / (x + y + c.EPSILON)
 
     return np.einsum('i->', dist)
 
@@ -791,7 +792,7 @@ def statistic_distance(x, y):
     m = (x + y) / 2
 
     # Calculates the Statistic distance for each dimension
-    dist = (x - m) / m
+    dist = (x - m) / (m + c.EPSILON)
 
     return np.einsum('i->', dist)
 
@@ -809,10 +810,10 @@ def topsoe_distance(x, y):
     """
 
     # Calculates the first part Topsoe distance for each dimension
-    dist1 = x * np.log((2 * x) / (x + y))
+    dist1 = x * np.log((2 * x) / (x + y + c.EPSILON))
 
     # Calculates the second part Topsoe distance for each dimension
-    dist2 = y * np.log((2 * y) / (x + y))
+    dist2 = y * np.log((2 * y) / (x + y + c.EPSILON))
 
     return np.einsum('i->', dist1) + np.einsum('i->', dist2)
 
@@ -830,7 +831,7 @@ def vicis_symmetric1_distance(x, y):
     """
 
     # Calculates the Vicis Symmetric 1 distance for each dimension
-    dist = (x - y) ** 2 / np.minimum(x, y) ** 2
+    dist = (x - y) ** 2 / (np.minimum(x, y) ** 2 + c.EPSILON)
 
     return np.einsum('i->', dist)
 
@@ -848,7 +849,7 @@ def vicis_symmetric2_distance(x, y):
     """
 
     # Calculates the Vicis Symmetric 2 distance for each dimension
-    dist = (x - y) ** 2 / np.minimum(x, y)
+    dist = (x - y) ** 2 / (np.minimum(x, y) + c.EPSILON)
 
     return np.einsum('i->', dist)
 
@@ -866,7 +867,7 @@ def vicis_symmetric3_distance(x, y):
     """
 
     # Calculates the Vicis Symmetric 3 distance for each dimension
-    dist = (x - y) ** 2 / np.maximum(x, y)
+    dist = (x - y) ** 2 / (np.maximum(x, y) + c.EPSILON)
 
     return np.einsum('i->', dist)
 
@@ -884,7 +885,7 @@ def vicis_wave_hedges_distance(x, y):
     """
 
     # Calculates the Vicis-Wave Hedges distance for each dimension
-    dist = np.fabs(x - y) / np.minimum(x, y)
+    dist = np.fabs(x - y) / (np.minimum(x, y) + c.EPSILON)
 
     return np.einsum('i->', dist)
 

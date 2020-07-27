@@ -72,7 +72,7 @@ def test_chord_distance():
 
     dist = distance.chord_distance(x, y)
 
-    assert dist == 1.3972817966181486
+    assert dist == 0.056422964906444134
 
 
 def test_clark_distance():

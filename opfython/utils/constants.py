@@ -5,7 +5,7 @@ import sys
 
 # A constant value used to avoid division by zero, zero logarithms
 # and any possible mathematical error
-EPSILON = 1e-10
+EPSILON = 1e-20
 
 # When the costs are initialized, their value are defined as
 # the maximum float value possible
