@@ -6,7 +6,7 @@ from functools import wraps
 import opfython.utils.constants as c
 
 
-def avoid_zeros(f):
+def avoid_zero_division(f):
     """Adds a minimal value to arguments to avoid zero values.
 
     Args:
@@ -18,7 +18,7 @@ def avoid_zeros(f):
     """
 
     @wraps(f)
-    def _avoid_zeros(x, y):
+    def _avoid_zero_division(x, y):
         """Wraps the function for adjusting its arguments
 
         Returns:
@@ -34,4 +34,4 @@ def avoid_zeros(f):
 
         return f(x, y)
 
-    return _avoid_zeros
+    return _avoid_zero_division

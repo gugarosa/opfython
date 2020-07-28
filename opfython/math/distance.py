@@ -9,7 +9,7 @@ import opfython.utils.constants as c
 import opfython.utils.decorator as d
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def additive_symmetric_distance(x, y):
     """Calculates the Additive Symmetric Distance (Symmetric Divergence).
 
@@ -28,7 +28,6 @@ def additive_symmetric_distance(x, y):
     return 2 * np.einsum('i->', dist)
 
 
-@d.avoid_zeros
 def average_euclidean_distance(x, y):
     """Calculates the Average Euclidean Distance.
 
@@ -47,7 +46,7 @@ def average_euclidean_distance(x, y):
     return (dist / x.shape[0]) ** 0.5
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def bhattacharyya_distance(x, y):
     """Calculates the Bhattacharyya Distance.
 
@@ -66,7 +65,7 @@ def bhattacharyya_distance(x, y):
     return dist
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def bray_curtis_distance(x, y):
     """Calculates the Bray-Curtis Distance (Sorensen Distance).
 
@@ -85,7 +84,7 @@ def bray_curtis_distance(x, y):
     return dist
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def canberra_distance(x, y):
     """Calculates the Canberra Distance.
 
@@ -104,7 +103,6 @@ def canberra_distance(x, y):
     return np.einsum('i->', dist)
 
 
-@d.avoid_zeros
 def chebyshev_distance(x, y):
     """Calculates the Chebyshev Distance (Maximum Value Distance, Lagrange, Chessboard Distance).
 
@@ -123,7 +121,7 @@ def chebyshev_distance(x, y):
     return np.amax(dist)
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def chi_squared_distance(x, y):
     """Calculates the Chi-Squared Distance.
 
@@ -142,7 +140,7 @@ def chi_squared_distance(x, y):
     return np.einsum('i->', dist) * 0.5
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def chord_distance(x, y):
     """Calculates the Chord Distance.
 
@@ -162,7 +160,7 @@ def chord_distance(x, y):
     return dist ** 0.5
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def clark_distance(x, y):
     """Calculates the Clark Distance.
 
@@ -181,7 +179,7 @@ def clark_distance(x, y):
     return np.einsum('i->', dist) ** 0.5
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def cosine_distance(x, y):
     """Calculates the Cosine Distance.
 
@@ -201,7 +199,7 @@ def cosine_distance(x, y):
     return dist
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def dice_distance(x, y):
     """Calculates the Dice Distance.
 
@@ -220,7 +218,7 @@ def dice_distance(x, y):
     return 1 - dist
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def divergence_distance(x, y):
     """Calculates the Divergence Distance.
 
@@ -239,7 +237,6 @@ def divergence_distance(x, y):
     return 2 * np.einsum('i->', dist)
 
 
-@d.avoid_zeros
 def euclidean_distance(x, y):
     """Calculates the Euclidean Distance (L2 Norm, Ruler Distance).
 
@@ -258,7 +255,6 @@ def euclidean_distance(x, y):
     return np.einsum('i->', dist) ** 0.5
 
 
-@d.avoid_zeros
 def gaussian_distance(x, y, gamma=1):
     """Calculates the Gaussian Distance.
 
@@ -277,7 +273,6 @@ def gaussian_distance(x, y, gamma=1):
     return math.exp(-gamma * np.einsum('i->', dist) ** 0.5)
 
 
-@d.avoid_zeros
 def gower_distance(x, y):
     """Calculates the Gower Distance (Average Manhattan, Mean Character Distance).
 
@@ -296,7 +291,6 @@ def gower_distance(x, y):
     return np.einsum('i->', dist) / x.shape[0]
 
 
-@d.avoid_zeros
 def hamming_distance(x, y):
     """Calculates the Hamming Distance.
 
@@ -315,7 +309,7 @@ def hamming_distance(x, y):
     return dist
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def hassanat_distance(x, y):
     """Calculates the Hassanat Distance.
 
@@ -349,7 +343,6 @@ def hassanat_distance(x, y):
     return np.einsum('i->', dist)
 
 
-@d.avoid_zeros
 def hellinger_distance(x, y):
     """Calculates the Hellinger Distance (Jeffries-Matusita Distance).
 
@@ -368,7 +361,7 @@ def hellinger_distance(x, y):
     return np.einsum('i->', dist) ** 0.5
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def jaccard_distance(x, y):
     """Calculates the Jaccard Distance.
 
@@ -388,7 +381,7 @@ def jaccard_distance(x, y):
     return dist
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def jeffreys_distance(x, y):
     """Calculates the Jeffreys Distance (J-Divergence, KL2 Divergence).
 
@@ -407,7 +400,7 @@ def jeffreys_distance(x, y):
     return np.einsum('i->', dist)
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def jensen_distance(x, y):
     """Calculates the Jensen Distance.
 
@@ -426,7 +419,7 @@ def jensen_distance(x, y):
     return np.einsum('i->', dist) * 0.5
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def jensen_shannon_distance(x, y):
     """Calculates the Jensen-Shannon Distance.
 
@@ -448,7 +441,7 @@ def jensen_shannon_distance(x, y):
     return (np.einsum('i->', dist1) + np.einsum('i->', dist2)) * 0.5
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def k_divergence_distance(x, y):
     """Calculates the K Divergence Distance.
 
@@ -467,7 +460,7 @@ def k_divergence_distance(x, y):
     return np.einsum('i->', dist)
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def kulczynski_distance(x, y):
     """Calculates the Kulczynski Distance.
 
@@ -486,7 +479,7 @@ def kulczynski_distance(x, y):
     return dist
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def kullback_leibler_distance(x, y):
     """Calculates the Kullback-Leibler Distance (KL Divergence).
 
@@ -505,7 +498,6 @@ def kullback_leibler_distance(x, y):
     return np.einsum('i->', dist)
 
 
-@d.avoid_zeros
 def log_euclidean_distance(x, y):
     """Calculates the log-Euclidean Distance.
 
@@ -524,7 +516,6 @@ def log_euclidean_distance(x, y):
     return c.MAX_ARC_WEIGHT * math.log(dist + 1)
 
 
-@d.avoid_zeros
 def log_squared_euclidean_distance(x, y):
     """Calculates the log-Squared Euclidean Distance.
 
@@ -543,7 +534,6 @@ def log_squared_euclidean_distance(x, y):
     return c.MAX_ARC_WEIGHT * math.log(dist + 1)
 
 
-@d.avoid_zeros
 def lorentzian_distance(x, y):
     """Calculates the Lorentzian Distance.
 
@@ -562,7 +552,6 @@ def lorentzian_distance(x, y):
     return np.einsum('i->', dist)
 
 
-@d.avoid_zeros
 def manhattan_distance(x, y):
     """Calculates the Manhattan Distance (L1 Norm, Taxicab Norm, City Block Distance).
 
@@ -581,7 +570,6 @@ def manhattan_distance(x, y):
     return np.einsum('i->', dist)
 
 
-@d.avoid_zeros
 def matusita_distance(x, y):
     """Calculates the Matusita Distance, where features must be positive.
 
@@ -600,7 +588,7 @@ def matusita_distance(x, y):
     return np.einsum('i->', dist) ** 0.5
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def max_symmetric_distance(x, y):
     """Calculates the Max Symmetric Distance.
 
@@ -622,7 +610,7 @@ def max_symmetric_distance(x, y):
     return np.maximum(np.einsum('i->', dist1), np.einsum('i->', dist2))
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def mean_censored_euclidean_distance(x, y):
     """Calculates the Mean Censored Euclidean Distance.
 
@@ -644,7 +632,7 @@ def mean_censored_euclidean_distance(x, y):
     return (dist / diff) ** 0.5
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def min_symmetric_distance(x, y):
     """Calculates the Min Symmetric Distance.
 
@@ -666,7 +654,7 @@ def min_symmetric_distance(x, y):
     return np.minimum(np.einsum('i->', dist1), np.einsum('i->', dist2))
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def neyman_distance(x, y):
     """Calculates the Neyman Distance.
 
@@ -685,7 +673,6 @@ def neyman_distance(x, y):
     return np.einsum('i->', dist)
 
 
-@d.avoid_zeros
 def non_intersection_distance(x, y):
     """Calculates the Non-Intersection Distance.
 
@@ -704,7 +691,7 @@ def non_intersection_distance(x, y):
     return np.einsum('i->', dist) * 0.5
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def pearson_distance(x, y):
     """Calculates the Pearson Distance.
 
@@ -723,7 +710,7 @@ def pearson_distance(x, y):
     return np.einsum('i->', dist)
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def sangvi_distance(x, y):
     """Calculates the Sangvi Distance (Probabilistic Symmetric).
 
@@ -742,7 +729,7 @@ def sangvi_distance(x, y):
     return 2 * np.einsum('i->', dist)
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def soergel_distance(x, y):
     """Calculates the Soergel Distance (Ruzicka Distance).
 
@@ -761,7 +748,7 @@ def soergel_distance(x, y):
     return dist
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def squared_distance(x, y):
     """Calculates the Squared Distance (Triangular Discrimination Distance).
 
@@ -780,7 +767,6 @@ def squared_distance(x, y):
     return np.einsum('i->', dist)
 
 
-@d.avoid_zeros
 def squared_chord_distance(x, y):
     """Calculates the Squared Chord Distance, where features must be positive.
 
@@ -799,7 +785,6 @@ def squared_chord_distance(x, y):
     return np.einsum('i->', dist)
 
 
-@d.avoid_zeros
 def squared_euclidean_distance(x, y):
     """Calculates the Squared Euclidean Distance.
 
@@ -818,7 +803,7 @@ def squared_euclidean_distance(x, y):
     return np.einsum('i->', dist)
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def statistic_distance(x, y):
     """Calculates the Statistic Distance.
 
@@ -840,7 +825,7 @@ def statistic_distance(x, y):
     return np.einsum('i->', dist)
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def topsoe_distance(x, y):
     """Calculates the Topsoe Distance (Information Statistics).
 
@@ -862,7 +847,7 @@ def topsoe_distance(x, y):
     return np.einsum('i->', dist1) + np.einsum('i->', dist2)
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def vicis_symmetric1_distance(x, y):
     """Calculates the Vicis Symmetric 1 Distance.
 
@@ -881,7 +866,7 @@ def vicis_symmetric1_distance(x, y):
     return np.einsum('i->', dist)
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def vicis_symmetric2_distance(x, y):
     """Calculates the Vicis Symmetric 2 Distance.
 
@@ -900,7 +885,7 @@ def vicis_symmetric2_distance(x, y):
     return np.einsum('i->', dist)
 
 
-@d.avoid_zeros
+@d.avoid_zero_division
 def vicis_symmetric3_distance(x, y):
     """Calculates the Vicis Symmetric 3 Distance.
 
@@ -919,8 +904,7 @@ def vicis_symmetric3_distance(x, y):
     return np.einsum('i->', dist)
 
 
-@d.avoid_zeros
-@d.avoid_zeros
+@d.avoid_zero_division
 def vicis_wave_hedges_distance(x, y):
     """Calculates the Vicis-Wave Hedges Distance (Wave-Hedges).
 
