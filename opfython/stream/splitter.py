@@ -45,7 +45,7 @@ def split(X, Y, percentage=0.5, random_state=1):
     # Gathering two new sets from `Y`
     Y_1, Y_2 = Y[idx[:halt]], Y[idx[halt:]]
 
-    logger.debug('X_1: %s| X_2: %s | Y_1: %s | Y_2: %s.', X_1.shape, X_2.shape, Y_1.shape, Y_2.shape)
+    logger.debug('X_1: %s | X_2: %s | Y_1: %s | Y_2: %s.', X_1.shape, X_2.shape, Y_1.shape, Y_2.shape)
     logger.info('Data splitted.')
 
     return X_1, X_2, Y_1, Y_2
