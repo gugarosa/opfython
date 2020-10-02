@@ -15,7 +15,7 @@ class Node:
 
     """
 
-    def __init__(self, idx=0, label=1, features=[]):
+    def __init__(self, idx=0, label=1, features=None):
         """Initialization method.
 
         Args:

@@ -18,7 +18,7 @@ class SemiSupervisedOPF(SupervisedOPF):
 
     References:
         W. P. Amorim, A. X. Falcão and M. H. Carvalho. Semi-supervised Pattern Classification Using Optimum-Path Forest.
-        27th SIBGRAPI Conference on Graphics, Patterns and Images (2014).   
+        27th SIBGRAPI Conference on Graphics, Patterns and Images (2014).
 
     """
 

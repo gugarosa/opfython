@@ -88,7 +88,7 @@ class UnsupervisedOPF(OPF):
         """Clusters the subgraph using using a `k` value (number of neighbours).
 
         Args:
-            n_neighbours (int): Number of neighbours to be used. 
+            n_neighbours (int): Number of neighbours to be used.
 
         """
 
