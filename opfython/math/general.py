@@ -89,7 +89,7 @@ def opf_accuracy(labels, preds):
     errors = np.zeros((n_class, 2))
 
     # Gathering the amount of labels per class
-    _, counts = np.unique(labels, return_counts=True)
+    counts = np.bincount(labels)[1:]
 
     # For every label and prediction
     for label, pred in zip(labels, preds):
@@ -105,10 +105,10 @@ def opf_accuracy(labels, preds):
     errors[:, 1] /= counts
 
     # Calculating the float value of the predicted label errors
-    errors[:, 0] /= (np.sum(counts) - counts)
+    errors[:, 0] /= (np.nansum(counts) - counts)
 
     # Calculates the sum of errors per class
-    errors = np.sum(errors, axis=1)
+    errors = np.nansum(errors, axis=1)
 
     # Calculates the OPF accuracy
     accuracy = 1 - (np.sum(errors) / (2 * n_class))
@@ -142,7 +142,7 @@ def opf_accuracy_per_label(labels, preds):
 
     # Gathering the amount of labels per class
     _, counts = np.unique(labels, return_counts=True)
-
+    
     # For every label and prediction
     for label, pred in zip(labels, preds):
         # If label is different from prediction
