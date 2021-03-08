@@ -180,7 +180,7 @@ def test_jeffreys_distance():
 
     dist = distance.jeffreys_distance(x, y)
 
-    assert dist == 0.11883959298241359
+    assert np.round(dist, 5) == 0.11884
 
 
 def test_jensen_distance():
@@ -189,7 +189,7 @@ def test_jensen_distance():
 
     dist = distance.jensen_distance(x, y)
 
-    assert dist == 0.0074043973952890585
+    assert np.round(dist, 5) == 0.00740
 
 
 def test_jensen_shannon_distance():
@@ -198,7 +198,7 @@ def test_jensen_shannon_distance():
 
     dist = distance.jensen_shannon_distance(x, y)
 
-    assert dist == 0.014808794790576757
+    assert np.round(dist, 5) == 0.01481
 
 
 def test_k_divergence_distance():
@@ -225,7 +225,7 @@ def test_kullback_leibler_distance():
 
     dist = distance.kullback_leibler_distance(x, y)
 
-    assert dist == -0.34023041931224646
+    assert np.round(dist, 5) == -0.34023
 
 
 def test_log_euclidean_distance():
@@ -387,7 +387,7 @@ def test_topsoe_distance():
 
     dist = distance.topsoe_distance(x, y)
 
-    assert dist == 0.029617589581153514
+    assert np.round(dist, 5) == 0.02962
 
 
 def test_vicis_symmetric1_distance():
