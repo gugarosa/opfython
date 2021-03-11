@@ -12,10 +12,10 @@ setup(name='opfython',
       author_email='gth.rosa@uol.com.br',
       url='https://github.com/gugarosa/opfython',
       license='GPL-3.0',
-      install_requires=['coverage>=5.3',
-                        'numpy>=1.19.2',
-                        'pylint>=2.6.0',
-                        'pytest>=6.1.0'
+      install_requires=['coverage>=5.5',
+                        'numpy>=1.20.1',
+                        'pylint>=2.7.2',
+                        'pytest>=6.2.2'
                        ],
       extras_require={
           'tests': ['coverage',
@@ -32,6 +32,7 @@ setup(name='opfython',
           'Programming Language :: Python :: 3.6',
           'Programming Language :: Python :: 3.7',
           'Programming Language :: Python :: 3.8',
+          'Programming Language :: Python :: 3.9',
           'Topic :: Software Development :: Libraries',
           'Topic :: Software Development :: Libraries :: Python Modules'
       ],
