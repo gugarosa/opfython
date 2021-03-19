@@ -13,6 +13,7 @@ setup(name='opfython',
       url='https://github.com/gugarosa/opfython',
       license='GPL-3.0',
       install_requires=['coverage>=5.5',
+                        'numba>=0.53.0',
                         'numpy>=1.19.5',
                         'pylint>=2.7.2',
                         'pytest>=6.2.2'

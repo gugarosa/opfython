@@ -4,6 +4,7 @@
 import math
 
 import numpy as np
+from numba import njit
 
 import opfython.utils.constants as c
 import opfython.utils.decorator as d
@@ -785,6 +786,7 @@ def squared_chord_distance(x, y):
     return np.einsum('i->', dist)
 
 
+@njit(cache=True)
 def squared_euclidean_distance(x, y):
     """Calculates the Squared Euclidean Distance.
 
@@ -800,7 +802,7 @@ def squared_euclidean_distance(x, y):
     # Calculates the Squared Euclidean distance for each dimension
     dist = (x - y) ** 2
 
-    return np.einsum('i->', dist)
+    return np.sum(dist)
 
 
 @d.avoid_zero_division
