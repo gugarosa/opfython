@@ -8,6 +8,7 @@ from opfython.models import SupervisedOPF
 txt = l.load_txt('data/boat.txt')
 
 # Parsing a pre-loaded numpy array
+# Note that OPFython uses labels within [1, n]
 X, Y = p.parse_loader(txt)
 
 # Pre-computing the distances
