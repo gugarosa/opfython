@@ -21,10 +21,8 @@ def confusion_matrix(labels, preds):
 
     """
 
-    # Making sure that labels is a numpy array
+    # Making sure that labels and predictions are arrays
     labels = np.asarray(labels)
-
-    # Making sure that predictions is a numpy array
     preds = np.asarray(preds)
 
     # Calculating the number of classes
@@ -52,10 +50,8 @@ def normalize(array):
 
     """
 
-    # Calculates the array mean
+    # Calculates the array mean and standard deviation
     mean = np.mean(array, axis=0)
-
-    # Calculates the array standard deviation
     std = np.std(array, axis=0)
 
     # Calculates the normalized array
@@ -76,10 +72,8 @@ def opf_accuracy(labels, preds):
 
     """
 
-    # Making sure that labels is a numpy array
+    # Making sure that labels and predictions are arrays
     labels = np.asarray(labels)
-
-    # Making sure that predictions is a numpy array
     preds = np.asarray(preds)
 
     # Calculating the number of classes
@@ -95,10 +89,8 @@ def opf_accuracy(labels, preds):
     for label, pred in zip(labels, preds):
         # If label is different from prediction
         if label != pred:
-            # Increments the corresponding cell from the error matrix
+            # Increments the corresponding cells from the error matrix
             errors[pred - 1][0] += 1
-
-            # Increments the corresponding cell from the error matrix
             errors[label - 1][1] += 1
 
     # Calculating the float value of the true label errors
@@ -128,10 +120,8 @@ def opf_accuracy_per_label(labels, preds):
 
     """
 
-    # Making sure that labels is a numpy array
+    # Making sure that labels and predictions are arrays
     labels = np.asarray(labels)
-
-    # Making sure that predictions is a numpy array
     preds = np.asarray(preds)
 
     # Calculating the number of classes

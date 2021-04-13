@@ -33,10 +33,8 @@ def opf2txt(opf_path, output_file=None):
         # Reading binary data and unpacking to desired format
         header_data = struct.unpack(header_format, f.read(header_size))
 
-        # Retrieving number of samples
+        # Retrieving number of samples and features
         n_samples = header_data[0]
-
-        # Retrieving number of features
         n_features = header_data[2]
 
         # Defining the file format for each subsequent line
@@ -97,10 +95,8 @@ def opf2csv(opf_path, output_file=None):
         # Reading binary data and unpacking to desired format
         header_data = struct.unpack(header_format, f.read(header_size))
 
-        # Retrieving number of samples
+        # Retrieving number of samples and features
         n_samples = header_data[0]
-
-        # Retrieving number of features
         n_features = header_data[2]
 
         # Defining the file format for each subsequent line
@@ -161,10 +157,8 @@ def opf2json(opf_path, output_file=None):
         # Reading binary data and unpacking to desired format
         header_data = struct.unpack(header_format, f.read(header_size))
 
-        # Retrieving number of samples
+        # Retrieving number of samples and features
         n_samples = header_data[0]
-
-        # Retrieving number of features
         n_features = header_data[2]
 
         # Defining the file format for each subsequent line

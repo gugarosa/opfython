@@ -241,10 +241,8 @@ class Heap:
                 # Swap the positions
                 self.p[j], self.p[i] = self.p[i], self.p[j]
 
-                # Applies node's i value to the positioning list
+                # Applies node's `i` and `j` values to the positioning list
                 self.pos[self.p[i]] = i
-
-                # Applies node's j value to the positioning list
                 self.pos[self.p[j]] = j
 
                 # Makes both indexes equal
@@ -260,10 +258,8 @@ class Heap:
                 # Swap the positions
                 self.p[j], self.p[i] = self.p[i], self.p[j]
 
-                # Applies node's i value to the positioning list
+                # Applies node's `i` and `j` values to the positioning list
                 self.pos[self.p[i]] = i
-
-                # Applies node's j value to the positioning list
                 self.pos[self.p[j]] = j
 
                 # Makes both indexes equal
@@ -280,10 +276,8 @@ class Heap:
 
         """
 
-        # Gathers the left son's position
+        # Gathers the left and right son's positions
         left = self.left_son(i)
-
-        # Gathers the right son's position
         right = self.right_son(i)
 
         # Equals the value of `j` and `i` counters
@@ -318,10 +312,8 @@ class Heap:
             # Swap node's position
             self.p[j], self.p[i] = self.p[i], self.p[j]
 
-            # Marks the new position in `i`
+            # Marks the new position in `i` and `j`
             self.pos[self.p[i]] = i
-
-            # Marks the new position in `j`
             self.pos[self.p[j]] = j
 
             # Goes down in the heap
@@ -343,13 +335,9 @@ class Heap:
             # Increases the last node's counter
             self.last += 1
 
-            # Adds the new node to the heap
+            # Adds the new node to the heap, mark it as gray and mark its positioning
             self.p[self.last] = p
-
-            # Marks it as gray
             self.color[p] = c.GRAY
-
-            # Marks its positioning
             self.pos[p] = self.last
 
             # Go up in the heap
@@ -372,19 +360,15 @@ class Heap:
             # Gathers the node's value
             p = self.p[0]
 
-            # Marks it as not positioned
+            # Marks it as not positioned and black-color
             self.pos[p] = -1
-
-            # Change its color to black
             self.color[p] = c.BLACK
 
             # Gathers the new position of first node
             self.p[0] = self.p[self.last]
 
-            # Marks it as positioned
+            # Marks it as positioned and remove its value
             self.pos[self.p[0]] = 0
-
-            # Remove its value
             self.p[self.last] = -1
 
             # Decreases the last counter
