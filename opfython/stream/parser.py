@@ -40,10 +40,10 @@ def parse_loader(data):
                 'Parsed data should have at least two distinct labels')
 
         # If there are unsequential labels
-        if len(counts) != np.max(Y):
+        if len(counts) != (np.max(Y) + 1):
             # Raises a ValueError
             raise e.ValueError(
-                'Parsed data should have sequential labels, e.g., 1, 2, ..., n')
+                'Parsed data should have sequential labels, e.g., 0, 1, ..., n-1')
 
         logger.info('Data parsed.')
 

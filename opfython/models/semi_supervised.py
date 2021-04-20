@@ -67,7 +67,7 @@ class SemiSupervisedOPF(SupervisedOPF):
         # Iterate over every possible unlabeled sample
         for i, feature in enumerate(X_unlabeled):
             # Creates a Node structure
-            node = Node(current_n_nodes + i, 1, feature)
+            node = Node(current_n_nodes + i, 0, feature)
 
             # Appends the node to the list
             self.subgraph.nodes.append(node)
