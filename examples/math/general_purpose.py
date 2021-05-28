@@ -2,14 +2,10 @@ import numpy as np
 
 import opfython.math.general as g
 
-# Defining a general purpose array
+# Defining array, labels and predictions
 array = np.asarray([1.5, 2, 0.5, 1.25, 1.75, 3])
-
-# Defining a list of labels
-labels = [1, 1, 1, 2, 2, 2, 3]
-
-# Defining a list of predictions
-preds = [1, 1, 2, 2, 1, 2, 3]
+labels = [0, 0, 0, 1, 1, 1, 2]
+preds = [0, 0, 1, 1, 0, 1, 2]
 
 # Normalizing the array
 norm_array = g.normalize(array)

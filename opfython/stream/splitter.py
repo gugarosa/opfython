@@ -39,10 +39,8 @@ def split(X, Y, percentage=0.5, random_state=1):
     # Calculating where sets should be halted
     halt = int(len(X) * percentage)
 
-    # Gathering two new sets from `X`
+    # Gathering two new sets from `X` and `Y`
     X_1, X_2 = X[idx[:halt], :], X[idx[halt:], :]
-
-    # Gathering two new sets from `Y`
     Y_1, Y_2 = Y[idx[:halt]], Y[idx[halt:]]
 
     logger.debug('X_1: %s | X_2: %s | Y_1: %s | Y_2: %s.', X_1.shape, X_2.shape, Y_1.shape, Y_2.shape)
@@ -84,10 +82,8 @@ def split_with_index(X, Y, percentage=0.5, random_state=1):
     # Dividing the indexes
     I_1, I_2 = idx[:halt], idx[halt:]
 
-    # Gathering two new sets from `X`
+    # Gathering two new sets from `X` and `Y`
     X_1, X_2 = X[I_1, :], X[I_2, :]
-
-    # Gathering two new sets from `Y`
     Y_1, Y_2 = Y[I_1], Y[I_2]
 
     logger.debug('X_1: %s| X_2: %s | Y_1: %s | Y_2: %s.', X_1.shape, X_2.shape, Y_1.shape, Y_2.shape)

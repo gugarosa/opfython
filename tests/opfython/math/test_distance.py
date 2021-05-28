@@ -9,7 +9,7 @@ def test_additive_symmetric_distance():
 
     dist = distance.additive_symmetric_distance(x, y)
 
-    assert dist == 0.48134453781512637
+    assert dist == 0.4813445378151263
 
 
 def test_average_euclidean_distance():
@@ -72,7 +72,7 @@ def test_chord_distance():
 
     dist = distance.chord_distance(x, y)
 
-    assert dist == 0.056422964906444134
+    assert dist == 0.05642296490643823
 
 
 def test_clark_distance():
@@ -90,7 +90,7 @@ def test_cosine_distance():
 
     dist = distance.cosine_distance(x, y)
 
-    assert dist == 0.001591775484416913
+    assert dist == 0.00159177548441658
 
 
 def test_dice_distance():
@@ -99,7 +99,7 @@ def test_dice_distance():
 
     dist = distance.dice_distance(x, y)
 
-    assert dist == 0.0023820867079563657
+    assert dist == 0.0023820867079562547
 
 
 def test_divergence_distance():
@@ -171,7 +171,7 @@ def test_jaccard_distance():
 
     dist = distance.jaccard_distance(x, y)
 
-    assert dist == 0.004752851711026625
+    assert dist == 0.004752851711026626
 
 
 def test_jeffreys_distance():
@@ -297,7 +297,7 @@ def test_min_symmetric_distance():
 
     dist = distance.min_symmetric_distance(x, y)
 
-    assert dist == 0.11812324929972
+    assert dist == 0.11812324929971998
 
 
 def test_neyman_distance():
@@ -306,7 +306,7 @@ def test_neyman_distance():
 
     dist = distance.neyman_distance(x, y)
 
-    assert dist == 0.11812324929972
+    assert dist == 0.11812324929971998
 
 
 def test_non_intersection_distance():
@@ -360,7 +360,7 @@ def test_squared_chord_distance():
 
     dist = distance.squared_chord_distance(x, y)
 
-    assert dist == 0.029663592349384992
+    assert dist == 0.029663592349384996
 
 
 def test_squared_euclidean_distance():
@@ -378,7 +378,7 @@ def test_statistic_distance():
 
     dist = distance.statistic_distance(x, y)
 
-    assert dist == 0.08914713150337263
+    assert dist == 0.08914713150337261
 
 
 def test_topsoe_distance():
@@ -396,7 +396,7 @@ def test_vicis_symmetric1_distance():
 
     dist = distance.vicis_symmetric1_distance(x, y)
 
-    assert dist == 0.30024362686250955
+    assert dist == 0.3002436268625096
 
 
 def test_vicis_symmetric2_distance():

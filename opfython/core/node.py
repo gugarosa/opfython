@@ -15,7 +15,7 @@ class Node:
 
     """
 
-    def __init__(self, idx=0, label=1, features=None):
+    def __init__(self, idx=0, label=0, features=None):
         """Initialization method.
 
         Args:
@@ -96,8 +96,8 @@ class Node:
     def label(self, label):
         if not isinstance(label, int):
             raise e.TypeError('`label` should be an integer')
-        if label < 1:
-            raise e.ValueError('`label` should be >= 1')
+        if label < 0:
+            raise e.ValueError('`label` should be >= 0')
 
         self._label = label
 
@@ -272,8 +272,7 @@ class Node:
         if not isinstance(pred, int):
             raise e.TypeError('`pred` should be an integer')
         if pred < c.NIL:
-            raise e.ValueError(
-                '`pred` should have a value larger than `NIL`, e.g., -1')
+            raise e.ValueError('`pred` should have a value larger than `NIL`, e.g., -1')
 
         self._pred = pred
 
@@ -288,7 +287,6 @@ class Node:
     @relevant.setter
     def relevant(self, relevant):
         if relevant not in [c.RELEVANT, c.IRRELEVANT]:
-            raise e.TypeError(
-                '`relevant` should be `RELEVANT` or `IRRELEVANT`')
+            raise e.TypeError('`relevant` should be `RELEVANT` or `IRRELEVANT`')
 
         self._relevant = relevant

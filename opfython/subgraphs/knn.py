@@ -156,10 +156,8 @@ class KNNSubgraph(Subgraph):
         # Calculating constant for computing the probability density function
         self.constant = 2 * self.density / 9
 
-        # Defining subgraph's minimum density
+        # Defining subgraph's minimum and maximum densities
         self.min_density = c.FLOAT_MAX
-
-        # Defining subgraph's maximum density
         self.max_density = -c.FLOAT_MAX
 
         # Creating an array to hold the p.d.f. calculation
@@ -243,13 +241,9 @@ class KNNSubgraph(Subgraph):
 
         """
 
-        # Creating an array of distances
+        # Creating an array of distances, neighbours indexes and maximum distances
         distances = np.zeros(k + 1)
-
-        # Creating an array of nearest neighbours indexes
         neighbours_idx = np.zeros(k + 1)
-
-        # Creating an array of maximum distances
         max_distances = np.zeros(k)
 
         # For every possible node
@@ -289,10 +283,8 @@ class KNNSubgraph(Subgraph):
                         # Decrements `k`
                         cur_k -= 1
 
-            # Make sure that current node's radius is 0
+            # Make sure that current node's radius is 0 and no adjacent nodes
             self.nodes[i].radius = 0.0
-
-            # Also make sure that it does not have any adjacent nodes
             self.nodes[i].n_plateaus = 0
 
             # For every possible decreasing `k`

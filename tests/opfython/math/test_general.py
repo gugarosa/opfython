@@ -3,8 +3,8 @@ from opfython.stream import loader, parser, splitter
 
 
 def test_confusion_matrix():
-    labels = [1, 1, 2, 2]
-    preds = [1, 1, 2, 2]
+    labels = [0, 0, 1, 1]
+    preds = [0, 0, 1, 1]
 
     c_matrix = general.confusion_matrix(labels, preds)
 
@@ -20,8 +20,8 @@ def test_normalize():
 
 
 def test_opf_accuracy():
-    labels = [1, 1, 2, 2]
-    preds = [1, 1, 1, 1]
+    labels = [0, 0, 1, 1]
+    preds = [0, 0, 0, 0]
 
     acc = general.opf_accuracy(labels, preds)
 
@@ -29,8 +29,8 @@ def test_opf_accuracy():
 
 
 def test_opf_accuracy_per_label():
-    labels = [1, 1, 2, 2]
-    preds = [1, 1, 1, 1]
+    labels = [0, 0, 1, 1]
+    preds = [0, 0, 0, 0]
 
     acc_per_label = general.opf_accuracy_per_label(labels, preds)
 
@@ -48,8 +48,8 @@ def test_opf_pre_compute_distances():
 
 
 def test_purity():
-    labels = [1, 1, 2, 2]
-    preds = [1, 1, 2, 2]
+    labels = [0, 0, 1, 1]
+    preds = [0, 0, 1, 1]
 
     purity = general.purity(labels, preds)
 

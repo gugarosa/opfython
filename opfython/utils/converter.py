@@ -33,10 +33,8 @@ def opf2txt(opf_path, output_file=None):
         # Reading binary data and unpacking to desired format
         header_data = struct.unpack(header_format, f.read(header_size))
 
-        # Retrieving number of samples
+        # Retrieving number of samples and features
         n_samples = header_data[0]
-
-        # Retrieving number of features
         n_features = header_data[2]
 
         # Defining the file format for each subsequent line
@@ -59,7 +57,8 @@ def opf2txt(opf_path, output_file=None):
             data = struct.unpack(file_format, f.read(data_size))
 
             # Appending the data to list
-            samples.append(data)
+            # Note that we subtract 1 from `labels` column
+            samples.append((data[0], data[1] - 1, *data[2:]))
 
     # Closing opf file
     f.close()
@@ -97,10 +96,8 @@ def opf2csv(opf_path, output_file=None):
         # Reading binary data and unpacking to desired format
         header_data = struct.unpack(header_format, f.read(header_size))
 
-        # Retrieving number of samples
+        # Retrieving number of samples and features
         n_samples = header_data[0]
-
-        # Retrieving number of features
         n_features = header_data[2]
 
         # Defining the file format for each subsequent line
@@ -123,7 +120,8 @@ def opf2csv(opf_path, output_file=None):
             data = struct.unpack(file_format, f.read(data_size))
 
             # Appending the data to list
-            samples.append(data)
+            # Note that we subtract 1 from `labels` column
+            samples.append((data[0], data[1] - 1, *data[2:]))
 
     # Closing opf file
     f.close()
@@ -161,10 +159,8 @@ def opf2json(opf_path, output_file=None):
         # Reading binary data and unpacking to desired format
         header_data = struct.unpack(header_format, f.read(header_size))
 
-        # Retrieving number of samples
+        # Retrieving number of samples and features
         n_samples = header_data[0]
-
-        # Retrieving number of features
         n_features = header_data[2]
 
         # Defining the file format for each subsequent line
@@ -191,7 +187,7 @@ def opf2json(opf_path, output_file=None):
             # Appending the data to JSON structure
             json['data'].append({
                 'id': data[0],
-                'label': data[1],
+                'label': data[1] - 1,
                 'features': list(data[2:])
             })
 

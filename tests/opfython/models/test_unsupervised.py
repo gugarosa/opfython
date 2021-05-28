@@ -121,4 +121,4 @@ def test_unsupervised_opf_propagate_labels():
 
     opf.propagate_labels()
 
-    assert opf.subgraph.nodes[0].predicted_label == 1
+    assert opf.subgraph.nodes[0].predicted_label == 0

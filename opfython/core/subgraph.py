@@ -218,10 +218,8 @@ class Subgraph:
 
         # For every possible node
         for i in range(self.n_nodes):
-            # Reset the number of adjacent nodes
+            # Reset the number of adjacent nodes and adjacency list
             self.nodes[i].n_plateaus = 0
-
-            # Resets the list of adjacent nodes
             self.nodes[i].adjacency = []
 
     def mark_nodes(self, i):

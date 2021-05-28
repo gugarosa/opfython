@@ -31,7 +31,7 @@ def test_node_idx_setter():
 def test_node_label():
     n = node.Node()
 
-    assert n.label == 1
+    assert n.label == 0
 
 
 def test_node_label_setter():
@@ -45,7 +45,7 @@ def test_node_label_setter():
     assert n.label == 1
 
     try:
-        n.label = 0
+        n.label = -1
     except:
         n.label = 1
 
