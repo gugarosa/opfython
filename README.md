@@ -36,7 +36,7 @@ OPFython is compatible with: **Python 3.6+**.
 
 ## Citation
 
-If you use OPFython to fulfill any of your needs, please cite us:
+If you use OPFython to fulfill any of your needs, please cite any of the following:
 
 ```BibTex
 @misc{rosa2020opfython,
@@ -46,6 +46,17 @@ If you use OPFython to fulfill any of your needs, please cite us:
     eprint={2001.10420},
     archivePrefix={arXiv},
     primaryClass={cs.LG}
+}
+```
+
+```BibTex
+@misc{rosa2021speedup,
+      title={Speeding Up OPFython with Numba}, 
+      author={Gustavo H. de Rosa and João Paulo Papa},
+      year={2021},
+      eprint={2106.11828},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
 }
 ```
 
