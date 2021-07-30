@@ -39,13 +39,14 @@ OPFython is compatible with: **Python 3.6+**.
 If you use OPFython to fulfill any of your needs, please cite any of the following:
 
 ```BibTex
-@misc{rosa2020opfython,
-    title={OPFython: A Python-Inspired Optimum-Path Forest Classifier},
-    author={Gustavo Henrique de Rosa and João Paulo Papa and Alexandre Xavier Falcão},
-    year={2020},
-    eprint={2001.10420},
-    archivePrefix={arXiv},
-    primaryClass={cs.LG}
+@article{rosa2021simpa,
+    title = {OPFython: A Python implementation for Optimum-Path Forest},
+    author = {Gustavo H. {de Rosa} and João P. Papa},
+    journal = {Software Impacts},
+    pages = {100113},
+    year = {2021},
+    issn = {2665-9638},
+    doi = {https://doi.org/10.1016/j.simpa.2021.100113},
 }
 ```
 
