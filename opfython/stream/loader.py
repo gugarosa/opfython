@@ -25,14 +25,10 @@ def load_csv(csv_path):
 
     logger.info('Loading file: %s ...', csv_path)
 
-    # Tries to invoke a function
     try:
-        # Reads the .csv file into a numpy array
         csv = np.loadtxt(csv_path, delimiter=',')
 
-    # If the file is not found
     except OSError as e:
-        # Handles the exception and logs an error
         logger.error(e)
 
         return None
@@ -57,14 +53,10 @@ def load_txt(txt_path):
 
     logger.info('Loading file: %s...', txt_path)
 
-    # Tries to invoke a function
     try:
-        # Reads the .txt file into a numpy array
         txt = np.loadtxt(txt_path, delimiter=' ')
 
-    # If the file is not found
     except OSError as e:
-        # Handles the exception and logs an error
         logger.error(e)
 
         return None
@@ -89,16 +81,11 @@ def load_json(json_path):
 
     logger.info('Loading file: %s ...', json_path)
 
-    # Tries to invoke a function
     try:
-        # Opening .json as a file
         with open(json_path) as f:
-            # Actually loading the file
             json_file = j.load(f)
 
-    # If the file is not found
     except Exception as e:
-        # Handles the exception and logs an error
         logger.error(e)
 
         return None

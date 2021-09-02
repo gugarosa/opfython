@@ -31,9 +31,7 @@ def confusion_matrix(labels, preds):
     # Creating an empty errors matrix
     c_matrix = np.zeros((n_class, n_class))
 
-    # For every label and prediction
     for label, pred in zip(labels, preds):
-        # Increments the corresponding cell from the confusion matrix
         c_matrix[label][pred] += 1
 
     return c_matrix
@@ -50,11 +48,9 @@ def normalize(array):
 
     """
 
-    # Calculates the array mean and standard deviation
     mean = np.mean(array, axis=0)
     std = np.std(array, axis=0)
 
-    # Calculates the normalized array
     norm_array = (array - mean) / std
 
     return norm_array
@@ -85,11 +81,8 @@ def opf_accuracy(labels, preds):
     # Gathering the amount of labels per class
     counts = np.bincount(labels)
 
-    # For every label and prediction
     for label, pred in zip(labels, preds):
-        # If label is different from prediction
         if label != pred:
-            # Increments the corresponding cells from the error matrix
             errors[pred][0] += 1
             errors[label][1] += 1
 
@@ -133,11 +126,8 @@ def opf_accuracy_per_label(labels, preds):
     # Gathering the amount of labels per class
     _, counts = np.unique(labels, return_counts=True)
     
-    # For every label and prediction
     for label, pred in zip(labels, preds):
-        # If label is different from prediction
         if label != pred:
-            # Increments the corresponding cell from the error array
             errors[label] += 1
 
     # Calculating the float value of the true label errors
@@ -167,11 +157,8 @@ def pre_compute_distance(data, output, distance='log_squared_euclidean'):
     # Creating an matrix of pre-computed distances
     distances = np.zeros((size, size))
 
-    # For every possible size
     for i in range(size):
-        # For every possible size
         for j in range(size):
-            # Calculates the distance between nodes `i` and `j`
             distances[i][j] = d.DISTANCES[distance](data[i], data[j])
 
     # Saves the distance matrix to an output

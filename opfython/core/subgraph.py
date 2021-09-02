@@ -46,7 +46,6 @@ class Subgraph:
 
         # Checks if data should be loaded from a file
         if from_file:
-            # Loads the data
             X, Y = self._load(from_file)
 
         # Checks if data has been properly loaded
@@ -56,10 +55,8 @@ class Subgraph:
                 # If not, creates an empty numpy array
                 Y = np.ones(len(X), dtype=int)
 
-            # Now, we need to build this class up
             self._build(X, Y, I)
 
-        # If data could not be loaded
         else:
             logger.error('Subgraph has not been properly created.')
 
@@ -156,28 +153,18 @@ class Subgraph:
         # Getting file extension
         extension = file_path.split('.')[-1]
 
-        # Check if extension is .csv
         if extension == 'csv':
-            # If yes, call the method that actually loads csv
             data = loader.load_csv(file_path)
 
-        # Check if extension is .txt
         elif extension == 'txt':
-            # If yes, call the method that actually loads txt
             data = loader.load_txt(file_path)
 
-        # Check if extension is .json
         elif extension == 'json':
-            # If yes, call the method that actually loads json
             data = loader.load_json(file_path)
 
-        # If extension is not recognized
         else:
-            # Raises an ArgumentError exception
-            raise e.ArgumentError(
-                'File extension not recognized. It should be `.csv`, `.json` or `.txt`')
+            raise e.ArgumentError('File extension not recognized. It should be `.csv`, `.json` or `.txt`')
 
-        # Parsing array
         X, Y = p.parse_loader(data)
 
         return X, Y
@@ -198,10 +185,8 @@ class Subgraph:
         for i, (feature, label) in enumerate(zip(X, Y)):
             # Checks if indexes are supplied
             if I is not None:
-                # Creates the Node with its index
                 node = Node(I[i].item(), label.item(), feature)
 
-            # If not, just creates the Node
             else:
                 node = Node(i, label.item(), feature)
 
@@ -216,7 +201,6 @@ class Subgraph:
 
         """
 
-        # For every possible node
         for i in range(self.n_nodes):
             # Reset the number of adjacent nodes and adjacency list
             self.nodes[i].n_plateaus = 0
@@ -246,13 +230,8 @@ class Subgraph:
 
         """
 
-        # For every possible node
         for i in range(self.n_nodes):
-            # Resets its predecessor
             self.nodes[i].pred = c.NIL
-
-            # Resets whether its relevant or not
             self.nodes[i].relevant = c.IRRELEVANT
 
-        # Destroys the arcs
         self.destroy_arcs()

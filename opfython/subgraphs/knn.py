@@ -27,10 +27,9 @@ class KNNSubgraph(Subgraph):
 
         """
 
-        # Override its parent class with the receiving arguments
         super(KNNSubgraph, self).__init__(X, Y, I, from_file)
 
-        #  Number of assigned clusters
+        # Number of assigned clusters
         self.n_clusters = 0
 
         # Number of adjacent nodes (k-nearest neighbours)
@@ -163,7 +162,6 @@ class KNNSubgraph(Subgraph):
         # Creating an array to hold the p.d.f. calculation
         pdf = np.zeros(self.n_nodes)
 
-        # For every possible node
         for i in range(self.n_nodes):
             # Initialize the p.d.f. as zero
             pdf[i] = 0
@@ -171,21 +169,15 @@ class KNNSubgraph(Subgraph):
             # Initialize the number of p.d.f. calculations as 1
             n_pdf = 1
 
-            # For every possible `k` value
             for k in range(n_neighbours):
                 # Gathering adjacent node from the list
                 j = int(self.nodes[i].adjacency[k])
 
-                # If it is supposed to use a pre-computed distance
                 if pre_computed_distance:
-                    # Gathers the distance from the matrix
                     distance = pre_distances[self.nodes[i].idx][self.nodes[j].idx]
 
-                # If it is supposed to calculate the distance
                 else:
-                    # Calculates the distance between nodes `i` and `j`
-                    distance = distance_function(
-                        self.nodes[i].features, self.nodes[j].features)
+                    distance = distance_function(self.nodes[i].features, self.nodes[j].features)
 
                 # Calculates the p.d.f.
                 pdf[i] += np.exp(-distance / self.constant)
@@ -196,35 +188,22 @@ class KNNSubgraph(Subgraph):
             # Calculates the p.d.f. mean value
             pdf[i] /= n_pdf
 
-            # If p.d.f. value is smaller than minimum density
             if pdf[i] < self.min_density:
-                # Applies subgraph's minimum density as p.d.f.'s value
                 self.min_density = pdf[i]
 
-            # If p.d.f. value is bigger than maximum density
             if pdf[i] > self.max_density:
-                # Applies subgraph's maximum density as p.d.f.'s value
                 self.max_density = pdf[i]
 
-        # If subgraph's minimum density is the same as the maximum density
         if self.min_density == self.max_density:
-            # For every possible node
             for i in range(self.n_nodes):
-                # Applies node's density as maximum possible density
                 self.nodes[i].density = c.MAX_DENSITY
 
-                # Applies node's cost as maximum possible density - 1
                 self.nodes[i].cost = c.MAX_DENSITY - 1
 
-        # If subgraph's minimum density is different than the maximum density
         else:
-            # For every possible node
             for i in range(self.n_nodes):
-                # Calculates the node's density
-                self.nodes[i].density = (
-                    (c.MAX_DENSITY - 1) * (pdf[i] - self.min_density) / (self.max_density - self.min_density)) + 1
+                self.nodes[i].density = ((c.MAX_DENSITY - 1) * (pdf[i] - self.min_density) / (self.max_density - self.min_density)) + 1
 
-                # Calculates the node's cost
                 self.nodes[i].cost = self.nodes[i].density - 1
 
     def create_arcs(self, k, distance_function, pre_computed_distance=False, pre_distances=None):
@@ -246,25 +225,17 @@ class KNNSubgraph(Subgraph):
         neighbours_idx = np.zeros(k + 1)
         max_distances = np.zeros(k)
 
-        # For every possible node
         for i in range(self.n_nodes):
             # Filling array of distances with maximum value
             distances.fill(c.FLOAT_MAX)
 
-            # For every possible node
             for j in range(self.n_nodes):
-                # If they are different nodes
                 if j != i:
-                    # If it is supposed to use a pre-computed distance
                     if pre_computed_distance:
-                        # Gathers the distance from the matrix
                         distances[k] = pre_distances[self.nodes[i].idx][self.nodes[j].idx]
 
-                    # If it is supposed to calculate the distance
                     else:
-                        # Calculates the distance between nodes `i` and `j`
-                        distances[k] = distance_function(
-                            self.nodes[i].features, self.nodes[j].features)
+                        distances[k] = distance_function(self.nodes[i].features, self.nodes[j].features)
 
                     # Apply node `j` as a neighbour
                     neighbours_idx[k] = j
@@ -289,29 +260,20 @@ class KNNSubgraph(Subgraph):
 
             # For every possible decreasing `k`
             for l in range(k - 1, -1, -1):
-                # Checks if distance is different from maximum value
                 if distances[l] != c.FLOAT_MAX:
-                    # If distance is bigger than subgraph's density
                     if distances[l] > self.density:
-                        # Apply subgraph's density as the distance
                         self.density = distances[l]
 
-                    # If distance is bigger than node's radius
                     if distances[l] > self.nodes[i].radius:
-                        # Apply node's radius as the distance
                         self.nodes[i].radius = distances[l]
 
-                    # If distance is bigger than maximum distance
                     if distances[l] > max_distances[l]:
-                        # Apply maximum distance as the distance
                         max_distances[l] = distances[l]
 
                     # Adds the neighbour to the adjacency list of node `i`
                     self.nodes[i].adjacency.insert(0, neighbours_idx[l])
 
-        # If subgraph's density is smaller than a threshold
         if self.density < 0.00001:
-            # Resets its to one
             self.density = 1
 
         return max_distances
@@ -326,11 +288,8 @@ class KNNSubgraph(Subgraph):
 
         logger.debug('Eliminating maxima above height = %s ...', height)
 
-        # Checks if height is bigger than zero
         if height > 0:
-            # For every possible node
             for i in range(self.n_nodes):
-                # Calculates its new cost
                 self.nodes[i].cost = np.maximum(self.nodes[i].density - height, 0)
 
         logger.debug('Maxima eliminated.')

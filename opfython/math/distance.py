@@ -24,7 +24,6 @@ def additive_symmetric_distance(x, y):
 
     """
 
-    # Calculates the Additive Symmetric distance for each dimension
     dist = ((x - y) ** 2 * (x + y)) / (x * y)
 
     return 2 * np.sum(dist)
@@ -43,7 +42,6 @@ def average_euclidean_distance(x, y):
 
     """
 
-    # Calculates the Squared Euclidean distance for each dimension
     dist = squared_euclidean_distance(x, y)
 
     return (dist / x.shape[0]) ** 0.5
@@ -63,7 +61,6 @@ def bhattacharyya_distance(x, y):
 
     """
 
-    # Calculates the Bhattacharyya distance
     dist = -math.log(np.sum((x * y) ** 0.5))
 
     return dist
@@ -83,7 +80,6 @@ def bray_curtis_distance(x, y):
 
     """
 
-    # Calculates the Bray-Curtis distance
     dist = np.sum(np.fabs(x - y)) / np.sum(x + y)
 
     return dist
@@ -103,7 +99,6 @@ def canberra_distance(x, y):
 
     """
 
-    # Calculates the Canberra distance for each dimension
     dist = np.fabs(x - y) / (np.fabs(x) + np.fabs(y))
 
     return np.sum(dist)
@@ -122,7 +117,6 @@ def chebyshev_distance(x, y):
 
     """
 
-    # Calculates the Chebyshev distance for each dimension
     dist = np.fabs(x - y)
 
     return np.amax(dist)
@@ -142,7 +136,6 @@ def chi_squared_distance(x, y):
 
     """
 
-    # Calculates the Chi-Squared distance for each dimension
     dist = ((x - y) ** 2 / (x + y))
 
     return 0.5 * np.sum(dist)
@@ -162,7 +155,6 @@ def chord_distance(x, y):
 
     """
 
-    # Calculates the Chord distance
     dist = 2 - 2 * (np.sum(x * y) / (np.sum(x ** 2) ** 0.5 * np.sum(y ** 2) ** 0.5))
 
     return dist ** 0.5
@@ -182,7 +174,6 @@ def clark_distance(x, y):
 
     """
 
-    # Calculates the Clark distance for each dimension
     dist = ((x - y) / np.fabs(x + y)) ** 2
 
     return np.sum(dist) ** 0.5
@@ -202,7 +193,6 @@ def cosine_distance(x, y):
 
     """
 
-    # Calculates the Cosine distance
     dist = 1 - (np.sum(x * y) / (np.sum(x ** 2) ** 0.5 * np.sum(y ** 2) ** 0.5))
 
     return dist
@@ -222,7 +212,6 @@ def dice_distance(x, y):
 
     """
 
-    # Calculates the Dice distance
     dist = 2 * np.sum(x * y) / (np.sum(x ** 2) + np.sum(y ** 2))
 
     return 1 - dist
@@ -242,7 +231,6 @@ def divergence_distance(x, y):
 
     """
 
-    # Calculates the Divergence distance for each dimension
     dist = (x - y) ** 2 / (x + y) ** 2
 
     return 2 * np.sum(dist)
@@ -261,7 +249,6 @@ def euclidean_distance(x, y):
 
     """
 
-    # Calculates the Euclidean distance for each dimension
     dist = (x - y) ** 2
 
     return np.sum(dist) ** 0.5
@@ -280,7 +267,6 @@ def gaussian_distance(x, y, gamma=1):
 
     """
 
-    # Calculates the Gaussian distance for each dimension
     dist = (x - y) ** 2
 
     return math.exp(-gamma * np.sum(dist) ** 0.5)
@@ -299,7 +285,6 @@ def gower_distance(x, y):
 
     """
 
-    # Calculates the Gower distance for each dimension
     dist = np.fabs(x - y)
 
     return np.sum(dist) / x.shape[0]
@@ -318,7 +303,6 @@ def hamming_distance(x, y):
 
     """
 
-    # Calculates number of occurences `x != y`
     dist = np.count_nonzero(x != y)
 
     return dist
@@ -346,12 +330,10 @@ def hassanat_distance(x, y):
 
     # Iterates through all dimensions
     for i in range(x.shape[0]):
-        # Checks if mask is `True`
         if mask[i] is True:
-            # Calculates the Hassanat Distance for true indexes
             dist[i] = 1 - (1 + np.minimum(x[i], y[i])) / (1 + np.maximum(x[i], y[i]))
+
         else:
-            # Calculates the Hassanat Distance for false indexes
             dist[i] = 1 - (1 + np.minimum(x[i], y[i]) + np.fabs(np.minimum(x[i], y[i]))) / (1 + np.maximum(x[i], y[i]) + np.fabs(np.minimum(x[i], y[i])))
 
     return np.sum(dist)
@@ -370,7 +352,6 @@ def hellinger_distance(x, y):
 
     """
 
-    # Calculates the Hellinger distance for each dimension
     dist = 2 * (x ** 0.5 - y ** 0.5) ** 2
 
     return np.sum(dist) ** 0.5
@@ -389,7 +370,6 @@ def jaccard_distance(x, y):
 
     """
 
-    # Calculates the Jaccard distance
     dist = np.sum((x - y) ** 2) / (np.sum(x ** 2) + np.sum(y ** 2) - np.sum(x * y))
 
     return dist
@@ -409,7 +389,6 @@ def jeffreys_distance(x, y):
 
     """
 
-    # Calculates the Jeffreys distance for each dimension
     dist = (x - y) * np.log(x / y)
 
     return np.sum(dist)
@@ -429,7 +408,6 @@ def jensen_distance(x, y):
 
     """
 
-    # Calculates the Jensen distance for each dimension
     dist = (x * np.log(x) + y * np.log(y)) / 2 - ((x + y) / 2) * np.log((x + y) / 2)
 
     return 0.5 * np.sum(dist)
@@ -449,10 +427,7 @@ def jensen_shannon_distance(x, y):
 
     """
 
-    # Calculates the first part Jensen-Shannon distance for each dimension
     dist1 = x * np.log((2 * x) / (x + y))
-
-    # Calculates the second part Jensen-Shannon distance for each dimension
     dist2 = y * np.log((2 * y) / (x + y))
 
     return 0.5 * (np.sum(dist1) + np.sum(dist2))
@@ -472,7 +447,6 @@ def k_divergence_distance(x, y):
 
     """
 
-    # Calculates the K Divergence distance for each dimension
     dist = x * np.log((2 * x) / (x + y))
 
     return np.sum(dist)
@@ -492,7 +466,6 @@ def kulczynski_distance(x, y):
 
     """
 
-    # Calculates the Kulczynski distance
     dist = np.sum(np.fabs(x - y)) / np.sum(np.minimum(x, y))
 
     return dist
@@ -512,7 +485,6 @@ def kullback_leibler_distance(x, y):
 
     """
 
-    # Calculates the Kullback-Leibler distance for each dimension
     dist = x * np.log(x / y)
 
     return np.sum(dist)
@@ -531,7 +503,6 @@ def log_euclidean_distance(x, y):
 
     """
 
-    # Calculates the log-Euclidean distance for each dimension
     dist = euclidean_distance(x, y)
 
     return c.MAX_ARC_WEIGHT * math.log(dist + 1)
@@ -550,7 +521,6 @@ def log_squared_euclidean_distance(x, y):
 
     """
 
-    # Calculates the log-Squared Euclidean distance for each dimension
     dist = squared_euclidean_distance(x, y)
 
     return c.MAX_ARC_WEIGHT * math.log(dist + 1)
@@ -569,7 +539,6 @@ def lorentzian_distance(x, y):
 
     """
 
-    # Calculates the Lorentzian distance for each dimension
     dist = np.log(1 + np.fabs(x - y))
 
     return np.sum(dist)
@@ -588,7 +557,6 @@ def manhattan_distance(x, y):
 
     """
 
-    # Calculates the Manhattan distance for each dimension
     dist = np.fabs(x - y)
 
     return np.sum(dist)
@@ -607,7 +575,6 @@ def matusita_distance(x, y):
 
     """
 
-    # Calculates the Matusita distance for each dimension
     dist = (x ** 0.5 - y ** 0.5) ** 2
 
     return np.sum(dist) ** 0.5
@@ -627,10 +594,7 @@ def max_symmetric_distance(x, y):
 
     """
 
-    # Calculates the first partial Max Symmetric distance for each dimension
     dist1 = (x - y) ** 2 / x
-
-    # Calculates the second partial Max Symmetric distance for each dimension
     dist2 = (x - y) ** 2 / y
 
     return np.maximum(np.sum(dist1), np.sum(dist2))
@@ -650,10 +614,7 @@ def mean_censored_euclidean_distance(x, y):
 
     """
 
-    # Calculates the Squared Euclidean distance for each dimension
     dist = squared_euclidean_distance(x, y)
-
-    # Calculates number of occurences `x + y != 0`
     diff = np.count_nonzero(x + y != 0)
 
     return (dist / diff) ** 0.5
@@ -673,10 +634,7 @@ def min_symmetric_distance(x, y):
 
     """
 
-    # Calculates the first partial Min Symmetric distance for each dimension
     dist1 = (x - y) ** 2 / x
-
-    # Calculates the second partial Min Symmetric distance for each dimension
     dist2 = (x - y) ** 2 / y
 
     return np.minimum(np.sum(dist1), np.sum(dist2))
@@ -696,7 +654,6 @@ def neyman_distance(x, y):
 
     """
 
-    # Calculates the Neyman distance for each dimension
     dist = (x - y) ** 2 / x
 
     return np.sum(dist)
@@ -715,7 +672,6 @@ def non_intersection_distance(x, y):
 
     """
 
-    # Calculates the Non-Intersection distance for each dimension
     dist = np.fabs(x - y)
 
     return 0.5 * np.sum(dist)
@@ -735,7 +691,6 @@ def pearson_distance(x, y):
 
     """
 
-    # Calculates the Pearson distance for each dimension
     dist = (x - y) ** 2 / y
 
     return np.sum(dist)
@@ -755,7 +710,6 @@ def sangvi_distance(x, y):
 
     """
 
-    # Calculates the Sangvi distance for each dimension
     dist = (x - y) ** 2 / (x + y)
 
     return 2 * np.sum(dist)
@@ -775,7 +729,6 @@ def soergel_distance(x, y):
 
     """
 
-    # Calculates the Soergel distance
     dist = np.sum(np.fabs(x - y)) / np.sum(np.maximum(x, y))
 
     return dist
@@ -795,7 +748,6 @@ def squared_distance(x, y):
 
     """
 
-    # Calculates the Squared distance for each dimension
     dist = (x - y) ** 2 / (x + y)
 
     return np.sum(dist)
@@ -814,7 +766,6 @@ def squared_chord_distance(x, y):
 
     """
 
-    # Calculates the Squared Chord distance for each dimension
     dist = (x ** 0.5 - y ** 0.5) ** 2
 
     return np.sum(dist)
@@ -833,7 +784,6 @@ def squared_euclidean_distance(x, y):
 
     """
 
-    # Calculates the Squared Euclidean distance for each dimension
     dist = (x - y) ** 2
 
     return np.sum(dist)
@@ -853,10 +803,7 @@ def statistic_distance(x, y):
 
     """
 
-    # Calculates the `m` coefficient
     m = (x + y) / 2
-
-    # Calculates the Statistic distance for each dimension
     dist = (x - m) / m
 
     return np.sum(dist)
@@ -876,10 +823,7 @@ def topsoe_distance(x, y):
 
     """
 
-    # Calculates the first part Topsoe distance for each dimension
     dist1 = x * np.log((2 * x) / (x + y))
-
-    # Calculates the second part Topsoe distance for each dimension
     dist2 = y * np.log((2 * y) / (x + y))
 
     return np.sum(dist1) + np.sum(dist2)
@@ -899,7 +843,6 @@ def vicis_symmetric1_distance(x, y):
 
     """
 
-    # Calculates the Vicis Symmetric 1 distance for each dimension
     dist = (x - y) ** 2 / np.minimum(x, y) ** 2
 
     return np.sum(dist)
@@ -919,7 +862,6 @@ def vicis_symmetric2_distance(x, y):
 
     """
 
-    # Calculates the Vicis Symmetric 2 distance for each dimension
     dist = (x - y) ** 2 / np.minimum(x, y)
 
     return np.sum(dist)
@@ -939,7 +881,6 @@ def vicis_symmetric3_distance(x, y):
 
     """
 
-    # Calculates the Vicis Symmetric 3 distance for each dimension
     dist = (x - y) ** 2 / np.maximum(x, y)
 
     return np.sum(dist)
@@ -959,7 +900,6 @@ def vicis_wave_hedges_distance(x, y):
 
     """
 
-    # Calculates the Vicis-Wave Hedges distance for each dimension
     dist = np.fabs(x - y) / np.minimum(x, y)
 
     return np.sum(dist)

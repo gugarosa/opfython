@@ -25,16 +25,16 @@ class Node:
 
         """
 
-        # Initially, we need to set the node's index
+        # Node's index
         self.idx = idx
 
-        # We also need to set its label (true label)
+        # True label
         self.label = label
 
-        # Its possible predicted label
+        # Predicted label
         self.predicted_label = 0
 
-        # And finally, its cluster assignment label (if used)
+        # Cluster assignment label (if used)
         self.cluster_label = 0
 
         # Array of features

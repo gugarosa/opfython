@@ -26,7 +26,6 @@ def avoid_zero_division(f):
 
         """
 
-        # Adds minimal value to `x` and `y`
         x += c.EPSILON
         y += c.EPSILON
 

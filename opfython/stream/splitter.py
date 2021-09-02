@@ -30,7 +30,6 @@ def split(X, Y, percentage=0.5, random_state=1):
 
     # Checks if `X` and `Y` have the same size
     if X.shape[0] != Y.shape[0]:
-        # If not, raises a SizeError
         raise e.SizeError('`X` and `Y` should have the same amount of samples')
 
     # Gathering the indexes
@@ -70,7 +69,6 @@ def split_with_index(X, Y, percentage=0.5, random_state=1):
 
     # Checks if `X` and `Y` have the same size
     if X.shape[0] != Y.shape[0]:
-        # If not, raises a SizeError
         raise e.SizeError('`X` and `Y` should have the same amount of samples')
 
     # Gathering the indexes
@@ -116,7 +114,6 @@ def merge(X_1, X_2, Y_1, Y_2):
 
     # Checks if `X` and `Y` have the same size
     if X.shape[0] != Y.shape[0]:
-        # If not, raises a SizeError
         raise e.SizeError('`(X_1, X_2)` and `(Y_1, Y_2)` should have the same amount of samples')
 
     logger.debug('X: %s | Y: %s.', X.shape, Y.shape)

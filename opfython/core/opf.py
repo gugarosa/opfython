@@ -51,7 +51,6 @@ class OPF:
             # Apply the distances matrix
             self._read_distances(pre_computed_distance)
 
-        # If OPF should not use a pre-computed distance
         else:
             # Marks the boolean indicator as False
             self.pre_computed_distance = False
@@ -168,27 +167,19 @@ class OPF:
         # Getting file extension
         extension = file_name.split('.')[-1]
 
-        # Check if extension is .csv
         if extension == 'csv':
-            # If yes, call the method that actually loads csv
             distances = loader.load_csv(file_name)
 
-        # Check if extension is .txt
         elif extension == 'txt':
-            # If yes, call the method that actually loads txt
             distances = loader.load_txt(file_name)
 
-        # If extension is not recognized
         else:
             # Raises an ArgumentError exception
-            raise e.ArgumentError(
-                'File extension not recognized. It should be either `.csv` or .txt`')
+            raise e.ArgumentError('File extension not recognized. It should be either `.csv` or .txt`')
 
         # Check if distances have been properly loaded
         if distances is None:
-            # If not, raises a ValueError
-            raise e.ValueError(
-                'Pre-computed distances could not been properly loaded')
+            raise e.ValueError('Pre-computed distances could not been properly loaded')
 
         # Apply the distances matrix to the property
         self.pre_distances = distances
@@ -203,12 +194,9 @@ class OPF:
 
         logger.info('Loading model from file: %s ...', file_name)
 
-        # Trying to open the file
-        with open(file_name, "rb") as origin_file:
-            # Loading model from file
+        with open(file_name, 'rb') as origin_file:
             opf = pickle.load(origin_file)
 
-            # Updating all values
             self.__dict__.update(opf.__dict__)
 
         logger.info('Model loaded.')
@@ -223,9 +211,7 @@ class OPF:
 
         logger.info('Saving model to file: %s ...', file_name)
 
-        # Opening a destination file
         with open(file_name, 'wb') as dest_file:
-            # Dumping model to file
             pickle.dump(self, dest_file)
 
         logger.info('Model saved.')

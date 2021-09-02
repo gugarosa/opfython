@@ -157,12 +157,9 @@ class Heap:
 
         """
 
-        # If last position equals to size - 1
         if self.last == (self.size - 1):
-            # Return as True
             return True
 
-        # If not, return as False
         return False
 
     def is_empty(self):
@@ -173,12 +170,9 @@ class Heap:
 
         """
 
-        # If last position is equal to -1
         if self.last == -1:
-            # Return as True
             return True
 
-        # Return as False
         return False
 
     def dad(self, i):
@@ -192,7 +186,6 @@ class Heap:
 
         """
 
-        # Returns the dad's position
         return int(((i - 1) / 2))
 
     def left_son(self, i):
@@ -206,7 +199,6 @@ class Heap:
 
         """
 
-        # Returns the left son's position
         return int((2 * i + 1))
 
     def right_son(self, i):
@@ -220,7 +212,6 @@ class Heap:
 
         """
 
-        # Return the right son's position
         return int((2 * i + 2))
 
     def go_up(self, i):
@@ -330,7 +321,6 @@ class Heap:
 
         """
 
-        # Checks if heap is not full
         if not self.is_full():
             # Increases the last node's counter
             self.last += 1
@@ -340,7 +330,6 @@ class Heap:
             self.color[p] = c.GRAY
             self.pos[p] = self.last
 
-            # Go up in the heap
             self.go_up(self.last)
 
             return True
@@ -355,7 +344,6 @@ class Heap:
 
         """
 
-        # Checks if heap is not empty
         if not self.is_empty():
             # Gathers the node's value
             p = self.p[0]
@@ -374,7 +362,6 @@ class Heap:
             # Decreases the last counter
             self.last -= 1
 
-            # Go down in the heap
             self.go_down(0)
 
             return p
@@ -397,12 +384,9 @@ class Heap:
         if self.color[p] == c.BLACK:
             pass
 
-        # If node's color is white
+        # Checks if node has not been inserted yet
         if self.color[p] == c.WHITE:
-            # Inserts a new node
             self.insert(p)
 
-        # If node's color is grey
         else:
-            # Go up in the heap to desired position
             self.go_up(self.pos[p])
