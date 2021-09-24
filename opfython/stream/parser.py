@@ -33,8 +33,8 @@ def parse_loader(data):
         _, counts = np.unique(Y, return_counts=True)
 
         # If there is only one class
-        if len(counts) < 2:
-            raise e.ValueError('Parsed data should have at least two distinct labels')
+        if len(counts) == 1:
+            logger.warning('Parsed data only have a single label.')
 
         # If there are unsequential labels
         if len(counts) != (np.max(Y) + 1):
