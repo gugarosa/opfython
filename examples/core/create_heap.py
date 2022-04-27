@@ -4,7 +4,7 @@ from opfython.core import Heap
 size = 5
 
 # Creating the heap
-h = Heap(size=size, policy='min')
+h = Heap(size=size, policy="min")
 
 # Inserting a new node
 h.insert(1)

@@ -3,20 +3,18 @@
 
 import numpy as np
 
-import opfython.stream.loader as loader
 import opfython.stream.parser as p
 import opfython.utils.constants as c
 import opfython.utils.exception as e
-import opfython.utils.logging as l
 from opfython.core import Node
+from opfython.stream import loader
+from opfython.utils import logging
 
-logger = l.get_logger(__name__)
+logger = logging.get_logger(__name__)
 
 
 class Subgraph:
-    """A Subgraph class is used as a collection of Nodes and the basic structure to work with OPF.
-
-    """
+    """A Subgraph class is used as a collection of Nodes and the basic structure to work with OPF."""
 
     def __init__(self, X=None, Y=None, I=None, from_file=None):
         """Initialization method.
@@ -58,84 +56,74 @@ class Subgraph:
             self._build(X, Y, I)
 
         else:
-            logger.error('Subgraph has not been properly created.')
+            logger.error("Subgraph has not been properly created.")
 
     @property
     def n_nodes(self):
-        """int: Number of nodes.
-
-        """
+        """int: Number of nodes."""
 
         return len(self.nodes)
 
     @n_nodes.setter
     def n_nodes(self, n_nodes):
         if not isinstance(n_nodes, int):
-            raise e.TypeError('`n_nodes` should be an integer')
+            raise e.TypeError("`n_nodes` should be an integer")
         if n_nodes < 0:
-            raise e.ValueError('`n_nodes` should be >= 0')
+            raise e.ValueError("`n_nodes` should be >= 0")
 
         self._n_nodes = n_nodes
 
     @property
     def n_features(self):
-        """int: Number of features.
-
-        """
+        """int: Number of features."""
 
         return self._n_features
 
     @n_features.setter
     def n_features(self, n_features):
         if not isinstance(n_features, int):
-            raise e.TypeError('`n_features` should be an integer')
+            raise e.TypeError("`n_features` should be an integer")
         if n_features < 0:
-            raise e.ValueError('`n_features` should be >= 0')
+            raise e.ValueError("`n_features` should be >= 0")
 
         self._n_features = n_features
 
     @property
     def nodes(self):
-        """list: List of nodes that belongs to the Subgraph.
-
-        """
+        """list: List of nodes that belongs to the Subgraph."""
 
         return self._nodes
 
     @nodes.setter
     def nodes(self, nodes):
         if not isinstance(nodes, list):
-            raise e.TypeError('`nodes` should be a list')
+            raise e.TypeError("`nodes` should be a list")
 
         self._nodes = nodes
 
     @property
     def idx_nodes(self):
-        """list: List of ordered nodes indexes.
-
-        """
+        """list: List of ordered nodes indexes."""
 
         return self._idx_nodes
 
     @idx_nodes.setter
     def idx_nodes(self, idx_nodes):
         if not isinstance(idx_nodes, list):
-            raise e.TypeError('`idx_nodes` should be a list')
+            raise e.TypeError("`idx_nodes` should be a list")
 
         self._idx_nodes = idx_nodes
 
     @property
     def trained(self):
-        """bool: Indicate whether the subgraph is trained.
-
-        """
+        """bool: Indicate whether the subgraph is trained."""
 
         return self._trained
 
     @trained.setter
     def trained(self, trained):
         if not isinstance(trained, bool):
-            raise e.TypeError('`trained` should be a boolean')
+            raise e.TypeError("`trained` should be a boolean")
 
         self._trained = trained
 
@@ -151,19 +139,21 @@ class Subgraph:
         """
 
         # Getting file extension
-        extension = file_path.split('.')[-1]
+        extension = file_path.split(".")[-1]
 
-        if extension == 'csv':
+        if extension == "csv":
             data = loader.load_csv(file_path)
 
-        elif extension == 'txt':
+        elif extension == "txt":
             data = loader.load_txt(file_path)
 
-        elif extension == 'json':
+        elif extension == "json":
             data = loader.load_json(file_path)
 
         else:
-            raise e.ArgumentError('File extension not recognized. It should be `.csv`, `.json` or `.txt`')
+            raise e.ArgumentError(
+                "File extension not recognized. It should be `.csv`, `.json` or `.txt`"
+            )
 
         X, Y = p.parse_loader(data)
 
@@ -197,9 +187,7 @@ class Subgraph:
         self.n_features = self.nodes[0].features.shape[0]
 
     def destroy_arcs(self):
-        """Destroy the arcs present in the subgraph.
-
-        """
+        """Destroy the arcs present in the subgraph."""
 
         for i in range(self.n_nodes):
             # Reset the number of adjacent nodes and adjacency list
@@ -226,9 +214,7 @@ class Subgraph:
         self.nodes[i].relevant = c.RELEVANT
 
     def reset(self):
-        """Resets the subgraph predecessors and arcs.
-
-        """
+        """Resets the subgraph predecessors and arcs."""
 
         for i in range(self.n_nodes):
             self.nodes[i].pred = c.NIL

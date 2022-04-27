@@ -28,25 +28,25 @@ def test_heap_size_setter():
 def test_heap_policy():
     h = heap.Heap()
 
-    assert h.policy == 'min'
+    assert h.policy == "min"
 
 
 def test_heap_policy_setter():
     h = heap.Heap()
 
     try:
-        h.policy = 'a'
+        h.policy = "a"
     except:
-        h.policy = 'min'
+        h.policy = "min"
 
-    assert h.policy == 'min'
+    assert h.policy == "min"
 
     try:
-        h.policy = 'b'
+        h.policy = "b"
     except:
-        h.policy = 'max'
+        h.policy = "max"
 
-    assert h.policy == 'max'
+    assert h.policy == "max"
 
 
 def test_heap_cost():
@@ -59,7 +59,7 @@ def test_heap_cost_setter():
     h = heap.Heap()
 
     try:
-        h.cost = 'a'
+        h.cost = "a"
     except:
         h.cost = []
 
@@ -76,7 +76,7 @@ def test_heap_color_setter():
     h = heap.Heap()
 
     try:
-        h.color = 'a'
+        h.color = "a"
     except:
         h.color = []
 
@@ -93,7 +93,7 @@ def test_heap_p_setter():
     h = heap.Heap()
 
     try:
-        h.p = 'a'
+        h.p = "a"
     except:
         h.p = []
 
@@ -110,7 +110,7 @@ def test_heap_pos_setter():
     h = heap.Heap()
 
     try:
-        h.pos = 'a'
+        h.pos = "a"
     except:
         h.pos = []
 
@@ -148,7 +148,7 @@ def test_heap_is_full():
 
     status = h.is_full()
 
-    assert status == True
+    assert status is True
 
 
 def test_heap_is_empty():
@@ -156,7 +156,7 @@ def test_heap_is_empty():
 
     status = h.is_empty()
 
-    assert status == True
+    assert status is True
 
 
 def test_heap_dad():
@@ -190,7 +190,7 @@ def test_heap_insert():
 
     status = h.insert(1)
 
-    assert status == False
+    assert status is False
 
 
 def test_heap_remove():
@@ -198,4 +198,4 @@ def test_heap_remove():
 
     status = h.remove()
 
-    assert status == False
+    assert status is False

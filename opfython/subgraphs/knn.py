@@ -5,16 +5,14 @@ import numpy as np
 
 import opfython.utils.constants as c
 import opfython.utils.exception as e
-import opfython.utils.logging as log
 from opfython.core import Subgraph
+from opfython.utils import logging
 
-logger = log.get_logger(__name__)
+logger = logging.get_logger(__name__)
 
 
 class KNNSubgraph(Subgraph):
-    """A KNNSubgraph is used to implement a k-nearest neightbours subgraph.
-
-    """
+    """A KNNSubgraph is used to implement a k-nearest neightbours subgraph."""
 
     def __init__(self, X=None, Y=None, I=None, from_file=None):
         """Initialization method.
@@ -49,99 +47,93 @@ class KNNSubgraph(Subgraph):
 
     @property
     def n_clusters(self):
-        """int: Number of assigned clusters.
-
-        """
+        """int: Number of assigned clusters."""
 
         return self._n_clusters
 
     @n_clusters.setter
     def n_clusters(self, n_clusters):
         if not isinstance(n_clusters, int):
-            raise e.TypeError('`n_clusters` should be an integer')
+            raise e.TypeError("`n_clusters` should be an integer")
         if n_clusters < 0:
-            raise e.ValueError('`n_clusters` should be >= 0')
+            raise e.ValueError("`n_clusters` should be >= 0")
 
         self._n_clusters = n_clusters
 
     @property
     def best_k(self):
-        """int: Number of adjacent nodes (k-nearest neighbours).
-
-        """
+        """int: Number of adjacent nodes (k-nearest neighbours)."""
 
         return self._best_k
 
     @best_k.setter
     def best_k(self, best_k):
         if not isinstance(best_k, int):
-            raise e.TypeError('`best_k` should be an integer')
+            raise e.TypeError("`best_k` should be an integer")
         if best_k < 0:
-            raise e.ValueError('`best_k` should be >= 0')
+            raise e.ValueError("`best_k` should be >= 0")
 
         self._best_k = best_k
 
     @property
     def constant(self):
-        """float: Constant used to calculate the probability density function.
-
-        """
+        """float: Constant used to calculate the probability density function."""
 
         return self._constant
 
     @constant.setter
     def constant(self, constant):
         if not isinstance(constant, (float, int, np.int32, np.int64)):
-            raise e.TypeError('`constant` should be a float or integer')
+            raise e.TypeError("`constant` should be a float or integer")
 
         self._constant = constant
 
     @property
     def density(self):
-        """float: Density of the subgraph.
-
-        """
+        """float: Density of the subgraph."""
 
         return self._density
 
     @density.setter
     def density(self, density):
         if not isinstance(density, (float, int, np.int32, np.int64)):
-            raise e.TypeError('`density` should be a float or integer')
+            raise e.TypeError("`density` should be a float or integer")
 
         self._density = density
 
     @property
     def min_density(self):
-        """float: Minimum density of the subgraph.
-
-        """
+        """float: Minimum density of the subgraph."""
 
         return self._min_density
 
     @min_density.setter
     def min_density(self, min_density):
         if not isinstance(min_density, (float, int, np.int32, np.int64)):
-            raise e.TypeError('`min_density` should be a float or integer')
+            raise e.TypeError("`min_density` should be a float or integer")
 
         self._min_density = min_density
 
     @property
     def max_density(self):
-        """float: Maximum density of the subgraph.
-
-        """
+        """float: Maximum density of the subgraph."""
 
         return self._max_density
 
     @max_density.setter
     def max_density(self, max_density):
         if not isinstance(max_density, (float, int, np.int32, np.int64)):
-            raise e.TypeError('`max_density` should be a float or integer')
+            raise e.TypeError("`max_density` should be a float or integer")
 
         self._max_density = max_density
 
-    def calculate_pdf(self, n_neighbours, distance_function, pre_computed_distance=False, pre_distances=None):
+    def calculate_pdf(
+        self,
+        n_neighbours,
+        distance_function,
+        pre_computed_distance=False,
+        pre_distances=None,
+    ):
         """Calculates the probability density function for `k` neighbours.
 
         Args:
@@ -177,7 +169,9 @@ class KNNSubgraph(Subgraph):
                     distance = pre_distances[self.nodes[i].idx][self.nodes[j].idx]
 
                 else:
-                    distance = distance_function(self.nodes[i].features, self.nodes[j].features)
+                    distance = distance_function(
+                        self.nodes[i].features, self.nodes[j].features
+                    )
 
                 # Calculates the p.d.f.
                 pdf[i] += np.exp(-distance / self.constant)
@@ -202,11 +196,17 @@ class KNNSubgraph(Subgraph):
 
         else:
             for i in range(self.n_nodes):
-                self.nodes[i].density = ((c.MAX_DENSITY - 1) * (pdf[i] - self.min_density) / (self.max_density - self.min_density)) + 1
+                self.nodes[i].density = (
+                    (c.MAX_DENSITY - 1)
+                    * (pdf[i] - self.min_density)
+                    / (self.max_density - self.min_density)
+                ) + 1
 
                 self.nodes[i].cost = self.nodes[i].density - 1
 
-    def create_arcs(self, k, distance_function, pre_computed_distance=False, pre_distances=None):
+    def create_arcs(
+        self, k, distance_function, pre_computed_distance=False, pre_distances=None
+    ):
         """Creates arcs for each node (adjacency relation).
 
         Args:
@@ -232,10 +232,14 @@ class KNNSubgraph(Subgraph):
             for j in range(self.n_nodes):
                 if j != i:
                     if pre_computed_distance:
-                        distances[k] = pre_distances[self.nodes[i].idx][self.nodes[j].idx]
+                        distances[k] = pre_distances[self.nodes[i].idx][
+                            self.nodes[j].idx
+                        ]
 
                     else:
-                        distances[k] = distance_function(self.nodes[i].features, self.nodes[j].features)
+                        distances[k] = distance_function(
+                            self.nodes[i].features, self.nodes[j].features
+                        )
 
                     # Apply node `j` as a neighbour
                     neighbours_idx[k] = j
@@ -246,10 +250,16 @@ class KNNSubgraph(Subgraph):
                     # While current `k` is bigger than 0 and the `k` distance is smaller than `k-1` distance
                     while cur_k > 0 and distances[cur_k] < distances[cur_k - 1]:
                         # Swaps the distance from `k` and `k-1`
-                        distances[cur_k], distances[cur_k - 1] = distances[cur_k - 1], distances[cur_k]
+                        distances[cur_k], distances[cur_k - 1] = (
+                            distances[cur_k - 1],
+                            distances[cur_k],
+                        )
 
                         # Swaps the neighbours indexex from `k` and `k-1`
-                        neighbours_idx[cur_k], neighbours_idx[cur_k - 1] = neighbours_idx[cur_k - 1], neighbours_idx[cur_k]
+                        neighbours_idx[cur_k], neighbours_idx[cur_k - 1] = (
+                            neighbours_idx[cur_k - 1],
+                            neighbours_idx[cur_k],
+                        )
 
                         # Decrements `k`
                         cur_k -= 1
@@ -286,10 +296,10 @@ class KNNSubgraph(Subgraph):
 
         """
 
-        logger.debug('Eliminating maxima above height = %s ...', height)
+        logger.debug("Eliminating maxima above height = %s ...", height)
 
         if height > 0:
             for i in range(self.n_nodes):
                 self.nodes[i].cost = np.maximum(self.nodes[i].density - height, 0)
 
-        logger.debug('Maxima eliminated.')
+        logger.debug("Maxima eliminated.")

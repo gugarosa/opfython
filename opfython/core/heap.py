@@ -6,11 +6,9 @@ import opfython.utils.exception as e
 
 
 class Heap:
-    """A standard implementation of a Heap structure.
+    """A standard implementation of a Heap structure."""
 
-    """
-
-    def __init__(self, size=1, policy='min'):
+    def __init__(self, size=1, policy="min"):
         """Initialization method.
 
         Args:
@@ -42,110 +40,96 @@ class Heap:
 
     @property
     def size(self):
-        """int: Maximum size of the heap.
-
-        """
+        """int: Maximum size of the heap."""
 
         return self._size
 
     @size.setter
     def size(self, size):
         if not isinstance(size, int):
-            raise e.TypeError('`size` should be an integer')
+            raise e.TypeError("`size` should be an integer")
         if size < 1:
-            raise e.ValueError('`size` should be > 0')
+            raise e.ValueError("`size` should be > 0")
 
         self._size = size
 
     @property
     def policy(self):
-        """str: Policy that rules the heap.
-
-        """
+        """str: Policy that rules the heap."""
 
         return self._policy
 
     @policy.setter
     def policy(self, policy):
-        if policy not in ['min', 'max']:
-            raise e.ValueError('`policy` should be `min` or `max`')
+        if policy not in ["min", "max"]:
+            raise e.ValueError("`policy` should be `min` or `max`")
 
         self._policy = policy
 
     @property
     def cost(self):
-        """list: List of nodes' costs.
-
-        """
+        """list: List of nodes' costs."""
 
         return self._cost
 
     @cost.setter
     def cost(self, cost):
         if not isinstance(cost, list):
-            raise e.TypeError('`cost` should be a list')
+            raise e.TypeError("`cost` should be a list")
 
         self._cost = cost
 
     @property
     def color(self):
-        """list: List of nodes' colors.
-
-        """
+        """list: List of nodes' colors."""
 
         return self._color
 
     @color.setter
     def color(self, color):
         if not isinstance(color, list):
-            raise e.TypeError('`color` should be a list')
+            raise e.TypeError("`color` should be a list")
 
         self._color = color
 
     @property
     def p(self):
-        """list: List of nodes' values.
-
-        """
+        """list: List of nodes' values."""
 
         return self._p
 
     @p.setter
     def p(self, p):
         if not isinstance(p, list):
-            raise e.TypeError('`p` should be a list')
+            raise e.TypeError("`p` should be a list")
 
         self._p = p
 
     @property
     def pos(self):
-        """list: List of nodes' positioning markers.
-
-        """
+        """list: List of nodes' positioning markers."""
 
         return self._pos
 
     @pos.setter
     def pos(self, pos):
         if not isinstance(pos, list):
-            raise e.TypeError('`pos` should be a list')
+            raise e.TypeError("`pos` should be a list")
 
         self._pos = pos
 
     @property
     def last(self):
-        """int: Last element identifier.
-
-        """
+        """int: Last element identifier."""
 
         return self._last
 
     @last.setter
     def last(self, last):
         if not isinstance(last, int):
-            raise e.TypeError('`last` should be an integer')
+            raise e.TypeError("`last` should be an integer")
         if last < -1:
-            raise e.ValueError('`last` should be > -1')
+            raise e.ValueError("`last` should be > -1")
 
         self._last = last
 
@@ -226,7 +210,7 @@ class Heap:
         j = self.dad(i)
 
         # Checks if policy is `min`
-        if self.policy == 'min':
+        if self.policy == "min":
             # While the heap exists and the cost of post-node is bigger than current node
             while i > 0 and self.cost[self.p[j]] > self.cost[self.p[i]]:
                 # Swap the positions
@@ -275,7 +259,7 @@ class Heap:
         j = i
 
         # Checks if policy is `min`
-        if self.policy == 'min':
+        if self.policy == "min":
             # Checks if left node is not the last and its cost is smaller than previous
             if left <= self.last and self.cost[self.p[left]] < self.cost[self.p[i]]:
                 # Apply `j` counter as the left node

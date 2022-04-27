@@ -7,13 +7,11 @@ def test_split():
     try:
         X = np.ones((5, 2))
         Y = np.ones(6)
-        X_1, X_2, Y_1, Y_2 = splitter.split(
-            X, Y, percentage=0.5, random_state=1)
+        X_1, X_2, Y_1, Y_2 = splitter.split(X, Y, percentage=0.5, random_state=1)
     except:
         X = np.ones((6, 2))
         Y = np.ones(6)
-        X_1, X_2, Y_1, Y_2 = splitter.split(
-            X, Y, percentage=0.5, random_state=1)
+        X_1, X_2, Y_1, Y_2 = splitter.split(X, Y, percentage=0.5, random_state=1)
 
     assert X_1.shape == (3, 2)
     assert X_2.shape == (3, 2)
@@ -26,12 +24,14 @@ def test_split_with_index():
         X = np.ones((5, 2))
         Y = np.ones(6)
         X_1, X_2, Y_1, Y_2, I_1, I_2 = splitter.split_with_index(
-            X, Y, percentage=0.5, random_state=1)
+            X, Y, percentage=0.5, random_state=1
+        )
     except:
         X = np.ones((6, 2))
         Y = np.ones(6)
         X_1, X_2, Y_1, Y_2, I_1, I_2 = splitter.split_with_index(
-            X, Y, percentage=0.5, random_state=1)
+            X, Y, percentage=0.5, random_state=1
+        )
 
     assert X_1.shape == (3, 2)
     assert X_2.shape == (3, 2)

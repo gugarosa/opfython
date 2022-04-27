@@ -3,7 +3,7 @@ import numpy as np
 from opfython.models import supervised
 from opfython.stream import loader, parser, splitter
 
-csv = loader.load_csv('data/boat.csv')
+csv = loader.load_csv("data/boat.csv")
 X, Y = parser.parse_loader(csv)
 
 
@@ -12,7 +12,7 @@ def test_supervised_opf_fit():
 
     opf.fit(X, Y)
 
-    assert opf.subgraph.trained == True
+    assert opf.subgraph.trained is True
 
     opf.pre_computed_distance = True
     try:
@@ -22,7 +22,7 @@ def test_supervised_opf_fit():
         opf.pre_distances = np.ones((100, 100))
         opf.fit(X, Y)
 
-    assert opf.subgraph.trained == True
+    assert opf.subgraph.trained is True
 
 
 def test_supervised_opf_predict():
@@ -59,7 +59,8 @@ def test_supervised_opf_learn():
     opf = supervised.SupervisedOPF()
 
     X_train, X_val, Y_train, Y_val = splitter.split(
-        X, Y, percentage=0.1, random_state=1)
+        X, Y, percentage=0.1, random_state=1
+    )
 
     opf.learn(X_train, Y_train, X_val, Y_val, n_iterations=5)
 
@@ -70,7 +71,8 @@ def test_supervised_opf_prune():
     opf = supervised.SupervisedOPF()
 
     X_train, X_val, Y_train, Y_val = splitter.split(
-        X, Y, percentage=0.1, random_state=1)
+        X, Y, percentage=0.1, random_state=1
+    )
 
     opf.prune(X_train, Y_train, X_val, Y_val, n_iterations=5)
 

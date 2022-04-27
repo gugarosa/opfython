@@ -4,7 +4,7 @@ from opfython.math import distance
 from opfython.stream import loader, parser
 from opfython.subgraphs import knn
 
-csv = loader.load_csv('data/boat.csv')
+csv = loader.load_csv("data/boat.csv")
 X, Y = parser.parse_loader(csv)
 
 
@@ -47,7 +47,7 @@ def test_knn_subgraph_best_k_setter():
         subgraph.best_k = 1
 
     assert subgraph.best_k == 1
-    
+
     try:
         subgraph.best_k = -1
     except:
@@ -66,7 +66,7 @@ def test_knn_subgraph_constant_setter():
     subgraph = knn.KNNSubgraph(X, Y)
 
     try:
-        subgraph.constant = 'a'
+        subgraph.constant = "a"
     except:
         subgraph.constant = 2.5
 
@@ -83,7 +83,7 @@ def test_knn_subgraph_density_setter():
     subgraph = knn.KNNSubgraph(X, Y)
 
     try:
-        subgraph.density = 'a'
+        subgraph.density = "a"
     except:
         subgraph.density = 2.5
 
@@ -100,7 +100,7 @@ def test_knn_subgraph_min_density_setter():
     subgraph = knn.KNNSubgraph(X, Y)
 
     try:
-        subgraph.min_density = 'a'
+        subgraph.min_density = "a"
     except:
         subgraph.min_density = 2.5
 
@@ -117,7 +117,7 @@ def test_knn_subgraph_max_density_setter():
     subgraph = knn.KNNSubgraph(X, Y)
 
     try:
-        subgraph.max_density = 'a'
+        subgraph.max_density = "a"
     except:
         subgraph.max_density = 2.5
 
@@ -129,10 +129,18 @@ def test_knn_subgraph_calculate_pdf():
 
     distances = np.ones((100, 100))
 
-    subgraph.create_arcs(1, distance.euclidean_distance,
-                         pre_computed_distance=True, pre_distances=distances)
-    subgraph.calculate_pdf(1, distance.euclidean_distance,
-                           pre_computed_distance=True, pre_distances=distances)
+    subgraph.create_arcs(
+        1,
+        distance.euclidean_distance,
+        pre_computed_distance=True,
+        pre_distances=distances,
+    )
+    subgraph.calculate_pdf(
+        1,
+        distance.euclidean_distance,
+        pre_computed_distance=True,
+        pre_distances=distances,
+    )
 
     subgraph.create_arcs(1, distance.euclidean_distance)
     subgraph.calculate_pdf(1, distance.euclidean_distance)
@@ -148,8 +156,12 @@ def test_knn_subgraph_create_arcs():
 
     distances.fill(0.000001)
 
-    subgraph.create_arcs(1, distance.euclidean_distance,
-                         pre_computed_distance=True, pre_distances=distances)
+    subgraph.create_arcs(
+        1,
+        distance.euclidean_distance,
+        pre_computed_distance=True,
+        pre_distances=distances,
+    )
 
     max_distances = subgraph.create_arcs(1, distance.euclidean_distance)
 

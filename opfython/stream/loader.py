@@ -5,9 +5,9 @@ import json as j
 
 import numpy as np
 
-import opfython.utils.logging as l
+from opfython.utils import logging
 
-logger = l.get_logger(__name__)
+logger = logging.get_logger(__name__)
 
 
 def load_csv(csv_path):
@@ -23,17 +23,17 @@ def load_csv(csv_path):
 
     """
 
-    logger.info('Loading file: %s ...', csv_path)
+    logger.info("Loading file: %s ...", csv_path)
 
     try:
-        csv = np.loadtxt(csv_path, delimiter=',')
+        csv = np.loadtxt(csv_path, delimiter=",")
 
     except OSError as e:
         logger.error(e)
 
         return None
 
-    logger.info('File loaded.')
+    logger.info("File loaded.")
 
     return csv
 
@@ -51,17 +51,17 @@ def load_txt(txt_path):
 
     """
 
-    logger.info('Loading file: %s...', txt_path)
+    logger.info("Loading file: %s...", txt_path)
 
     try:
-        txt = np.loadtxt(txt_path, delimiter=' ')
+        txt = np.loadtxt(txt_path, delimiter=" ")
 
     except OSError as e:
         logger.error(e)
 
         return None
 
-    logger.info('File loaded.')
+    logger.info("File loaded.")
 
     return txt
 
@@ -79,7 +79,7 @@ def load_json(json_path):
 
     """
 
-    logger.info('Loading file: %s ...', json_path)
+    logger.info("Loading file: %s ...", json_path)
 
     try:
         with open(json_path) as f:
@@ -90,18 +90,18 @@ def load_json(json_path):
 
         return None
 
-    logger.info('File loaded.')
+    logger.info("File loaded.")
 
     # Creating a list to hold the parsed JSON
     json = []
 
     # For every record in the JSON
-    for d in json_file['data']:
+    for d in json_file["data"]:
         # Gathering meta informations
-        meta = np.asarray([d['id'], d['label']])
+        meta = np.asarray([d["id"], d["label"]])
 
         # Gathering features
-        features = np.asarray(d['features'])
+        features = np.asarray(d["features"])
 
         # Stacking and appending the whole record
         json.append(np.hstack((meta, features)))

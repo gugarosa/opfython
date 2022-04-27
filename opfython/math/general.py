@@ -4,9 +4,9 @@
 import numpy as np
 
 import opfython.math.distance as d
-import opfython.utils.logging as l
+from opfython.utils import logging
 
-logger = l.get_logger(__name__)
+logger = logging.get_logger(__name__)
 
 
 def confusion_matrix(labels, preds):
@@ -90,7 +90,7 @@ def opf_accuracy(labels, preds):
     errors[:, 1] /= counts
 
     # Calculating the float value of the predicted label errors
-    errors[:, 0] /= (np.nansum(counts) - counts)
+    errors[:, 0] /= np.nansum(counts) - counts
 
     # Calculates the sum of errors per class
     errors = np.nansum(errors, axis=1)
@@ -125,7 +125,7 @@ def opf_accuracy_per_label(labels, preds):
 
     # Gathering the amount of labels per class
     _, counts = np.unique(labels, return_counts=True)
-    
+
     for label, pred in zip(labels, preds):
         if label != pred:
             errors[label] += 1
@@ -139,7 +139,7 @@ def opf_accuracy_per_label(labels, preds):
     return accuracy
 
 
-def pre_compute_distance(data, output, distance='log_squared_euclidean'):
+def pre_compute_distance(data, output, distance="log_squared_euclidean"):
     """Pre-computes a matrix of distances based on an input data.
 
     Args:
@@ -149,7 +149,7 @@ def pre_compute_distance(data, output, distance='log_squared_euclidean'):
 
     """
 
-    logger.info('Pre-computing distances ...')
+    logger.info("Pre-computing distances ...")
 
     # Gathering the size of pre-computed matrix
     size = data.shape[0]
@@ -164,7 +164,7 @@ def pre_compute_distance(data, output, distance='log_squared_euclidean'):
     # Saves the distance matrix to an output
     np.savetxt(output, distances)
 
-    logger.info('Distances saved to: %s.', output)
+    logger.info("Distances saved to: %s.", output)
 
 
 def purity(labels, preds):

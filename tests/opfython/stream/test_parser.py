@@ -18,7 +18,7 @@ def test_parse_loader():
             data[3, 1] = 3
             X, Y = parser.parse_loader(data)
         except:
-            csv = loader.load_csv('data/boat.csv')
+            csv = loader.load_csv("data/boat.csv")
 
             X, Y = parser.parse_loader(csv)
 

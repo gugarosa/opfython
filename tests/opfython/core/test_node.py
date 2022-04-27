@@ -127,7 +127,7 @@ def test_node_cost_setter():
     n = node.Node()
 
     try:
-        n.cost = 'a'
+        n.cost = "a"
     except:
         n.cost = 1.5
 
@@ -144,7 +144,7 @@ def test_node_density_setter():
     n = node.Node()
 
     try:
-        n.density = 'a'
+        n.density = "a"
     except:
         n.density = 2.25
 
@@ -161,7 +161,7 @@ def test_node_radius_setter():
     n = node.Node()
 
     try:
-        n.radius = 'a'
+        n.radius = "a"
     except:
         n.radius = 0.5
 
@@ -202,7 +202,7 @@ def test_node_adjacency_setter():
     n = node.Node()
 
     try:
-        n.adjacency = ''
+        n.adjacency = ""
     except:
         n.adjacency = []
 
@@ -243,7 +243,7 @@ def test_node_status_setter():
     n = node.Node()
 
     try:
-        n.status = 'a'
+        n.status = "a"
     except:
         n.status = constants.PROTOTYPE
 
@@ -260,7 +260,7 @@ def test_node_pred_setter():
     n = node.Node()
 
     try:
-        n.pred = 'a'
+        n.pred = "a"
     except:
         n.pred = constants.NIL
 
@@ -284,7 +284,7 @@ def test_node_relevant_setter():
     n = node.Node()
 
     try:
-        n.relevant = 'a'
+        n.relevant = "a"
     except:
         n.relevant = constants.RELEVANT
 

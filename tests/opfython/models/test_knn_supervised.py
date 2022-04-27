@@ -3,7 +3,7 @@ import numpy as np
 from opfython.models import knn_supervised
 from opfython.stream import loader, parser, splitter
 
-csv = loader.load_csv('data/boat.csv')
+csv = loader.load_csv("data/boat.csv")
 X, Y = parser.parse_loader(csv)
 
 
@@ -36,7 +36,7 @@ def test_knn_supervised_opf_fit():
 
     opf.fit(X, Y, X, Y)
 
-    assert opf.subgraph.trained == True
+    assert opf.subgraph.trained is True
 
     opf.pre_computed_distance = True
     try:
@@ -46,7 +46,7 @@ def test_knn_supervised_opf_fit():
         opf.pre_distances = np.ones((100, 100))
         opf.fit(X, Y, X, Y)
 
-    assert opf.subgraph.trained == True
+    assert opf.subgraph.trained is True
 
 
 def test_knn_supervised_opf_predict():

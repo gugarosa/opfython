@@ -38,13 +38,15 @@ def test_opf_accuracy_per_label():
 
 
 def test_opf_pre_compute_distances():
-    txt = loader.load_txt('data/boat.txt')
+    txt = loader.load_txt("data/boat.txt")
 
     X, Y = parser.parse_loader(txt)
 
     X_train, _, _, _ = splitter.split(X, Y, 0.5, 1)
 
-    general.pre_compute_distance(X_train, 'boat_split_distances.txt', 'log_squared_euclidean')
+    general.pre_compute_distance(
+        X_train, "boat_split_distances.txt", "log_squared_euclidean"
+    )
 
 
 def test_purity():

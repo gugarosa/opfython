@@ -6,11 +6,11 @@ import time
 import numpy as np
 
 import opfython.utils.constants as c
-import opfython.utils.logging as l
 from opfython.core import Heap, Node, Subgraph
 from opfython.models import SupervisedOPF
+from opfython.utils import logging
 
-logger = l.get_logger(__name__)
+logger = logging.get_logger(__name__)
 
 
 class SemiSupervisedOPF(SupervisedOPF):
@@ -22,7 +22,7 @@ class SemiSupervisedOPF(SupervisedOPF):
 
     """
 
-    def __init__(self, distance='log_squared_euclidean', pre_computed_distance=None):
+    def __init__(self, distance="log_squared_euclidean", pre_computed_distance=None):
         """Initialization method.
 
         Args:
@@ -31,11 +31,11 @@ class SemiSupervisedOPF(SupervisedOPF):
 
         """
 
-        logger.info('Overriding class: SupervisedOPF -> SemiSupervisedOPF.')
+        logger.info("Overriding class: SupervisedOPF -> SemiSupervisedOPF.")
 
         super(SemiSupervisedOPF, self).__init__(distance, pre_computed_distance)
 
-        logger.info('Class overrided.')
+        logger.info("Class overrided.")
 
     def fit(self, X_train, Y_train, X_unlabeled, I_train=None):
         """Fits data in the semi-supervised classifier.
@@ -48,7 +48,7 @@ class SemiSupervisedOPF(SupervisedOPF):
 
         """
 
-        logger.info('Fitting semi-supervised classifier ...')
+        logger.info("Fitting semi-supervised classifier ...")
 
         start = time.time()
 
@@ -101,11 +101,15 @@ class SemiSupervisedOPF(SupervisedOPF):
                 if p != q:
                     if h.cost[p] < h.cost[q]:
                         if self.pre_computed_distance:
-                            weight = self.pre_distances[self.subgraph.nodes[p]
-                                                        .idx][self.subgraph.nodes[q].idx]
+                            weight = self.pre_distances[self.subgraph.nodes[p].idx][
+                                self.subgraph.nodes[q].idx
+                            ]
 
                         else:
-                            weight = self.distance_fn(self.subgraph.nodes[p].features, self.subgraph.nodes[q].features)
+                            weight = self.distance_fn(
+                                self.subgraph.nodes[p].features,
+                                self.subgraph.nodes[q].features,
+                            )
 
                         # The current cost will be the maximum cost between the node's and its weight (arc)
                         current_cost = np.maximum(h.cost[p], weight)
@@ -115,10 +119,14 @@ class SemiSupervisedOPF(SupervisedOPF):
                             self.subgraph.nodes[q].pred = p
 
                             # And its predicted label is the same as `p`
-                            self.subgraph.nodes[q].predicted_label = self.subgraph.nodes[p].predicted_label
+                            self.subgraph.nodes[
+                                q
+                            ].predicted_label = self.subgraph.nodes[p].predicted_label
 
                             # As we may have unlabeled nodes, make sure that `q` label equals to `q` predicted label
-                            self.subgraph.nodes[q].label = self.subgraph.nodes[q].predicted_label
+                            self.subgraph.nodes[q].label = self.subgraph.nodes[
+                                q
+                            ].predicted_label
 
                             # Updates the heap `q` node and the current cost
                             h.update(q, current_cost)
@@ -130,5 +138,5 @@ class SemiSupervisedOPF(SupervisedOPF):
 
         train_time = end - start
 
-        logger.info('Semi-supervised classifier has been fitted.')
-        logger.info('Training time: %s seconds.', train_time)
+        logger.info("Semi-supervised classifier has been fitted.")
+        logger.info("Training time: %s seconds.", train_time)

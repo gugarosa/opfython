@@ -4,9 +4,9 @@
 import numpy as np
 
 import opfython.utils.exception as e
-import opfython.utils.logging as l
+from opfython.utils import logging
 
-logger = l.get_logger(__name__)
+logger = logging.get_logger(__name__)
 
 
 def parse_loader(data):
@@ -20,7 +20,7 @@ def parse_loader(data):
 
     """
 
-    logger.info('Parsing data ...')
+    logger.info("Parsing data ...")
 
     try:
         # From third columns beyond, we should have the features
@@ -34,13 +34,15 @@ def parse_loader(data):
 
         # If there is only one class
         if len(counts) == 1:
-            logger.warning('Parsed data only have a single label.')
+            logger.warning("Parsed data only have a single label.")
 
         # If there are unsequential labels
         if len(counts) != (np.max(Y) + 1):
-            raise e.ValueError('Parsed data should have sequential labels, e.g., 0, 1, ..., n-1')
+            raise e.ValueError(
+                "Parsed data should have sequential labels, e.g., 0, 1, ..., n-1"
+            )
 
-        logger.info('Data parsed.')
+        logger.info("Data parsed.")
 
         return X, Y.astype(int)
 

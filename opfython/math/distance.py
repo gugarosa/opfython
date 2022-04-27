@@ -136,7 +136,7 @@ def chi_squared_distance(x, y):
 
     """
 
-    dist = ((x - y) ** 2 / (x + y))
+    dist = (x - y) ** 2 / (x + y)
 
     return 0.5 * np.sum(dist)
 
@@ -155,9 +155,9 @@ def chord_distance(x, y):
 
     """
 
-    dist = 2 - 2 * (np.sum(x * y) / (np.sum(x ** 2) ** 0.5 * np.sum(y ** 2) ** 0.5))
+    dist = 2 - 2 * (np.sum(x * y) / (np.sum(x**2) ** 0.5 * np.sum(y**2) ** 0.5))
 
-    return dist ** 0.5
+    return dist**0.5
 
 
 @d.avoid_zero_division
@@ -193,7 +193,7 @@ def cosine_distance(x, y):
 
     """
 
-    dist = 1 - (np.sum(x * y) / (np.sum(x ** 2) ** 0.5 * np.sum(y ** 2) ** 0.5))
+    dist = 1 - (np.sum(x * y) / (np.sum(x**2) ** 0.5 * np.sum(y**2) ** 0.5))
 
     return dist
 
@@ -212,7 +212,7 @@ def dice_distance(x, y):
 
     """
 
-    dist = 2 * np.sum(x * y) / (np.sum(x ** 2) + np.sum(y ** 2))
+    dist = 2 * np.sum(x * y) / (np.sum(x**2) + np.sum(y**2))
 
     return 1 - dist
 
@@ -334,7 +334,9 @@ def hassanat_distance(x, y):
             dist[i] = 1 - (1 + np.minimum(x[i], y[i])) / (1 + np.maximum(x[i], y[i]))
 
         else:
-            dist[i] = 1 - (1 + np.minimum(x[i], y[i]) + np.fabs(np.minimum(x[i], y[i]))) / (1 + np.maximum(x[i], y[i]) + np.fabs(np.minimum(x[i], y[i])))
+            dist[i] = 1 - (
+                1 + np.minimum(x[i], y[i]) + np.fabs(np.minimum(x[i], y[i]))
+            ) / (1 + np.maximum(x[i], y[i]) + np.fabs(np.minimum(x[i], y[i])))
 
     return np.sum(dist)
 
@@ -352,7 +354,7 @@ def hellinger_distance(x, y):
 
     """
 
-    dist = 2 * (x ** 0.5 - y ** 0.5) ** 2
+    dist = 2 * (x**0.5 - y**0.5) ** 2
 
     return np.sum(dist) ** 0.5
 
@@ -370,7 +372,7 @@ def jaccard_distance(x, y):
 
     """
 
-    dist = np.sum((x - y) ** 2) / (np.sum(x ** 2) + np.sum(y ** 2) - np.sum(x * y))
+    dist = np.sum((x - y) ** 2) / (np.sum(x**2) + np.sum(y**2) - np.sum(x * y))
 
     return dist
 
@@ -575,7 +577,7 @@ def matusita_distance(x, y):
 
     """
 
-    dist = (x ** 0.5 - y ** 0.5) ** 2
+    dist = (x**0.5 - y**0.5) ** 2
 
     return np.sum(dist) ** 0.5
 
@@ -766,7 +768,7 @@ def squared_chord_distance(x, y):
 
     """
 
-    dist = (x ** 0.5 - y ** 0.5) ** 2
+    dist = (x**0.5 - y**0.5) ** 2
 
     return np.sum(dist)
 
@@ -908,51 +910,51 @@ def vicis_wave_hedges_distance(x, y):
 # A distances constant dictionary for selecting the desired
 # distance metric to be used
 DISTANCES = {
-    'additive_symmetric': additive_symmetric_distance,
-    'average_euclidean': average_euclidean_distance,
-    'bhattacharyya': bhattacharyya_distance,
-    'bray_curtis': bray_curtis_distance,
-    'canberra': canberra_distance,
-    'chebyshev': chebyshev_distance,
-    'chi_squared': chi_squared_distance,
-    'chord': chord_distance,
-    'clark': clark_distance,
-    'cosine': cosine_distance,
-    'dice': dice_distance,
-    'divergence': divergence_distance,
-    'euclidean': euclidean_distance,
-    'gaussian': gaussian_distance,
-    'gower': gower_distance,
-    'hamming': hamming_distance,
-    'hassanat': hassanat_distance,
-    'hellinger': hellinger_distance,
-    'jaccard': jaccard_distance,
-    'jeffreys': jeffreys_distance,
-    'jensen': jensen_distance,
-    'jensen_shannon': jensen_shannon_distance,
-    'k_divergence': k_divergence_distance,
-    'kulczynski': kulczynski_distance,
-    'kullback_leibler': kullback_leibler_distance,
-    'log_euclidean': log_euclidean_distance,
-    'log_squared_euclidean': log_squared_euclidean_distance,
-    'lorentzian': lorentzian_distance,
-    'manhattan': manhattan_distance,
-    'matusita': matusita_distance,
-    'max_symmetric': max_symmetric_distance,
-    'mean_censored_euclidean': mean_censored_euclidean_distance,
-    'min_symmetric': min_symmetric_distance,
-    'neyman': neyman_distance,
-    'non_intersection': non_intersection_distance,
-    'pearson': pearson_distance,
-    'sangvi': sangvi_distance,
-    'soergel': soergel_distance,
-    'squared': squared_distance,
-    'squared_chord': squared_chord_distance,
-    'squared_euclidean': squared_euclidean_distance,
-    'statistic': statistic_distance,
-    'topsoe': topsoe_distance,
-    'vicis_symmetric1': vicis_symmetric1_distance,
-    'vicis_symmetric2': vicis_symmetric2_distance,
-    'vicis_symmetric3': vicis_symmetric3_distance,
-    'vicis_wave_hedges': vicis_wave_hedges_distance
+    "additive_symmetric": additive_symmetric_distance,
+    "average_euclidean": average_euclidean_distance,
+    "bhattacharyya": bhattacharyya_distance,
+    "bray_curtis": bray_curtis_distance,
+    "canberra": canberra_distance,
+    "chebyshev": chebyshev_distance,
+    "chi_squared": chi_squared_distance,
+    "chord": chord_distance,
+    "clark": clark_distance,
+    "cosine": cosine_distance,
+    "dice": dice_distance,
+    "divergence": divergence_distance,
+    "euclidean": euclidean_distance,
+    "gaussian": gaussian_distance,
+    "gower": gower_distance,
+    "hamming": hamming_distance,
+    "hassanat": hassanat_distance,
+    "hellinger": hellinger_distance,
+    "jaccard": jaccard_distance,
+    "jeffreys": jeffreys_distance,
+    "jensen": jensen_distance,
+    "jensen_shannon": jensen_shannon_distance,
+    "k_divergence": k_divergence_distance,
+    "kulczynski": kulczynski_distance,
+    "kullback_leibler": kullback_leibler_distance,
+    "log_euclidean": log_euclidean_distance,
+    "log_squared_euclidean": log_squared_euclidean_distance,
+    "lorentzian": lorentzian_distance,
+    "manhattan": manhattan_distance,
+    "matusita": matusita_distance,
+    "max_symmetric": max_symmetric_distance,
+    "mean_censored_euclidean": mean_censored_euclidean_distance,
+    "min_symmetric": min_symmetric_distance,
+    "neyman": neyman_distance,
+    "non_intersection": non_intersection_distance,
+    "pearson": pearson_distance,
+    "sangvi": sangvi_distance,
+    "soergel": soergel_distance,
+    "squared": squared_distance,
+    "squared_chord": squared_chord_distance,
+    "squared_euclidean": squared_euclidean_distance,
+    "statistic": statistic_distance,
+    "topsoe": topsoe_distance,
+    "vicis_symmetric1": vicis_symmetric1_distance,
+    "vicis_symmetric2": vicis_symmetric2_distance,
+    "vicis_symmetric3": vicis_symmetric3_distance,
+    "vicis_wave_hedges": vicis_wave_hedges_distance,
 }

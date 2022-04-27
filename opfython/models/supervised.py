@@ -10,10 +10,10 @@ import opfython.math.general as g
 import opfython.math.random as r
 import opfython.utils.constants as c
 import opfython.utils.exception as e
-import opfython.utils.logging as log
 from opfython.core import OPF, Heap, Subgraph
+from opfython.utils import logging
 
-logger = log.get_logger(__name__)
+logger = logging.get_logger(__name__)
 
 
 class SupervisedOPF(OPF):
@@ -25,7 +25,7 @@ class SupervisedOPF(OPF):
 
     """
 
-    def __init__(self, distance='log_squared_euclidean', pre_computed_distance=None):
+    def __init__(self, distance="log_squared_euclidean", pre_computed_distance=None):
         """Initialization method.
 
         Args:
@@ -34,18 +34,16 @@ class SupervisedOPF(OPF):
 
         """
 
-        logger.info('Overriding class: OPF -> SupervisedOPF.')
+        logger.info("Overriding class: OPF -> SupervisedOPF.")
 
         super(SupervisedOPF, self).__init__(distance, pre_computed_distance)
 
-        logger.info('Class overrided.')
+        logger.info("Class overrided.")
 
     def _find_prototypes(self):
-        """Find prototype nodes using the Minimum Spanning Tree (MST) approach.
+        """Find prototype nodes using the Minimum Spanning Tree (MST) approach."""
 
-        """
-
-        logger.debug('Finding prototypes ...')
+        logger.debug("Finding prototypes ...")
 
         # Creating a Heap of size equals to number of nodes
         h = Heap(self.subgraph.n_nodes)
@@ -92,10 +90,15 @@ class SupervisedOPF(OPF):
                 if h.color[q] != c.BLACK:
                     if p != q:
                         if self.pre_computed_distance:
-                            weight = self.pre_distances[self.subgraph.nodes[p].idx][self.subgraph.nodes[q].idx]
+                            weight = self.pre_distances[self.subgraph.nodes[p].idx][
+                                self.subgraph.nodes[q].idx
+                            ]
 
                         else:
-                            weight = self.distance_fn(self.subgraph.nodes[p].features, self.subgraph.nodes[q].features)
+                            weight = self.distance_fn(
+                                self.subgraph.nodes[p].features,
+                                self.subgraph.nodes[q].features,
+                            )
 
                         if weight < h.cost[q]:
                             # Marks `q` predecessor node as `p`
@@ -104,7 +107,7 @@ class SupervisedOPF(OPF):
                             # Updates the arc on the heap
                             h.update(q, weight)
 
-        logger.debug('Prototypes: %s.', prototypes)
+        logger.debug("Prototypes: %s.", prototypes)
 
     def fit(self, X_train, Y_train, I_train=None):
         """Fits data in the classifier.
@@ -116,7 +119,7 @@ class SupervisedOPF(OPF):
 
         """
 
-        logger.info('Fitting classifier ...')
+        logger.info("Fitting classifier ...")
 
         start = time.time()
 
@@ -161,10 +164,15 @@ class SupervisedOPF(OPF):
                 if p != q:
                     if h.cost[p] < h.cost[q]:
                         if self.pre_computed_distance:
-                            weight = self.pre_distances[self.subgraph.nodes[p].idx][self.subgraph.nodes[q].idx]
+                            weight = self.pre_distances[self.subgraph.nodes[p].idx][
+                                self.subgraph.nodes[q].idx
+                            ]
 
                         else:
-                            weight = self.distance_fn(self.subgraph.nodes[p].features, self.subgraph.nodes[q].features)
+                            weight = self.distance_fn(
+                                self.subgraph.nodes[p].features,
+                                self.subgraph.nodes[q].features,
+                            )
 
                         # The current cost will be the maximum cost between the node's and its weight (arc)
                         current_cost = np.maximum(h.cost[p], weight)
@@ -174,7 +182,9 @@ class SupervisedOPF(OPF):
                             self.subgraph.nodes[q].pred = p
 
                             # And its predicted label is the same as `p`
-                            self.subgraph.nodes[q].predicted_label = self.subgraph.nodes[p].predicted_label
+                            self.subgraph.nodes[
+                                q
+                            ].predicted_label = self.subgraph.nodes[p].predicted_label
 
                             # Updates the heap `q` node and the current cost
                             h.update(q, current_cost)
@@ -186,8 +196,8 @@ class SupervisedOPF(OPF):
 
         train_time = end - start
 
-        logger.info('Classifier has been fitted.')
-        logger.info('Training time: %s seconds.', train_time)
+        logger.info("Classifier has been fitted.")
+        logger.info("Training time: %s seconds.", train_time)
 
     def predict(self, X_val, I_val=None):
         """Predicts new data using the pre-trained classifier.
@@ -202,12 +212,12 @@ class SupervisedOPF(OPF):
         """
 
         if not self.subgraph:
-            raise e.BuildError('Subgraph has not been properly created')
+            raise e.BuildError("Subgraph has not been properly created")
 
         if not self.subgraph.trained:
-            raise e.BuildError('Classifier has not been properly fitted')
+            raise e.BuildError("Classifier has not been properly fitted")
 
-        logger.info('Predicting data ...')
+        logger.info("Predicting data ...")
 
         start = time.time()
 
@@ -225,10 +235,14 @@ class SupervisedOPF(OPF):
             k = self.subgraph.idx_nodes[j]
 
             if self.pre_computed_distance:
-                weight = self.pre_distances[self.subgraph.nodes[k].idx][pred_subgraph.nodes[i].idx]
+                weight = self.pre_distances[self.subgraph.nodes[k].idx][
+                    pred_subgraph.nodes[i].idx
+                ]
 
             else:
-                weight = self.distance_fn(self.subgraph.nodes[k].features, pred_subgraph.nodes[i].features)
+                weight = self.distance_fn(
+                    self.subgraph.nodes[k].features, pred_subgraph.nodes[i].features
+                )
 
             # The minimum cost will be the maximum between the `k` node cost and its weight (arc)
             min_cost = np.maximum(self.subgraph.nodes[k].cost, weight)
@@ -237,15 +251,22 @@ class SupervisedOPF(OPF):
             current_label = self.subgraph.nodes[k].predicted_label
 
             # While `j` is a possible node and the minimum cost is bigger than the current node's cost
-            while j < (self.subgraph.n_nodes - 1) and min_cost > self.subgraph.nodes[self.subgraph.idx_nodes[j+1]].cost:
+            while (
+                j < (self.subgraph.n_nodes - 1)
+                and min_cost > self.subgraph.nodes[self.subgraph.idx_nodes[j + 1]].cost
+            ):
                 # Gathers the next node from the ordered list
-                l = self.subgraph.idx_nodes[j+1]
+                l = self.subgraph.idx_nodes[j + 1]
 
                 if self.pre_computed_distance:
-                    weight = self.pre_distances[self.subgraph.nodes[l].idx][pred_subgraph.nodes[i].idx]
+                    weight = self.pre_distances[self.subgraph.nodes[l].idx][
+                        pred_subgraph.nodes[i].idx
+                    ]
 
                 else:
-                    weight = self.distance_fn(self.subgraph.nodes[l].features, pred_subgraph.nodes[i].features)
+                    weight = self.distance_fn(
+                        self.subgraph.nodes[l].features, pred_subgraph.nodes[i].features
+                    )
 
                 # The temporary minimum cost will be the maximum between the `l` node cost and its weight (arc)
                 temp_min_cost = np.maximum(self.subgraph.nodes[l].cost, weight)
@@ -282,8 +303,8 @@ class SupervisedOPF(OPF):
 
         predict_time = end - start
 
-        logger.info('Data has been predicted.')
-        logger.info('Prediction time: %s seconds.', predict_time)
+        logger.info("Data has been predicted.")
+        logger.info("Prediction time: %s seconds.", predict_time)
 
         return preds
 
@@ -299,7 +320,7 @@ class SupervisedOPF(OPF):
 
         """
 
-        logger.info('Learning the best classifier ...')
+        logger.info("Learning the best classifier ...")
 
         # Defines the maximum accuracy
         max_acc = 0
@@ -311,7 +332,7 @@ class SupervisedOPF(OPF):
         t = 0
 
         while True:
-            logger.info('Running iteration %d/%d ...', t+1, n_iterations)
+            logger.info("Running iteration %d/%d ...", t + 1, n_iterations)
 
             # Fits training data into the classifier
             self.fit(X_train, Y_train)
@@ -377,14 +398,18 @@ class SupervisedOPF(OPF):
             # Incrementing the counter
             t += 1
 
-            logger.info('Accuracy: %s | Delta: %s | Maximum Accuracy: %s', acc, delta, max_acc)
+            logger.info(
+                "Accuracy: %s | Delta: %s | Maximum Accuracy: %s", acc, delta, max_acc
+            )
 
             # If the difference is smaller than 10e-4 or iterations are finished
             if delta < 0.0001 or t == n_iterations:
                 # Replaces current class with the best OPF
                 self = best_opf
 
-                logger.info('Best classifier has been learned over iteration %d.', best_t+1)
+                logger.info(
+                    "Best classifier has been learned over iteration %d.", best_t + 1
+                )
 
                 break
 
@@ -400,7 +425,7 @@ class SupervisedOPF(OPF):
 
         """
 
-        logger.info('Pruning classifier ...')
+        logger.info("Pruning classifier ...")
 
         # Fits training data into the classifier
         self.fit(X_train, Y_train)
@@ -412,7 +437,7 @@ class SupervisedOPF(OPF):
         initial_nodes = self.subgraph.n_nodes
 
         for t in range(n_iterations):
-            logger.info('Running iteration %d/%d ...', t+1, n_iterations)
+            logger.info("Running iteration %d/%d ...", t + 1, n_iterations)
 
             # Creating temporary lists
             X_temp, Y_temp = [], []
@@ -436,7 +461,7 @@ class SupervisedOPF(OPF):
             # Calculating accuracy
             acc = g.opf_accuracy(Y_val, preds)
 
-            logger.info('Current accuracy: %s.', acc)
+            logger.info("Current accuracy: %s.", acc)
 
         # Gathering final number of nodes
         final_nodes = self.subgraph.n_nodes
@@ -444,4 +469,4 @@ class SupervisedOPF(OPF):
         # Calculating pruning ratio
         prune_ratio = 1 - final_nodes / initial_nodes
 
-        logger.info('Prune ratio: %s.', prune_ratio)
+        logger.info("Prune ratio: %s.", prune_ratio)

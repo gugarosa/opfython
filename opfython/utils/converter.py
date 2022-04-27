@@ -6,9 +6,9 @@ import struct
 
 import numpy as np
 
-import opfython.utils.logging as l
+from opfython.utils import logging
 
-logger = l.get_logger(__name__)
+logger = logging.get_logger(__name__)
 
 
 def opf2txt(opf_path, output_file=None):
@@ -20,15 +20,15 @@ def opf2txt(opf_path, output_file=None):
 
     """
 
-    logger.info('Converting file: %s ...', opf_path)
+    logger.info("Converting file: %s ...", opf_path)
 
     # Defining header format
-    header_format = '<iii'
+    header_format = "<iii"
 
     # Calculating size to be read
     header_size = struct.calcsize(header_format)
 
-    with open(opf_path, 'rb') as f:
+    with open(opf_path, "rb") as f:
         # Reading binary data and unpacking to desired format
         header_data = struct.unpack(header_format, f.read(header_size))
 
@@ -37,10 +37,10 @@ def opf2txt(opf_path, output_file=None):
         n_features = header_data[2]
 
         # Defining the file format for each subsequent line
-        file_format = '<ii'
+        file_format = "<ii"
 
         for _ in range(n_features):
-            file_format += 'f'
+            file_format += "f"
 
         # Calculates the size based on the file format
         data_size = struct.calcsize(file_format)
@@ -57,11 +57,11 @@ def opf2txt(opf_path, output_file=None):
             samples.append((data[0], data[1] - 1, *data[2:]))
 
     if not output_file:
-        output_file = opf_path.split('.')[0] + '.txt'
+        output_file = opf_path.split(".")[0] + ".txt"
 
-    np.savetxt(output_file, samples, delimiter=' ')
+    np.savetxt(output_file, samples, delimiter=" ")
 
-    logger.info('File converted to %s.', output_file)
+    logger.info("File converted to %s.", output_file)
 
 
 def opf2csv(opf_path, output_file=None):
@@ -73,15 +73,15 @@ def opf2csv(opf_path, output_file=None):
 
     """
 
-    logger.info('Converting file: %s ...', opf_path)
+    logger.info("Converting file: %s ...", opf_path)
 
     # Defining header format
-    header_format = '<iii'
+    header_format = "<iii"
 
     # Calculating size to be read
     header_size = struct.calcsize(header_format)
 
-    with open(opf_path, 'rb') as f:
+    with open(opf_path, "rb") as f:
         # Reading binary data and unpacking to desired format
         header_data = struct.unpack(header_format, f.read(header_size))
 
@@ -90,10 +90,10 @@ def opf2csv(opf_path, output_file=None):
         n_features = header_data[2]
 
         # Defining the file format for each subsequent line
-        file_format = '<ii'
+        file_format = "<ii"
 
         for _ in range(n_features):
-            file_format += 'f'
+            file_format += "f"
 
         # Calculates the size based on the file format
         data_size = struct.calcsize(file_format)
@@ -110,11 +110,11 @@ def opf2csv(opf_path, output_file=None):
             samples.append((data[0], data[1] - 1, *data[2:]))
 
     if not output_file:
-        output_file = opf_path.split('.')[0] + '.csv'
+        output_file = opf_path.split(".")[0] + ".csv"
 
-    np.savetxt(output_file, samples, delimiter=',')
+    np.savetxt(output_file, samples, delimiter=",")
 
-    logger.info('File converted to %s.', output_file)
+    logger.info("File converted to %s.", output_file)
 
 
 def opf2json(opf_path, output_file=None):
@@ -126,15 +126,15 @@ def opf2json(opf_path, output_file=None):
 
     """
 
-    logger.info('Converting file: %s ...', opf_path)
+    logger.info("Converting file: %s ...", opf_path)
 
     # Defining header format
-    header_format = '<iii'
+    header_format = "<iii"
 
     # Calculating size to be read
     header_size = struct.calcsize(header_format)
 
-    with open(opf_path, 'rb') as f:
+    with open(opf_path, "rb") as f:
         # Reading binary data and unpacking to desired format
         header_data = struct.unpack(header_format, f.read(header_size))
 
@@ -143,34 +143,30 @@ def opf2json(opf_path, output_file=None):
         n_features = header_data[2]
 
         # Defining the file format for each subsequent line
-        file_format = '<ii'
+        file_format = "<ii"
 
         for _ in range(n_features):
-            file_format += 'f'
+            file_format += "f"
 
         # Calculates the size based on the file format
         data_size = struct.calcsize(file_format)
 
         # Creating a JSON structure
-        json = {
-            'data': []
-        }
+        json = {"data": []}
 
         for _ in range(n_samples):
             # Reading binary data and unpacking to desired format
             data = struct.unpack(file_format, f.read(data_size))
 
             # Appending the data to JSON structure
-            json['data'].append({
-                'id': data[0],
-                'label': data[1] - 1,
-                'features': list(data[2:])
-            })
+            json["data"].append(
+                {"id": data[0], "label": data[1] - 1, "features": list(data[2:])}
+            )
 
     if not output_file:
-        output_file = opf_path.split('.')[0] + '.json'
+        output_file = opf_path.split(".")[0] + ".json"
 
-    with open(output_file, 'w') as f:
+    with open(output_file, "w") as f:
         j.dump(json, f)
 
-    logger.info('File converted to %s.', output_file)
+    logger.info("File converted to %s.", output_file)

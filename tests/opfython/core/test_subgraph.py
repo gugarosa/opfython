@@ -87,7 +87,7 @@ def test_subgraph_idx_nodes_setter():
 def test_subgraph_trained():
     s = subgraph.Subgraph()
 
-    assert s.trained == False
+    assert s.trained is False
 
 
 def test_subgraph_trained_setter():
@@ -98,18 +98,18 @@ def test_subgraph_trained_setter():
     except:
         s.trained = True
 
-    assert s.trained == True
+    assert s.trained is True
 
 
 def test_subgraph_load():
     s = subgraph.Subgraph()
 
     try:
-        X, Y = s._load('data/boat')
+        X, Y = s._load("data/boat")
     except:
-        X, Y = s._load('data/boat.csv')
-        X, Y = s._load('data/boat.json')
-        X, Y = s._load('data/boat.txt')
+        X, Y = s._load("data/boat.csv")
+        X, Y = s._load("data/boat.json")
+        X, Y = s._load("data/boat.txt")
 
     assert X.shape == (100, 2)
     assert Y.shape == (100,)
@@ -118,7 +118,7 @@ def test_subgraph_load():
 def test_subgraph_build():
     s = subgraph.Subgraph()
 
-    X, Y = s._load('data/boat.txt')
+    X, Y = s._load("data/boat.txt")
 
     s._build(X, Y, None)
 
@@ -129,7 +129,7 @@ def test_subgraph_build():
 def test_subgraph_build_with_index():
     s = subgraph.Subgraph()
 
-    X, Y = s._load('data/boat.txt')
+    X, Y = s._load("data/boat.txt")
 
     I = Y
 
@@ -140,7 +140,7 @@ def test_subgraph_build_with_index():
 
 
 def test_subgraph_destroy_arcs():
-    s = subgraph.Subgraph(from_file='data/boat.txt')
+    s = subgraph.Subgraph(from_file="data/boat.txt")
 
     s.destroy_arcs()
 
@@ -149,7 +149,7 @@ def test_subgraph_destroy_arcs():
 
 
 def test_subgraph_mark_nodes():
-    s = subgraph.Subgraph(from_file='data/boat.txt')
+    s = subgraph.Subgraph(from_file="data/boat.txt")
 
     s.mark_nodes(0)
 
@@ -157,7 +157,7 @@ def test_subgraph_mark_nodes():
 
 
 def test_subgraph_reset():
-    s = subgraph.Subgraph(from_file='data/boat.txt')
+    s = subgraph.Subgraph(from_file="data/boat.txt")
 
     s.reset()
 

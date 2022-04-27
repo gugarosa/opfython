@@ -1,12 +1,12 @@
-import opfython.stream.loader as l
 import opfython.stream.parser as p
+from opfython.stream import loader
 from opfython.subgraphs import KNNSubgraph
 
 # Defining an input file
-input_file = 'data/boat.txt'
+input_file = "data/boat.txt"
 
 # Loading a .txt file to a dataframe
-txt = l.load_txt(input_file)
+txt = loader.load_txt(input_file)
 
 # Parsing a pre-loaded dataframe
 X, Y = p.parse_loader(txt)
