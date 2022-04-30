@@ -1,19 +1,23 @@
 """Random numbers generators.
 """
 
+from typing import Optional
+
 import numpy as np
 
 
-def generate_uniform_random_number(low=0.0, high=1.0, size=1):
+def generate_uniform_random_number(
+    low: Optional[float] = 0.0, high: Optional[float] = 1.0, size: Optional[int] = 1
+) -> np.array:
     """Generates a random number or array based on an uniform distribution.
 
     Args:
-        low (float): Lower interval.
-        high (float): Higher interval.
-        size (int): Size of array.
+        low: Lower interval.
+        high: Higher interval.
+        size: Size of array.
 
     Returns:
-        An uniform random number or array.
+        (np.array): An uniform random number or array.
 
     """
 
@@ -22,16 +26,20 @@ def generate_uniform_random_number(low=0.0, high=1.0, size=1):
     return uniform_array
 
 
-def generate_gaussian_random_number(mean=0.0, variance=1.0, size=1):
+def generate_gaussian_random_number(
+    mean: Optional[float] = 0.0,
+    variance: Optional[float] = 1.0,
+    size: Optional[int] = 1,
+) -> np.array:
     """Generates a random number or array based on a gaussian distribution.
 
     Args:
-        mean (float): Gaussian's mean value.
-        variance (float): Gaussian's variance value.
-        size (int): Size of array.
+        mean: Gaussian's mean value.
+        variance: Gaussian's variance value.
+        size: Size of array.
 
     Returns:
-        A gaussian random number or array.
+        (np.array): A gaussian random number or array.
 
     """
 

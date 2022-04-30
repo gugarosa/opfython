@@ -1,6 +1,8 @@
 """General-based mathematical methods.
 """
 
+from typing import List, Optional, Union
+
 import numpy as np
 
 import opfython.math.distance as d
@@ -9,15 +11,17 @@ from opfython.utils import logging
 logger = logging.get_logger(__name__)
 
 
-def confusion_matrix(labels, preds):
+def confusion_matrix(
+    labels: Union[np.array, List[int]], preds: Union[np.array, List[int]]
+) -> np.array:
     """Calculates the confusion matrix between true and predicted labels.
 
     Args:
-        labels (np.array | list): List or numpy array holding the true labels.
-        preds (np.array | list): List or numpy array holding the predicted labels.
+        labels: List or numpy array holding the true labels.
+        preds: List or numpy array holding the predicted labels.
 
     Returns:
-        The confusion matrix.
+        (np.array): The confusion matrix.
 
     """
 
@@ -37,14 +41,14 @@ def confusion_matrix(labels, preds):
     return c_matrix
 
 
-def normalize(array):
+def normalize(array: np.array) -> np.array:
     """Normalizes an input array.
 
     Args:
-        array (np.array): Array to be normalized.
+        array: Array to be normalized.
 
     Returns:
-        The normalized version (between 0 and 1) of the input array.
+        (np.array): The normalized version (between 0 and 1) of the input array.
 
     """
 
@@ -56,15 +60,17 @@ def normalize(array):
     return norm_array
 
 
-def opf_accuracy(labels, preds):
+def opf_accuracy(
+    labels: Union[np.array, List[int]], preds: Union[np.array, List[int]]
+) -> float:
     """Calculates the accuracy between true and predicted labels using OPF-style measure.
 
     Args:
-        labels (np.array | list): List or numpy array holding the true labels.
-        preds (np.array | list): List or numpy array holding the predicted labels.
+        labels: List or numpy array holding the true labels.
+        preds: List or numpy array holding the predicted labels.
 
     Returns:
-        The OPF accuracy measure between 0 and 1.
+        (float): The OPF accuracy measure between 0 and 1.
 
     """
 
@@ -101,15 +107,17 @@ def opf_accuracy(labels, preds):
     return accuracy
 
 
-def opf_accuracy_per_label(labels, preds):
+def opf_accuracy_per_label(
+    labels: Union[np.array, List[int]], preds: Union[np.array, List[int]]
+) -> float:
     """Calculates the accuracy per label between true and predicted labels using OPF-style measure.
 
     Args:
-        labels (np.array | list): List or numpy array holding the true labels.
-        preds (np.array | list): List or numpy array holding the predicted labels.
+        labels: List or numpy array holding the true labels.
+        preds: List or numpy array holding the predicted labels.
 
     Returns:
-        The OPF accuracy measure per label between 0 and 1.
+        (float): The OPF accuracy measure per label between 0 and 1.
 
     """
 
@@ -139,13 +147,15 @@ def opf_accuracy_per_label(labels, preds):
     return accuracy
 
 
-def pre_compute_distance(data, output, distance="log_squared_euclidean"):
+def pre_compute_distance(
+    data: np.array, output: str, distance: Optional[str] = "log_squared_euclidean"
+) -> None:
     """Pre-computes a matrix of distances based on an input data.
 
     Args:
-        data (np.array): Array of samples.
-        output (str): File to be saved.
-        distance (str): Distance metric to be used.
+        data: Array of samples.
+        output: File to be saved.
+        distance: Distance metric to be used.
 
     """
 
@@ -167,15 +177,17 @@ def pre_compute_distance(data, output, distance="log_squared_euclidean"):
     logger.info("Distances saved to: %s.", output)
 
 
-def purity(labels, preds):
+def purity(
+    labels: Union[np.array, List[int]], preds: Union[np.array, List[int]]
+) -> float:
     """Calculates the purity measure of an unsupervised technique.
 
     Args:
-        labels (np.array | list): List or numpy array holding the true labels.
-        preds (np.array | list): List or numpy array holding the assigned labels by the clusters.
+        labels: List or numpy array holding the true labels.
+        preds: List or numpy array holding the assigned labels by the clusters.
 
     Returns:
-        The purity measure.
+        (float): The purity measure.
 
     """
 

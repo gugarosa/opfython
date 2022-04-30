@@ -12,15 +12,15 @@ import opfython.utils.decorator as d
 
 @d.avoid_zero_division
 @njit(cache=True)
-def additive_symmetric_distance(x, y):
+def additive_symmetric_distance(x: np.array, y: np.array) -> float:
     """Calculates the Additive Symmetric Distance (Symmetric Divergence).
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Additive Symmetric Distance between x and y.
+        (float): The Additive Symmetric Distance between x and y.
 
     """
 
@@ -30,15 +30,15 @@ def additive_symmetric_distance(x, y):
 
 
 @njit(cache=True)
-def average_euclidean_distance(x, y):
+def average_euclidean_distance(x: np.array, y: np.array) -> float:
     """Calculates the Average Euclidean Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Average Euclidean Distance between x and y.
+        (float): The Average Euclidean Distance between x and y.
 
     """
 
@@ -49,15 +49,15 @@ def average_euclidean_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def bhattacharyya_distance(x, y):
+def bhattacharyya_distance(x: np.array, y: np.array) -> float:
     """Calculates the Bhattacharyya Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Bhattacharyya Distance between x and y.
+        (float): The Bhattacharyya Distance between x and y.
 
     """
 
@@ -68,15 +68,15 @@ def bhattacharyya_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def bray_curtis_distance(x, y):
+def bray_curtis_distance(x: np.array, y: np.array) -> float:
     """Calculates the Bray-Curtis Distance (Sorensen Distance).
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Bray-Curtis Distance between x and y.
+        (float): The Bray-Curtis Distance between x and y.
 
     """
 
@@ -87,15 +87,15 @@ def bray_curtis_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def canberra_distance(x, y):
+def canberra_distance(x: np.array, y: np.array) -> float:
     """Calculates the Canberra Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Canberra Distance between x and y.
+        (float): The Canberra Distance between x and y.
 
     """
 
@@ -105,15 +105,15 @@ def canberra_distance(x, y):
 
 
 @njit(cache=True)
-def chebyshev_distance(x, y):
+def chebyshev_distance(x: np.array, y: np.array) -> float:
     """Calculates the Chebyshev Distance (Maximum Value Distance, Lagrange, Chessboard Distance).
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Chebyshev Distance between x and y.
+        (float): The Chebyshev Distance between x and y.
 
     """
 
@@ -124,15 +124,15 @@ def chebyshev_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def chi_squared_distance(x, y):
+def chi_squared_distance(x: np.array, y: np.array) -> float:
     """Calculates the Chi-Squared Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Chi-Squared Distance between x and y.
+        (float): The Chi-Squared Distance between x and y.
 
     """
 
@@ -143,15 +143,15 @@ def chi_squared_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def chord_distance(x, y):
+def chord_distance(x: np.array, y: np.array) -> float:
     """Calculates the Chord Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Chord Distance between x and y.
+        (float): The Chord Distance between x and y.
 
     """
 
@@ -162,15 +162,15 @@ def chord_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def clark_distance(x, y):
+def clark_distance(x: np.array, y: np.array) -> float:
     """Calculates the Clark Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Clark Distance between x and y.
+        (float): The Clark Distance between x and y.
 
     """
 
@@ -181,15 +181,15 @@ def clark_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def cosine_distance(x, y):
+def cosine_distance(x: np.array, y: np.array) -> float:
     """Calculates the Cosine Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The cosine Distance between x and y.
+        (float): The cosine Distance between x and y.
 
     """
 
@@ -200,15 +200,15 @@ def cosine_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def dice_distance(x, y):
+def dice_distance(x: np.array, y: np.array) -> float:
     """Calculates the Dice Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Dice Distance between x and y.
+        (float): The Dice Distance between x and y.
 
     """
 
@@ -219,15 +219,15 @@ def dice_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def divergence_distance(x, y):
+def divergence_distance(x: np.array, y: np.array) -> float:
     """Calculates the Divergence Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Divergence Distance between x and y.
+        (float): The Divergence Distance between x and y.
 
     """
 
@@ -237,15 +237,15 @@ def divergence_distance(x, y):
 
 
 @njit(cache=True)
-def euclidean_distance(x, y):
+def euclidean_distance(x: np.array, y: np.array) -> float:
     """Calculates the Euclidean Distance (L2 Norm, Ruler Distance).
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Euclidean Distance between x and y.
+        (float): The Euclidean Distance between x and y.
 
     """
 
@@ -259,11 +259,11 @@ def gaussian_distance(x, y, gamma=1):
     """Calculates the Gaussian Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Gaussian Distance between x and y.
+        (float): The Gaussian Distance between x and y.
 
     """
 
@@ -273,15 +273,15 @@ def gaussian_distance(x, y, gamma=1):
 
 
 @njit(cache=True)
-def gower_distance(x, y):
+def gower_distance(x: np.array, y: np.array) -> float:
     """Calculates the Gower Distance (Average Manhattan, Mean Character Distance).
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Gower Distance between x and y.
+        (float): The Gower Distance between x and y.
 
     """
 
@@ -291,15 +291,15 @@ def gower_distance(x, y):
 
 
 @njit(cache=True)
-def hamming_distance(x, y):
+def hamming_distance(x: np.array, y: np.array) -> float:
     """Calculates the Hamming Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Hamming Distance between x and y.
+        (float): The Hamming Distance between x and y.
 
     """
 
@@ -310,15 +310,15 @@ def hamming_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def hassanat_distance(x, y):
+def hassanat_distance(x: np.array, y: np.array) -> float:
     """Calculates the Hassanat Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Hassanat Distance between x and y.
+        (float): The Hassanat Distance between x and y.
 
     """
 
@@ -342,15 +342,15 @@ def hassanat_distance(x, y):
 
 
 @njit(cache=True)
-def hellinger_distance(x, y):
+def hellinger_distance(x: np.array, y: np.array) -> float:
     """Calculates the Hellinger Distance (Jeffries-Matusita Distance).
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Hellinger Distance between x and y.
+        (float): The Hellinger Distance between x and y.
 
     """
 
@@ -360,15 +360,15 @@ def hellinger_distance(x, y):
 
 
 @d.avoid_zero_division
-def jaccard_distance(x, y):
+def jaccard_distance(x: np.array, y: np.array) -> float:
     """Calculates the Jaccard Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Jaccard Distance between x and y.
+        (float): The Jaccard Distance between x and y.
 
     """
 
@@ -379,15 +379,15 @@ def jaccard_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def jeffreys_distance(x, y):
+def jeffreys_distance(x: np.array, y: np.array) -> float:
     """Calculates the Jeffreys Distance (J-Divergence, KL2 Divergence).
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Jeffreys Distance between x and y.
+        (float): The Jeffreys Distance between x and y.
 
     """
 
@@ -398,15 +398,15 @@ def jeffreys_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def jensen_distance(x, y):
+def jensen_distance(x: np.array, y: np.array) -> float:
     """Calculates the Jensen Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Jensen Distance between x and y.
+        (float): The Jensen Distance between x and y.
 
     """
 
@@ -417,15 +417,15 @@ def jensen_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def jensen_shannon_distance(x, y):
+def jensen_shannon_distance(x: np.array, y: np.array) -> float:
     """Calculates the Jensen-Shannon Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Jensen-Shannon Distance between x and y.
+        (float): The Jensen-Shannon Distance between x and y.
 
     """
 
@@ -437,15 +437,15 @@ def jensen_shannon_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def k_divergence_distance(x, y):
+def k_divergence_distance(x: np.array, y: np.array) -> float:
     """Calculates the K Divergence Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The K Divergence Distance between x and y.
+        (float): The K Divergence Distance between x and y.
 
     """
 
@@ -456,15 +456,15 @@ def k_divergence_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def kulczynski_distance(x, y):
+def kulczynski_distance(x: np.array, y: np.array) -> float:
     """Calculates the Kulczynski Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Kulczynski Distance between x and y.
+        (float): The Kulczynski Distance between x and y.
 
     """
 
@@ -475,15 +475,15 @@ def kulczynski_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def kullback_leibler_distance(x, y):
+def kullback_leibler_distance(x: np.array, y: np.array) -> float:
     """Calculates the Kullback-Leibler Distance (KL Divergence).
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Kullback-Leibler Distance between x and y.
+        (float): The Kullback-Leibler Distance between x and y.
 
     """
 
@@ -493,15 +493,15 @@ def kullback_leibler_distance(x, y):
 
 
 @njit(cache=True)
-def log_euclidean_distance(x, y):
+def log_euclidean_distance(x: np.array, y: np.array) -> float:
     """Calculates the log-Euclidean Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The log-Euclidean Distance between x and y.
+        (float): The log-Euclidean Distance between x and y.
 
     """
 
@@ -511,15 +511,15 @@ def log_euclidean_distance(x, y):
 
 
 @njit(cache=True)
-def log_squared_euclidean_distance(x, y):
+def log_squared_euclidean_distance(x: np.array, y: np.array) -> float:
     """Calculates the log-Squared Euclidean Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Log Squared Euclidean Distance between x and y.
+        (float): The Log Squared Euclidean Distance between x and y.
 
     """
 
@@ -529,15 +529,15 @@ def log_squared_euclidean_distance(x, y):
 
 
 @njit(cache=True)
-def lorentzian_distance(x, y):
+def lorentzian_distance(x: np.array, y: np.array) -> float:
     """Calculates the Lorentzian Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Lorentzian Distance between x and y.
+        (float): The Lorentzian Distance between x and y.
 
     """
 
@@ -547,15 +547,15 @@ def lorentzian_distance(x, y):
 
 
 @njit(cache=True)
-def manhattan_distance(x, y):
+def manhattan_distance(x: np.array, y: np.array) -> float:
     """Calculates the Manhattan Distance (L1 Norm, Taxicab Norm, City Block Distance).
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Manhattan Distance between x and y.
+        (float): The Manhattan Distance between x and y.
 
     """
 
@@ -565,15 +565,15 @@ def manhattan_distance(x, y):
 
 
 @njit(cache=True)
-def matusita_distance(x, y):
+def matusita_distance(x: np.array, y: np.array) -> float:
     """Calculates the Matusita Distance, where features must be positive.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Matusita Distance between x and y.
+        (float): The Matusita Distance between x and y.
 
     """
 
@@ -584,15 +584,15 @@ def matusita_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def max_symmetric_distance(x, y):
+def max_symmetric_distance(x: np.array, y: np.array) -> float:
     """Calculates the Max Symmetric Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Max Symmetric Distance between x and y.
+        (float): The Max Symmetric Distance between x and y.
 
     """
 
@@ -604,15 +604,15 @@ def max_symmetric_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def mean_censored_euclidean_distance(x, y):
+def mean_censored_euclidean_distance(x: np.array, y: np.array) -> float:
     """Calculates the Mean Censored Euclidean Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Mean Censored Euclidean Distance between x and y.
+        (float): The Mean Censored Euclidean Distance between x and y.
 
     """
 
@@ -624,15 +624,15 @@ def mean_censored_euclidean_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def min_symmetric_distance(x, y):
+def min_symmetric_distance(x: np.array, y: np.array) -> float:
     """Calculates the Min Symmetric Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Min Symmetric Distance between x and y.
+        (float): The Min Symmetric Distance between x and y.
 
     """
 
@@ -644,15 +644,15 @@ def min_symmetric_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def neyman_distance(x, y):
+def neyman_distance(x: np.array, y: np.array) -> float:
     """Calculates the Neyman Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Neyman Distance between x and y.
+        (float): The Neyman Distance between x and y.
 
     """
 
@@ -662,15 +662,15 @@ def neyman_distance(x, y):
 
 
 @njit(cache=True)
-def non_intersection_distance(x, y):
+def non_intersection_distance(x: np.array, y: np.array) -> float:
     """Calculates the Non-Intersection Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Non-Intersection Distance between x and y.
+        (float): The Non-Intersection Distance between x and y.
 
     """
 
@@ -681,15 +681,15 @@ def non_intersection_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def pearson_distance(x, y):
+def pearson_distance(x: np.array, y: np.array) -> float:
     """Calculates the Pearson Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Pearson Distance between x and y.
+        (float): The Pearson Distance between x and y.
 
     """
 
@@ -700,15 +700,15 @@ def pearson_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def sangvi_distance(x, y):
+def sangvi_distance(x: np.array, y: np.array) -> float:
     """Calculates the Sangvi Distance (Probabilistic Symmetric).
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Sangvi Distance between x and y.
+        (float): The Sangvi Distance between x and y.
 
     """
 
@@ -719,15 +719,15 @@ def sangvi_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def soergel_distance(x, y):
+def soergel_distance(x: np.array, y: np.array) -> float:
     """Calculates the Soergel Distance (Ruzicka Distance).
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Soergel Distance between x and y.
+        (float): The Soergel Distance between x and y.
 
     """
 
@@ -738,15 +738,15 @@ def soergel_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def squared_distance(x, y):
+def squared_distance(x: np.array, y: np.array) -> float:
     """Calculates the Squared Distance (Triangular Discrimination Distance).
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Squared Distance between x and y.
+        (float): The Squared Distance between x and y.
 
     """
 
@@ -756,15 +756,15 @@ def squared_distance(x, y):
 
 
 @njit(cache=True)
-def squared_chord_distance(x, y):
+def squared_chord_distance(x: np.array, y: np.array) -> float:
     """Calculates the Squared Chord Distance, where features must be positive.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Squared Chord Distance between x and y.
+        (float): The Squared Chord Distance between x and y.
 
     """
 
@@ -774,15 +774,15 @@ def squared_chord_distance(x, y):
 
 
 @njit(cache=True)
-def squared_euclidean_distance(x, y):
+def squared_euclidean_distance(x: np.array, y: np.array) -> float:
     """Calculates the Squared Euclidean Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Squared Euclidean Distance between x and y.
+        (float): The Squared Euclidean Distance between x and y.
 
     """
 
@@ -793,15 +793,15 @@ def squared_euclidean_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def statistic_distance(x, y):
+def statistic_distance(x: np.array, y: np.array) -> float:
     """Calculates the Statistic Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Statistic Distance between x and y.
+        (float): The Statistic Distance between x and y.
 
     """
 
@@ -813,15 +813,15 @@ def statistic_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def topsoe_distance(x, y):
+def topsoe_distance(x: np.array, y: np.array) -> float:
     """Calculates the Topsoe Distance (Information Statistics).
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Topsoe Distance between x and y.
+        (float): The Topsoe Distance between x and y.
 
     """
 
@@ -833,15 +833,15 @@ def topsoe_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def vicis_symmetric1_distance(x, y):
+def vicis_symmetric1_distance(x: np.array, y: np.array) -> float:
     """Calculates the Vicis Symmetric 1 Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Vicis Symmetric 1 Distance between x and y.
+        (float): The Vicis Symmetric 1 Distance between x and y.
 
     """
 
@@ -852,15 +852,15 @@ def vicis_symmetric1_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def vicis_symmetric2_distance(x, y):
+def vicis_symmetric2_distance(x: np.array, y: np.array) -> float:
     """Calculates the Vicis Symmetric 2 Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Vicis Symmetric 2 Distance between x and y.
+        (float): The Vicis Symmetric 2 Distance between x and y.
 
     """
 
@@ -871,15 +871,15 @@ def vicis_symmetric2_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def vicis_symmetric3_distance(x, y):
+def vicis_symmetric3_distance(x: np.array, y: np.array) -> float:
     """Calculates the Vicis Symmetric 3 Distance.
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Vicis Symmetric 3 Distance between x and y.
+        (float): The Vicis Symmetric 3 Distance between x and y.
 
     """
 
@@ -890,15 +890,15 @@ def vicis_symmetric3_distance(x, y):
 
 @d.avoid_zero_division
 @njit(cache=True)
-def vicis_wave_hedges_distance(x, y):
+def vicis_wave_hedges_distance(x: np.array, y: np.array) -> float:
     """Calculates the Vicis-Wave Hedges Distance (Wave-Hedges).
 
     Args:
-        x (np.array): N-dimensional array.
-        y (np.array): N-dimensional array.
+        x: N-dimensional array.
+        y: N-dimensional array.
 
     Returns:
-        The Vicis-Wave Hedges Distance between x and y.
+        (float): The Vicis-Wave Hedges Distance between x and y.
 
     """
 

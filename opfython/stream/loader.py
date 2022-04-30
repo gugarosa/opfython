@@ -10,16 +10,16 @@ from opfython.utils import logging
 logger = logging.get_logger(__name__)
 
 
-def load_csv(csv_path):
+def load_csv(csv_path: str) -> np.array:
     """Loads a CSV file into a numpy array.
 
     Please make sure the .csv is uniform along all rows and columns.
 
     Args:
-        csv_path (str): String holding the .csv's path.
+        csv_path: String holding the .csv's path.
 
     Returns:
-        A numpy array holding the loaded data.
+        (np.array): A numpy array holding the loaded data.
 
     """
 
@@ -38,16 +38,16 @@ def load_csv(csv_path):
     return csv
 
 
-def load_txt(txt_path):
+def load_txt(txt_path: str) -> np.array:
     """Loads a .txt file into a numpy array.
 
     Please make sure the .txt is uniform along all rows and columns.
 
     Args:
-        txt_path (str): A path to the .txt file.
+        txt_path: A path to the .txt file.
 
     Returns:
-        A numpy array holding the loaded data.
+        (np.array): A numpy array holding the loaded data.
 
     """
 
@@ -66,16 +66,16 @@ def load_txt(txt_path):
     return txt
 
 
-def load_json(json_path):
+def load_json(json_path: str) -> np.array:
     """Loads a .json file into a numpy array.
 
     Please make sure the .json is uniform along all keys and items.
 
     Args:
-        json_path (str): Path to the .json file.
+        json_path: Path to the .json file.
 
     Returns:
-        A numpy array holding the loaded data.
+        (np.array): A numpy array holding the loaded data.
 
     """
 

@@ -1,6 +1,8 @@
 """Data splitting utilities.
 """
 
+from typing import Optional, Tuple
+
 import numpy as np
 
 import opfython.utils.exception as e
@@ -9,17 +11,22 @@ from opfython.utils import logging
 logger = logging.get_logger(__name__)
 
 
-def split(X, Y, percentage=0.5, random_state=1):
+def split(
+    X: np.array,
+    Y: np.array,
+    percentage: Optional[float] = 0.5,
+    random_state: Optional[int] = 1,
+) -> Tuple[np.array, np.array, np.array, np.array]:
     """Splits data into two new sets.
 
     Args:
-        X (np.array): Array of features.
-        Y (np.array): Array of labels.
-        percentage (float): Percentage of the data that should be in first set.
-        random_state (int): An integer that fixes the random seed.
+        X: Array of features.
+        Y: Array of labels.
+        percentage: Percentage of the data that should be in first set.
+        random_state: An integer that fixes the random seed.
 
     Returns:
-        Two new sets that were created from `X` and `Y`.
+        (Tuple[np.array, np.array, np.array, np.array]): Two new sets that were created from `X` and `Y`.
 
     """
 
@@ -54,17 +61,22 @@ def split(X, Y, percentage=0.5, random_state=1):
     return X_1, X_2, Y_1, Y_2
 
 
-def split_with_index(X, Y, percentage=0.5, random_state=1):
+def split_with_index(
+    X: np.array,
+    Y: np.array,
+    percentage: Optional[float] = 0.5,
+    random_state: Optional[int] = 1,
+) -> Tuple[np.array, np.array, np.array, np.array, np.array, np.array]:
     """Splits data into two new sets.
 
     Args:
-        X (np.array): Array of features.
-        Y (np.array): Array of labels.
-        percentage (float): Percentage of the data that should be in first set.
-        random_state (int): An integer that fixes the random seed.
+        X: Array of features.
+        Y: Array of labels.
+        percentage: Percentage of the data that should be in first set.
+        random_state: An integer that fixes the random seed.
 
     Returns:
-        Two new sets that were created from `X` and `Y`, along their indexes.
+        (Tuple[np.array, np.array, np.array, np.array, np.array, np.array]): Two new sets that were created from `X` and `Y`, along their indexes.
 
     """
 
@@ -102,17 +114,19 @@ def split_with_index(X, Y, percentage=0.5, random_state=1):
     return X_1, X_2, Y_1, Y_2, I_1, I_2
 
 
-def merge(X_1, X_2, Y_1, Y_2):
+def merge(
+    X_1: np.array, X_2: np.array, Y_1: np.array, Y_2: np.array
+) -> Tuple[np.array, np.array]:
     """Merge two sets into a new set.
 
     Args:
-        X_1 (np.array): First array of features.
-        X_2 (np.array): Second array of features.
-        Y_1 (np.array): First array of labels.
-        Y_2 (np.array): Second array of labels.
+        X_1: First array of features.
+        X_2: Second array of features.
+        Y_1: First array of labels.
+        Y_2: Second array of labels.
 
     Returns:
-        A new merged set that was created from `X_1`, `X_2`, `Y_1` and `Y_2`.
+        (Tuple[np.array, np.array]:): A new merged set that was created from `X_1`, `X_2`, `Y_1` and `Y_2`.
 
     """
 

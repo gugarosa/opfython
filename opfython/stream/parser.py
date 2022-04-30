@@ -9,14 +9,14 @@ from opfython.utils import logging
 logger = logging.get_logger(__name__)
 
 
-def parse_loader(data):
+def parse_loader(data: np.array) -> np.array:
     """Parses data in OPF file format that was pre-loaded (.csv, .txt or .json).
 
     Args:
-        data (np.array): Numpy array holding the data in OPF file format.
+        data: Numpy array holding the data in OPF file format.
 
     Returns:
-        Arrays holding the features and labels.
+        (np.array): Arrays holding the features and labels.
 
     """
 

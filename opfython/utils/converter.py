@@ -3,6 +3,7 @@
 
 import json as j
 import struct
+from typing import Optional
 
 import numpy as np
 
@@ -11,12 +12,12 @@ from opfython.utils import logging
 logger = logging.get_logger(__name__)
 
 
-def opf2txt(opf_path, output_file=None):
+def opf2txt(opf_path: str, output_file: Optional[str] = None) -> None:
     """Converts a binary OPF file (.dat or .opf) to a .txt file.
 
     Args:
-        opf_path (str): Path to the binary file.
-        output_file (str): The path to the output file.
+        opf_path: Path to the binary file.
+        output_file: The path to the output file.
 
     """
 
@@ -64,12 +65,12 @@ def opf2txt(opf_path, output_file=None):
     logger.info("File converted to %s.", output_file)
 
 
-def opf2csv(opf_path, output_file=None):
+def opf2csv(opf_path: str, output_file: Optional[str] = None) -> None:
     """Converts a binary OPF file (.dat or .opf) to a .csv file.
 
     Args:
-        opf_path (str): Path to the binary file.
-        output_file (str): The path to the output file.
+        opf_path: Path to the binary file.
+        output_file: The path to the output file.
 
     """
 
@@ -117,12 +118,12 @@ def opf2csv(opf_path, output_file=None):
     logger.info("File converted to %s.", output_file)
 
 
-def opf2json(opf_path, output_file=None):
+def opf2json(opf_path: str, output_file: Optional[str] = None) -> None:
     """Converts a binary OPF file (.dat or .opf) to a .json file.
 
     Args:
-        opf_path (str): Path to the binary file.
-        output_file (str): The path to the output file.
+        opf_path: Path to the binary file.
+        output_file: The path to the output file.
 
     """
 

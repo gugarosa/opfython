@@ -3,26 +3,32 @@
 
 from functools import wraps
 
+import numpy as np
+
 import opfython.utils.constants as c
 
 
-def avoid_zero_division(f):
+def avoid_zero_division(f: callable) -> callable:
     """Adds a minimal value to arguments to avoid zero values.
 
     Args:
-        f (callable): Incoming function.
+        f: Incoming function.
 
     Returns:
-        The incoming function with its adjusted arguments.
+        (callable): The incoming function with its adjusted arguments.
 
     """
 
     @wraps(f)
-    def _avoid_zero_division(x, y):
-        """Wraps the function for adjusting its arguments
+    def _avoid_zero_division(x: np.array, y: np.array) -> callable:
+        """Wraps the function for adjusting its arguments.
+
+        Args:
+            x: N-dimensional array.
+            y: N-dimensional array.
 
         Returns:
-            The function itself.
+            (callable): The function itself.
 
         """
 
