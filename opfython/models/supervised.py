@@ -3,6 +3,7 @@
 
 import copy
 import time
+from typing import List, Optional
 
 import numpy as np
 
@@ -25,12 +26,16 @@ class SupervisedOPF(OPF):
 
     """
 
-    def __init__(self, distance="log_squared_euclidean", pre_computed_distance=None):
+    def __init__(
+        self,
+        distance: Optional[str] = "log_squared_euclidean",
+        pre_computed_distance: Optional[str] = None,
+    ) -> None:
         """Initialization method.
 
         Args:
-            distance (str): An indicator of the distance metric to be used.
-            pre_computed_distance (str): A pre-computed distance file for feeding into OPF.
+            distance: An indicator of the distance metric to be used.
+            pre_computed_distance: A pre-computed distance file for feeding into OPF.
 
         """
 
@@ -40,7 +45,7 @@ class SupervisedOPF(OPF):
 
         logger.info("Class overrided.")
 
-    def _find_prototypes(self):
+    def _find_prototypes(self) -> None:
         """Find prototype nodes using the Minimum Spanning Tree (MST) approach."""
 
         logger.debug("Finding prototypes ...")
@@ -109,13 +114,15 @@ class SupervisedOPF(OPF):
 
         logger.debug("Prototypes: %s.", prototypes)
 
-    def fit(self, X_train, Y_train, I_train=None):
+    def fit(
+        self, X_train: np.array, Y_train: np.array, I_train: Optional[np.array] = None
+    ) -> None:
         """Fits data in the classifier.
 
         Args:
-            X_train (np.array): Array of training features.
-            Y_train (np.array): Array of training labels.
-            I_train (np.array): Array of training indexes.
+            X_train: Array of training features.
+            Y_train: Array of training labels.
+            I_train: Array of training indexes.
 
         """
 
@@ -199,15 +206,15 @@ class SupervisedOPF(OPF):
         logger.info("Classifier has been fitted.")
         logger.info("Training time: %s seconds.", train_time)
 
-    def predict(self, X_val, I_val=None):
+    def predict(self, X_val: np.array, I_val: Optional[np.array] = None) -> List[int]:
         """Predicts new data using the pre-trained classifier.
 
         Args:
-            X_val (np.array): Array of validation or test features.
-            I_val (np.array): Array of validation or test indexes.
+            X_val: Array of validation or test features.
+            I_val: Array of validation or test indexes.
 
         Returns:
-            A list of predictions for each record of the data.
+            (List[int]): A list of predictions for each record of the data.
 
         """
 
@@ -308,15 +315,22 @@ class SupervisedOPF(OPF):
 
         return preds
 
-    def learn(self, X_train, Y_train, X_val, Y_val, n_iterations=10):
+    def learn(
+        self,
+        X_train: np.array,
+        Y_train: np.array,
+        X_val: np.array,
+        Y_val: np.array,
+        n_iterations: Optional[int] = 10,
+    ) -> None:
         """Learns the best classifier over a validation set.
 
         Args:
-            X_train (np.array): Array of training features.
-            Y_train (np.array): Array of training labels.
-            X_val (np.array): Array of validation features.
-            Y_val (np.array): Array of validation labels.
-            n_iterations (int): Number of iterations.
+            X_train: Array of training features.
+            Y_train: Array of training labels.
+            X_val: Array of validation features.
+            Y_val: Array of validation labels.
+            n_iterations: Number of iterations.
 
         """
 
@@ -413,15 +427,22 @@ class SupervisedOPF(OPF):
 
                 break
 
-    def prune(self, X_train, Y_train, X_val, Y_val, n_iterations=10):
+    def prune(
+        self,
+        X_train: np.array,
+        Y_train: np.array,
+        X_val: np.array,
+        Y_val: np.array,
+        n_iterations: Optional[int] = 10,
+    ) -> None:
         """Prunes a classifier over a validation set.
 
         Args:
-            X_train (np.array): Array of training features.
-            Y_train (np.array): Array of training labels.
-            X_val (np.array): Array of validation features.
-            Y_val (np.array): Array of validation labels.
-            n_iterations (int): Maximum number of iterations.
+            X_train: Array of training features.
+            Y_train: Array of training labels.
+            X_val: Array of validation features.
+            Y_val: Array of validation labels.
+            n_iterations: Maximum number of iterations.
 
         """
 

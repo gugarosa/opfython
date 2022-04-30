@@ -2,6 +2,7 @@
 """
 
 import time
+from typing import List, Optional
 
 import numpy as np
 
@@ -25,14 +26,17 @@ class KNNSupervisedOPF(OPF):
     """
 
     def __init__(
-        self, max_k=1, distance="log_squared_euclidean", pre_computed_distance=None
-    ):
+        self,
+        max_k: Optional[int] = 1,
+        distance: Optional[str] = "log_squared_euclidean",
+        pre_computed_distance: Optional[str] = None,
+    ) -> None:
         """Initialization method.
 
         Args:
-            max_k (int): Maximum `k` value for cutting the subgraph.
-            distance (str): An indicator of the distance metric to be used.
-            pre_computed_distance (str): A pre-computed distance file for feeding into OPF.
+            max_k: Maximum `k` value for cutting the subgraph.
+            distance: An indicator of the distance metric to be used.
+            pre_computed_distance: A pre-computed distance file for feeding into OPF.
 
         """
 
@@ -46,13 +50,13 @@ class KNNSupervisedOPF(OPF):
         logger.info("Class overrided.")
 
     @property
-    def max_k(self):
-        """int: Maximum `k` value for cutting the subgraph."""
+    def max_k(self) -> int:
+        """Maximum `k` value for cutting the subgraph."""
 
         return self._max_k
 
     @max_k.setter
-    def max_k(self, max_k):
+    def max_k(self, max_k: int) -> None:
         if not isinstance(max_k, int):
             raise e.TypeError("`max_k` should be an integer")
         if max_k < 1:
@@ -60,11 +64,11 @@ class KNNSupervisedOPF(OPF):
 
         self._max_k = max_k
 
-    def _clustering(self, force_prototype=False):
+    def _clustering(self, force_prototype: Optional[bool] = False) -> None:
         """Clusters the subgraph.
 
         Args:
-            force_prototype (bool): Whether clustering should for each class to have at least one prototype.
+            force_prototype: Whether clustering should for each class to have at least one prototype.
 
         """
 
@@ -152,16 +156,24 @@ class KNNSupervisedOPF(OPF):
                         # Updates node `q` on the heap with the current cost
                         h.update(q, current_cost)
 
-    def _learn(self, X_train, Y_train, I_train, X_val, Y_val, I_val):
+    def _learn(
+        self,
+        X_train: np.array,
+        Y_train: np.array,
+        I_train: np.array,
+        X_val: np.array,
+        Y_val: np.array,
+        I_val: np.array,
+    ) -> None:
         """Learns the best `k` value over the validation set.
 
         Args:
-            X_train (np.array): Array of training features.
-            Y_train (np.array): Array of training labels.
-            I_train (np.array): Array of training indexes.
-            X_val (np.array): Array of validation features.
-            Y_val (np.array): Array of validation labels.
-            I_val (np.array): Array of validation indexes.
+            X_train: Array of training features.
+            Y_train: Array of training labels.
+            I_train: Array of training indexes.
+            X_val: Array of validation features.
+            Y_val: Array of validation labels.
+            I_val: Array of validation indexes.
 
         """
 
@@ -215,16 +227,24 @@ class KNNSupervisedOPF(OPF):
 
         self.subgraph.best_k = best_k
 
-    def fit(self, X_train, Y_train, X_val, Y_val, I_train=None, I_val=None):
+    def fit(
+        self,
+        X_train: np.array,
+        Y_train: np.array,
+        X_val: np.array,
+        Y_val: np.array,
+        I_train: Optional[np.array] = None,
+        I_val: Optional[np.array] = None,
+    ) -> None:
         """Fits data in the classifier.
 
         Args:
-            X_train (np.array): Array of training features.
-            Y_train (np.array): Array of training labels.
-            X_val (np.array): Array of validation features.
-            Y_val (np.array): Array of validation labels.
-            I_train (np.array): Array of training indexes.
-            I_val (np.array): Array of validation indexes.
+            X_train: Array of training features.
+            Y_train: Array of training labels.
+            X_val: Array of validation features.
+            Y_val: Array of validation labels.
+            I_train: Array of training indexes.
+            I_val: Array of validation indexes.
 
         """
 
@@ -266,15 +286,15 @@ class KNNSupervisedOPF(OPF):
         logger.info("Classifier has been fitted with k = %d.", self.subgraph.best_k)
         logger.info("Training time: %s seconds.", train_time)
 
-    def predict(self, X_test, I_test=None):
+    def predict(self, X_test: np.array, I_test: Optional[np.array] = None) -> List[int]:
         """Predicts new data using the pre-trained classifier.
 
         Args:
-            X_test (np.array): Array of features.
-            I_test (np.array): Array of indexes.
+            X_test: Array of features.
+            I_test: Array of indexes.
 
         Returns:
-            A list of predictions for each record of the data.
+            (List[int]): A list of predictions for each record of the data.
 
         """
 

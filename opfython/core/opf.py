@@ -2,6 +2,7 @@
 """
 
 import pickle
+from typing import List, Optional
 
 import numpy as np
 
@@ -23,12 +24,16 @@ class OPF:
 
     """
 
-    def __init__(self, distance="log_squared_euclidean", pre_computed_distance=None):
+    def __init__(
+        self,
+        distance: Optional[str] = "log_squared_euclidean",
+        pre_computed_distance: Optional[str] = None,
+    ) -> None:
         """Initialization method.
 
         Args:
-            distance (str): An indicator of the distance metric to be used.
-            pre_computed_distance (str): A pre-computed distance file for feeding into OPF.
+            distance: An indicator of the distance metric to be used.
+            pre_computed_distance: A pre-computed distance file for feeding into OPF.
 
         """
 
@@ -66,13 +71,13 @@ class OPF:
         logger.info("Class created.")
 
     @property
-    def subgraph(self):
-        """Subgraph: Subgraph's instance."""
+    def subgraph(self) -> Subgraph:
+        """Subgraph's instance."""
 
         return self._subgraph
 
     @subgraph.setter
-    def subgraph(self, subgraph):
+    def subgraph(self, subgraph: Subgraph) -> None:
         if subgraph is not None:
             if not isinstance(subgraph, Subgraph):
                 raise e.TypeError("`subgraph` should be a subgraph")
@@ -80,13 +85,13 @@ class OPF:
         self._subgraph = subgraph
 
     @property
-    def distance(self):
-        """str: Distance metric to be used."""
+    def distance(self) -> str:
+        """Distance metric to be used."""
 
         return self._distance
 
     @distance.setter
-    def distance(self, distance):
+    def distance(self, distance: str) -> None:
         if distance not in [
             "additive_symmetric",
             "average_euclidean",
@@ -151,50 +156,50 @@ class OPF:
         self._distance = distance
 
     @property
-    def distance_fn(self):
-        """callable: Distance function to be used."""
+    def distance_fn(self) -> callable:
+        """Distance function to be used."""
 
         return self._distance_fn
 
     @distance_fn.setter
-    def distance_fn(self, distance_fn):
+    def distance_fn(self, distance_fn: callable) -> None:
         if not callable(distance_fn):
             raise e.TypeError("`distance_fn` should be a callable")
 
         self._distance_fn = distance_fn
 
     @property
-    def pre_computed_distance(self):
-        """bool: Whether OPF should use a pre-computed distance or not."""
+    def pre_computed_distance(self) -> bool:
+        """Whether OPF should use a pre-computed distance or not."""
 
         return self._pre_computed_distance
 
     @pre_computed_distance.setter
-    def pre_computed_distance(self, pre_computed_distance):
+    def pre_computed_distance(self, pre_computed_distance: bool) -> None:
         if not isinstance(pre_computed_distance, bool):
             raise e.TypeError("`pre_computed_distance` should be a boolean")
 
         self._pre_computed_distance = pre_computed_distance
 
     @property
-    def pre_distances(self):
-        """np.array: Pre-computed distance matrix."""
+    def pre_distances(self) -> np.array:
+        """Pre-computed distance matrix."""
 
         return self._pre_distances
 
     @pre_distances.setter
-    def pre_distances(self, pre_distances):
+    def pre_distances(self, pre_distances: np.array) -> None:
         if pre_distances is not None:
             if not isinstance(pre_distances, np.ndarray):
                 raise e.TypeError("`pre_distances` should be a numpy array")
 
         self._pre_distances = pre_distances
 
-    def _read_distances(self, file_name):
+    def _read_distances(self, file_name: str) -> None:
         """Reads the distance between nodes from a pre-defined file.
 
         Args:
-            file_name (str): File to be loaded.
+            file_name: File to be loaded.
 
         """
 
@@ -222,11 +227,11 @@ class OPF:
         # Apply the distances matrix to the property
         self.pre_distances = distances
 
-    def load(self, file_name):
+    def load(self, file_name: str) -> None:
         """Loads the object from a pickle encoding.
 
         Args:
-            file_name (str): Pickle's file path to be loaded.
+            file_name: Pickle's file path to be loaded.
 
         """
 
@@ -239,11 +244,11 @@ class OPF:
 
         logger.info("Model loaded.")
 
-    def save(self, file_name):
+    def save(self, file_name: str) -> None:
         """Saves the object to a pickle encoding.
 
         Args:
-            file_name (str): File's name to be saved.
+            file_name: File's name to be saved.
 
         """
 
@@ -254,29 +259,29 @@ class OPF:
 
         logger.info("Model saved.")
 
-    def fit(self, X, Y):
+    def fit(self, X: np.array, Y: np.array) -> None:
         """Fits data in the classifier.
 
         It should be directly implemented in OPF child classes.
 
         Args:
-            X (np.array): Array of features.
-            Y (np.array): Array of labels.
+            X: Array of features.
+            Y: Array of labels.
 
         """
 
         raise NotImplementedError
 
-    def predict(self, X):
+    def predict(self, X: np.array) -> List[int]:
         """Predicts new data using the pre-trained classifier.
 
         It should be directly implemented in OPF child classes.
 
         Args:
-            X (np.array): Array of features.
+            X: Array of features.
 
         Returns:
-            A list of predictions for each record of the data.
+            (List[int]): A list of predictions for each record of the data.
 
         """
 

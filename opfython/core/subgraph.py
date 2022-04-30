@@ -1,6 +1,8 @@
 """Subgraph structure that belongs to the Optimum-Path Forest.
 """
 
+from typing import List, Optional, Tuple
+
 import numpy as np
 
 import opfython.stream.parser as p
@@ -16,14 +18,20 @@ logger = logging.get_logger(__name__)
 class Subgraph:
     """A Subgraph class is used as a collection of Nodes and the basic structure to work with OPF."""
 
-    def __init__(self, X=None, Y=None, I=None, from_file=None):
+    def __init__(
+        self,
+        X: Optional[np.array] = None,
+        Y: Optional[np.array] = None,
+        I: Optional[np.array] = None,
+        from_file: Optional[bool] = None,
+    ) -> None:
         """Initialization method.
 
         Args:
-            X (np.array): Array of features.
-            Y (np.array): Array of labels.
-            I (np.array): Array of indexes.
-            from_file (bool): Whether Subgraph should be directly created from a file.
+            X: Array of features.
+            Y: Array of labels.
+            I: Array of indexes.
+            from_file: Whether Subgraph should be directly created from a file.
 
         """
 
@@ -59,13 +67,13 @@ class Subgraph:
             logger.error("Subgraph has not been properly created.")
 
     @property
-    def n_nodes(self):
-        """int: Number of nodes."""
+    def n_nodes(self) -> int:
+        """Number of nodes."""
 
         return len(self.nodes)
 
     @n_nodes.setter
-    def n_nodes(self, n_nodes):
+    def n_nodes(self, n_nodes: int) -> None:
         if not isinstance(n_nodes, int):
             raise e.TypeError("`n_nodes` should be an integer")
         if n_nodes < 0:
@@ -74,13 +82,13 @@ class Subgraph:
         self._n_nodes = n_nodes
 
     @property
-    def n_features(self):
-        """int: Number of features."""
+    def n_features(self) -> int:
+        """Number of features."""
 
         return self._n_features
 
     @n_features.setter
-    def n_features(self, n_features):
+    def n_features(self, n_features: int) -> None:
         if not isinstance(n_features, int):
             raise e.TypeError("`n_features` should be an integer")
         if n_features < 0:
@@ -89,52 +97,52 @@ class Subgraph:
         self._n_features = n_features
 
     @property
-    def nodes(self):
-        """list: List of nodes that belongs to the Subgraph."""
+    def nodes(self) -> List[Node]:
+        """List of nodes that belongs to the Subgraph."""
 
         return self._nodes
 
     @nodes.setter
-    def nodes(self, nodes):
+    def nodes(self, nodes: List[Node]) -> None:
         if not isinstance(nodes, list):
             raise e.TypeError("`nodes` should be a list")
 
         self._nodes = nodes
 
     @property
-    def idx_nodes(self):
-        """list: List of ordered nodes indexes."""
+    def idx_nodes(self) -> List[int]:
+        """List of ordered nodes indexes."""
 
         return self._idx_nodes
 
     @idx_nodes.setter
-    def idx_nodes(self, idx_nodes):
+    def idx_nodes(self, idx_nodes: List[int]) -> None:
         if not isinstance(idx_nodes, list):
             raise e.TypeError("`idx_nodes` should be a list")
 
         self._idx_nodes = idx_nodes
 
     @property
-    def trained(self):
-        """bool: Indicate whether the subgraph is trained."""
+    def trained(self) -> bool:
+        """Indicate whether the subgraph is trained."""
 
         return self._trained
 
     @trained.setter
-    def trained(self, trained):
+    def trained(self, trained: bool) -> None:
         if not isinstance(trained, bool):
             raise e.TypeError("`trained` should be a boolean")
 
         self._trained = trained
 
-    def _load(self, file_path):
+    def _load(self, file_path: str) -> Tuple[np.array, np.array]:
         """Loads and parses a dataframe from a file.
 
         Args:
-            file_path (str): File to be loaded.
+            file_path: File to be loaded.
 
         Returns:
-            Arrays holding the features and labels.
+            (Tuple[np.array, np.array]): Arrays holding the features and labels.
 
         """
 
@@ -159,15 +167,16 @@ class Subgraph:
 
         return X, Y
 
-    def _build(self, X, Y, I):
+    def _build(self, X: np.array, Y: np.array, I: np.array) -> None:
         """This method serves as the object building process.
 
         One can define several commands here that does not necessarily
         needs to be on its initialization.
 
         Args:
-            X (np.array): Features array.
-            Y (np.array): Labels array.
+            X: Features array.
+            Y: Labels array.
+            I: Indexes array.
 
         """
 
@@ -186,7 +195,7 @@ class Subgraph:
         # Calculates the number of features
         self.n_features = self.nodes[0].features.shape[0]
 
-    def destroy_arcs(self):
+    def destroy_arcs(self) -> None:
         """Destroy the arcs present in the subgraph."""
 
         for i in range(self.n_nodes):
@@ -194,11 +203,11 @@ class Subgraph:
             self.nodes[i].n_plateaus = 0
             self.nodes[i].adjacency = []
 
-    def mark_nodes(self, i):
+    def mark_nodes(self, i: int) -> None:
         """Marks a node and its whole path as relevant.
 
         Args:
-            i (int): An identifier of the node to start the marking.
+            i: An identifier of the node to start the marking.
 
         """
 
@@ -213,7 +222,7 @@ class Subgraph:
         # Marks the first node as relevant
         self.nodes[i].relevant = c.RELEVANT
 
-    def reset(self):
+    def reset(self) -> None:
         """Resets the subgraph predecessors and arcs."""
 
         for i in range(self.n_nodes):

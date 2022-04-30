@@ -1,6 +1,8 @@
 """Standard Heap implementation.
 """
 
+from typing import List, Optional
+
 import opfython.utils.constants as c
 import opfython.utils.exception as e
 
@@ -8,12 +10,12 @@ import opfython.utils.exception as e
 class Heap:
     """A standard implementation of a Heap structure."""
 
-    def __init__(self, size=1, policy="min"):
+    def __init__(self, size: Optional[int] = 1, policy: Optional[str] = "min") -> None:
         """Initialization method.
 
         Args:
-            size (int): Maximum size of the heap.
-            policy (str): Heap's policy (`min` or `max`).
+            size: Maximum size of the heap.
+            policy: Heap's policy (`min` or `max`).
 
         """
 
@@ -39,13 +41,13 @@ class Heap:
         self.last = -1
 
     @property
-    def size(self):
-        """int: Maximum size of the heap."""
+    def size(self) -> int:
+        """Maximum size of the heap."""
 
         return self._size
 
     @size.setter
-    def size(self, size):
+    def size(self, size: int) -> None:
         if not isinstance(size, int):
             raise e.TypeError("`size` should be an integer")
         if size < 1:
@@ -54,78 +56,78 @@ class Heap:
         self._size = size
 
     @property
-    def policy(self):
-        """str: Policy that rules the heap."""
+    def policy(self) -> str:
+        """Policy that rules the heap."""
 
         return self._policy
 
     @policy.setter
-    def policy(self, policy):
+    def policy(self, policy: str) -> None:
         if policy not in ["min", "max"]:
             raise e.ValueError("`policy` should be `min` or `max`")
 
         self._policy = policy
 
     @property
-    def cost(self):
-        """list: List of nodes' costs."""
+    def cost(self) -> List[float]:
+        """List of nodes' costs."""
 
         return self._cost
 
     @cost.setter
-    def cost(self, cost):
+    def cost(self, cost: List[float]) -> None:
         if not isinstance(cost, list):
             raise e.TypeError("`cost` should be a list")
 
         self._cost = cost
 
     @property
-    def color(self):
-        """list: List of nodes' colors."""
+    def color(self) -> List[int]:
+        """List of nodes' colors."""
 
         return self._color
 
     @color.setter
-    def color(self, color):
+    def color(self, color: List[int]) -> None:
         if not isinstance(color, list):
             raise e.TypeError("`color` should be a list")
 
         self._color = color
 
     @property
-    def p(self):
-        """list: List of nodes' values."""
+    def p(self) -> List[int]:
+        """List of nodes' values."""
 
         return self._p
 
     @p.setter
-    def p(self, p):
+    def p(self, p: List[int]) -> None:
         if not isinstance(p, list):
             raise e.TypeError("`p` should be a list")
 
         self._p = p
 
     @property
-    def pos(self):
-        """list: List of nodes' positioning markers."""
+    def pos(self) -> List[int]:
+        """List of nodes' positioning markers."""
 
         return self._pos
 
     @pos.setter
-    def pos(self, pos):
+    def pos(self, pos: List[int]) -> None:
         if not isinstance(pos, list):
             raise e.TypeError("`pos` should be a list")
 
         self._pos = pos
 
     @property
-    def last(self):
-        """int: Last element identifier."""
+    def last(self) -> int:
+        """Last element identifier."""
 
         return self._last
 
     @last.setter
-    def last(self, last):
+    def last(self, last: int) -> None:
         if not isinstance(last, int):
             raise e.TypeError("`last` should be an integer")
         if last < -1:
@@ -133,11 +135,11 @@ class Heap:
 
         self._last = last
 
-    def is_full(self):
+    def is_full(self) -> bool:
         """Checks if the heap is full.
 
         Returns:
-            A boolean indicating whether the heap is full.
+            (bool): A boolean indicating whether the heap is full.
 
         """
 
@@ -146,11 +148,11 @@ class Heap:
 
         return False
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         """Checks if the heap is empty.
 
         Returns:
-            A boolean indicating whether the heap is empty.
+            (bool): A boolean indicating whether the heap is empty.
 
         """
 
@@ -159,50 +161,50 @@ class Heap:
 
         return False
 
-    def dad(self, i):
+    def dad(self, i: int) -> int:
         """Gathers the position of the node's dad.
 
         Args:
-            i (int): Node's position.
+            i: Node's position.
 
         Returns:
-            The position of node's dad.
+            (int): The position of node's dad.
 
         """
 
         return int(((i - 1) / 2))
 
-    def left_son(self, i):
+    def left_son(self, i: int) -> int:
         """Gathers the position of the node's left son.
 
         Args:
-            i (int): Node's position.
+            i: Node's position.
 
         Returns:
-            The position of node's left son
+            (int): The position of node's left son
 
         """
 
         return int((2 * i + 1))
 
-    def right_son(self, i):
+    def right_son(self, i: int) -> int:
         """Gathers the position of the node's right son.
 
         Args:
-            i (int): Node's position.
+            i: Node's position.
 
         Returns:
-            The position of node's right son.
+            (int): The position of node's right son.
 
         """
 
         return int((2 * i + 2))
 
-    def go_up(self, i):
+    def go_up(self, i: int) -> None:
         """Goes up in the heap.
 
         Args:
-            i (int): Position to be achieved.
+            i: Position to be achieved.
 
         """
 
@@ -243,11 +245,11 @@ class Heap:
                 # Gathers the new dad's position
                 j = self.dad(i)
 
-    def go_down(self, i):
+    def go_down(self, i: int) -> None:
         """Goes down in the heap.
 
         Args:
-            i (int): Position to be achieved.
+            i: Position to be achieved.
 
         """
 
@@ -294,14 +296,14 @@ class Heap:
             # Goes down in the heap
             self.go_down(j)
 
-    def insert(self, p):
+    def insert(self, p: int) -> bool:
         """Inserts a new node into the heap.
 
         Args:
-            p (int): Node's value to be inserted.
+            p: Node's value to be inserted.
 
         Returns:
-            Boolean indicating whether insertion was performed correctly.
+            (bool): Boolean indicating whether insertion was performed correctly.
 
         """
 
@@ -320,11 +322,11 @@ class Heap:
 
         return False
 
-    def remove(self):
+    def remove(self) -> int:
         """Removes a node from the heap.
 
         Returns:
-            The removed node value.
+            (int): The removed node value.
 
         """
 
@@ -352,12 +354,12 @@ class Heap:
 
         return False
 
-    def update(self, p, cost):
+    def update(self, p: int, cost: float) -> None:
         """Updates a node with a new value.
 
         Args:
-            p (int): Node's position.
-            cost (float): Node's cost.
+            p: Node's position.
+            cost: Node's cost.
 
         """
 

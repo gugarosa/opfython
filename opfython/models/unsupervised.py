@@ -2,6 +2,7 @@
 """
 
 import time
+from typing import List, Optional
 
 import numpy as np
 
@@ -26,18 +27,18 @@ class UnsupervisedOPF(OPF):
 
     def __init__(
         self,
-        min_k=1,
-        max_k=1,
-        distance="log_squared_euclidean",
-        pre_computed_distance=None,
+        min_k: Optional[int] = 1,
+        max_k: Optional[int] = 1,
+        distance: Optional[str] = "log_squared_euclidean",
+        pre_computed_distance: Optional[str] = None,
     ):
         """Initialization method.
 
         Args:
-            min_k (int): Minimum `k` value for cutting the subgraph.
-            max_k (int): Maximum `k` value for cutting the subgraph.
-            distance (str): An indicator of the distance metric to be used.
-            pre_computed_distance (str): A pre-computed distance file for feeding into OPF.
+            min_k: Minimum `k` value for cutting the subgraph.
+            max_k: Maximum `k` value for cutting the subgraph.
+            distance: An indicator of the distance metric to be used.
+            pre_computed_distance: A pre-computed distance file for feeding into OPF.
 
         """
 
@@ -54,13 +55,13 @@ class UnsupervisedOPF(OPF):
         logger.info("Class overrided.")
 
     @property
-    def min_k(self):
-        """int: Minimum `k` value for cutting the subgraph."""
+    def min_k(self) -> int:
+        """Minimum `k` value for cutting the subgraph."""
 
         return self._min_k
 
     @min_k.setter
-    def min_k(self, min_k):
+    def min_k(self, min_k: int) -> None:
         if not isinstance(min_k, int):
             raise e.TypeError("`min_k` should be an integer")
         if min_k < 1:
@@ -69,13 +70,13 @@ class UnsupervisedOPF(OPF):
         self._min_k = min_k
 
     @property
-    def max_k(self):
-        """int: Maximum `k` value for cutting the subgraph."""
+    def max_k(self) -> int:
+        """Maximum `k` value for cutting the subgraph."""
 
         return self._max_k
 
     @max_k.setter
-    def max_k(self, max_k):
+    def max_k(self, max_k: int) -> None:
         if not isinstance(max_k, int):
             raise e.TypeError("`max_k` should be an integer")
         if max_k < 1:
@@ -85,11 +86,11 @@ class UnsupervisedOPF(OPF):
 
         self._max_k = max_k
 
-    def _clustering(self, n_neighbours):
+    def _clustering(self, n_neighbours: int) -> None:
         """Clusters the subgraph using using a `k` value (number of neighbours).
 
         Args:
-            n_neighbours (int): Number of neighbours to be used.
+            n_neighbours: Number of neighbours to be used.
 
         """
 
@@ -192,14 +193,14 @@ class UnsupervisedOPF(OPF):
         # The final number of clusters will be equal to `l`
         self.subgraph.n_clusters = l
 
-    def _normalized_cut(self, n_neighbours):
+    def _normalized_cut(self, n_neighbours: int) -> int:
         """Performs a normalized cut over the subgraph using a `k` value (number of neighbours).
 
         Args:
-            n_neighbours (int): Number of neighbours to be used.
+            n_neighbours: Number of neighbours to be used.
 
         Returns:
-            The value of the normalized cut.
+            (int): The value of the normalized cut.
 
         """
 
@@ -256,12 +257,12 @@ class UnsupervisedOPF(OPF):
 
         return cut
 
-    def _best_minimum_cut(self, min_k, max_k):
+    def _best_minimum_cut(self, min_k: int, max_k: int) -> None:
         """Performs a minimum cut on the subgraph using the best `k` value.
 
         Args:
-            min_k (int): Minimum value of k.
-            max_k (int): Maximum value of k.
+            min_k: Minimum value of k.
+            max_k: Maximum value of k.
 
         """
 
@@ -318,13 +319,18 @@ class UnsupervisedOPF(OPF):
 
         logger.debug("Best: %d | Minimum cut: %d.", best_k, min_cut)
 
-    def fit(self, X_train, Y_train=None, I_train=None):
+    def fit(
+        self,
+        X_train: np.array,
+        Y_train: Optional[np.array] = None,
+        I_train: Optional[np.array] = None,
+    ) -> None:
         """Fits data in the classifier.
 
         Args:
-            X_train (np.array): Array of training features.
-            Y_train (np.array): Array of training labels.
-            I_train (np.array): Array of training indexes.
+            X_train: Array of training features.
+            Y_train: Array of training labels.
+            I_train: Array of training indexes.
 
         """
 
@@ -352,15 +358,15 @@ class UnsupervisedOPF(OPF):
         logger.info("Number of clusters: %d.", self.subgraph.n_clusters)
         logger.info("Clustering time: %s seconds.", train_time)
 
-    def predict(self, X_val, I_val=None):
+    def predict(self, X_val: np.array, I_val: Optional[np.array] = None) -> List[int]:
         """Predicts new data using the pre-trained classifier.
 
         Args:
-            X_val (np.array): Array of validation features.
-            I_val (np.array): Array of validation indexes.
+            X_val: Array of validation features.
+            I_val: Array of validation indexes.
 
         Returns:
-            A list of predictions for each record of the data.
+            (List[int]): A list of predictions for each record of the data.
 
         """
 
@@ -482,7 +488,7 @@ class UnsupervisedOPF(OPF):
 
         return preds, clusters
 
-    def propagate_labels(self):
+    def propagate_labels(self) -> None:
         """Runs through the clusters and propagate the clusters roots labels to the samples."""
 
         logger.info("Assigning predicted labels from clusters ...")

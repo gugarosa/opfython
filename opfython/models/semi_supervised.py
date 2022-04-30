@@ -2,6 +2,7 @@
 """
 
 import time
+from typing import Optional
 
 import numpy as np
 
@@ -22,12 +23,16 @@ class SemiSupervisedOPF(SupervisedOPF):
 
     """
 
-    def __init__(self, distance="log_squared_euclidean", pre_computed_distance=None):
+    def __init__(
+        self,
+        distance: Optional[str] = "log_squared_euclidean",
+        pre_computed_distance: Optional[str] = None,
+    ) -> None:
         """Initialization method.
 
         Args:
-            distance (str): An indicator of the distance metric to be used.
-            pre_computed_distance (str): A pre-computed distance file for feeding into OPF.
+            distance: An indicator of the distance metric to be used.
+            pre_computed_distance: A pre-computed distance file for feeding into OPF.
 
         """
 
@@ -37,14 +42,20 @@ class SemiSupervisedOPF(SupervisedOPF):
 
         logger.info("Class overrided.")
 
-    def fit(self, X_train, Y_train, X_unlabeled, I_train=None):
+    def fit(
+        self,
+        X_train: np.array,
+        Y_train: np.array,
+        X_unlabeled: np.array,
+        I_train: Optional[np.array] = None,
+    ) -> None:
         """Fits data in the semi-supervised classifier.
 
         Args:
-            X_train (np.array): Array of training features.
-            Y_train (np.array): Array of training labels.
-            X_unlabeled (np.array): Array of unlabeled features.
-            I_train (np.array): Array of training indexes.
+            X_train: Array of training features.
+            Y_train: Array of training labels.
+            X_unlabeled: Array of unlabeled features.
+            I_train: Array of training indexes.
 
         """
 
