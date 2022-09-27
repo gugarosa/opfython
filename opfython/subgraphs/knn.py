@@ -35,22 +35,12 @@ class KNNSubgraph(Subgraph):
 
         super(KNNSubgraph, self).__init__(X, Y, I, from_file)
 
-        # Number of assigned clusters
         self.n_clusters = 0
-
-        # Number of adjacent nodes (k-nearest neighbours)
         self.best_k = 0
-
-        # Constant used to calculate the p.d.f.
         self.constant = 0.0
 
-        # Density of the subgraph
         self.density = 0.0
-
-        # Minimum density of the subgraph
         self.min_density = 0.0
-
-        # Maximum density of the subgraph
         self.max_density = 0.0
 
     @property
@@ -152,25 +142,17 @@ class KNNSubgraph(Subgraph):
 
         """
 
-        # Calculating constant for computing the probability density function
         self.constant = 2 * self.density / 9
 
-        # Defining subgraph's minimum and maximum densities
         self.min_density = c.FLOAT_MAX
         self.max_density = -c.FLOAT_MAX
 
-        # Creating an array to hold the p.d.f. calculation
         pdf = np.zeros(self.n_nodes)
-
         for i in range(self.n_nodes):
-            # Initialize the p.d.f. as zero
             pdf[i] = 0
-
-            # Initialize the number of p.d.f. calculations as 1
             n_pdf = 1
 
             for k in range(n_neighbours):
-                # Gathering adjacent node from the list
                 j = int(self.nodes[i].adjacency[k])
 
                 if pre_computed_distance:
@@ -181,27 +163,20 @@ class KNNSubgraph(Subgraph):
                         self.nodes[i].features, self.nodes[j].features
                     )
 
-                # Calculates the p.d.f.
                 pdf[i] += np.exp(-distance / self.constant)
-
-                # Increments the number of p.d.f. calculations
                 n_pdf += 1
 
-            # Calculates the p.d.f. mean value
             pdf[i] /= n_pdf
 
             if pdf[i] < self.min_density:
                 self.min_density = pdf[i]
-
             if pdf[i] > self.max_density:
                 self.max_density = pdf[i]
 
         if self.min_density == self.max_density:
             for i in range(self.n_nodes):
                 self.nodes[i].density = c.MAX_DENSITY
-
                 self.nodes[i].cost = c.MAX_DENSITY - 1
-
         else:
             for i in range(self.n_nodes):
                 self.nodes[i].density = (
@@ -209,7 +184,6 @@ class KNNSubgraph(Subgraph):
                     * (pdf[i] - self.min_density)
                     / (self.max_density - self.min_density)
                 ) + 1
-
                 self.nodes[i].cost = self.nodes[i].density - 1
 
     def create_arcs(
@@ -232,13 +206,11 @@ class KNNSubgraph(Subgraph):
 
         """
 
-        # Creating an array of distances, neighbours indexes and maximum distances
         distances = np.zeros(k + 1)
         neighbours_idx = np.zeros(k + 1)
         max_distances = np.zeros(k)
 
         for i in range(self.n_nodes):
-            # Filling array of distances with maximum value
             distances.fill(c.FLOAT_MAX)
 
             for j in range(self.n_nodes):
@@ -247,52 +219,40 @@ class KNNSubgraph(Subgraph):
                         distances[k] = pre_distances[self.nodes[i].idx][
                             self.nodes[j].idx
                         ]
-
                     else:
                         distances[k] = distance_function(
                             self.nodes[i].features, self.nodes[j].features
                         )
 
-                    # Apply node `j` as a neighbour
                     neighbours_idx[k] = j
-
-                    # Gathers current `k`
                     cur_k = k
 
                     # While current `k` is bigger than 0 and the `k` distance is smaller than `k-1` distance
                     while cur_k > 0 and distances[cur_k] < distances[cur_k - 1]:
-                        # Swaps the distance from `k` and `k-1`
                         distances[cur_k], distances[cur_k - 1] = (
                             distances[cur_k - 1],
                             distances[cur_k],
                         )
 
-                        # Swaps the neighbours indexex from `k` and `k-1`
                         neighbours_idx[cur_k], neighbours_idx[cur_k - 1] = (
                             neighbours_idx[cur_k - 1],
                             neighbours_idx[cur_k],
                         )
 
-                        # Decrements `k`
                         cur_k -= 1
 
-            # Make sure that current node's radius is 0 and no adjacent nodes
             self.nodes[i].radius = 0.0
             self.nodes[i].n_plateaus = 0
 
-            # For every possible decreasing `k`
             for l in range(k - 1, -1, -1):
                 if distances[l] != c.FLOAT_MAX:
                     if distances[l] > self.density:
                         self.density = distances[l]
-
                     if distances[l] > self.nodes[i].radius:
                         self.nodes[i].radius = distances[l]
-
                     if distances[l] > max_distances[l]:
                         max_distances[l] = distances[l]
 
-                    # Adds the neighbour to the adjacency list of node `i`
                     self.nodes[i].adjacency.insert(0, neighbours_idx[l])
 
         if self.density < 0.00001:

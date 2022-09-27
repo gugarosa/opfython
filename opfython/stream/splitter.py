@@ -32,20 +32,14 @@ def split(
 
     logger.info("Splitting data ...")
 
-    # Defining a fixed random seed
     np.random.seed(random_state)
 
-    # Checks if `X` and `Y` have the same size
     if X.shape[0] != Y.shape[0]:
         raise e.SizeError("`X` and `Y` should have the same amount of samples")
 
-    # Gathering the indexes
     idx = np.random.permutation(X.shape[0])
-
-    # Calculating where sets should be halted
     halt = int(len(X) * percentage)
 
-    # Gathering two new sets from `X` and `Y`
     X_1, X_2 = X[idx[:halt], :], X[idx[halt:], :]
     Y_1, Y_2 = Y[idx[:halt]], Y[idx[halt:]]
 
@@ -82,23 +76,15 @@ def split_with_index(
 
     logger.info("Splitting data ...")
 
-    # Defining a fixed random seed
     np.random.seed(random_state)
 
-    # Checks if `X` and `Y` have the same size
     if X.shape[0] != Y.shape[0]:
         raise e.SizeError("`X` and `Y` should have the same amount of samples")
 
-    # Gathering the indexes
     idx = np.random.permutation(X.shape[0])
-
-    # Calculating where sets should be halted
     halt = int(len(X) * percentage)
 
-    # Dividing the indexes
     I_1, I_2 = idx[:halt], idx[halt:]
-
-    # Gathering two new sets from `X` and `Y`
     X_1, X_2 = X[I_1, :], X[I_2, :]
     Y_1, Y_2 = Y[I_1], Y[I_2]
 
@@ -132,13 +118,9 @@ def merge(
 
     logger.info("Merging data ...")
 
-    # Vertically stacking `X_1` and `X_2`
     X = np.vstack((X_1, X_2))
-
-    # Horizontally stacking `Y_1` and Y_2`
     Y = np.hstack((Y_1, Y_2))
 
-    # Checks if `X` and `Y` have the same size
     if X.shape[0] != Y.shape[0]:
         raise e.SizeError(
             "`(X_1, X_2)` and `(Y_1, Y_2)` should have the same amount of samples"

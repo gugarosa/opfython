@@ -35,30 +35,19 @@ class Subgraph:
 
         """
 
-        # Number of nodes
         self.n_nodes = 0
-
-        # Number of features
         self.n_features = 0
 
-        # List of nodes
         self.nodes = []
-
-        # List of indexes of ordered nodes
         self.idx_nodes = []
 
-        # Whether the subgraph is trained or not
         self.trained = False
 
-        # Checks if data should be loaded from a file
         if from_file:
             X, Y = self._load(from_file)
 
-        # Checks if data has been properly loaded
         if X is not None:
-            # Checks if labels are provided or not
             if Y is None:
-                # If not, creates an empty numpy array
                 Y = np.zeros(len(X), dtype=int)
 
             self._build(X, Y, I)
@@ -146,18 +135,14 @@ class Subgraph:
 
         """
 
-        # Getting file extension
         extension = file_path.split(".")[-1]
 
         if extension == "csv":
             data = loader.load_csv(file_path)
-
         elif extension == "txt":
             data = loader.load_txt(file_path)
-
         elif extension == "json":
             data = loader.load_json(file_path)
-
         else:
             raise e.ArgumentError(
                 "File extension not recognized. It should be `.csv`, `.json` or `.txt`"
@@ -180,26 +165,20 @@ class Subgraph:
 
         """
 
-        # Iterate over every possible sample
         for i, (feature, label) in enumerate(zip(X, Y)):
-            # Checks if indexes are supplied
             if I is not None:
                 node = Node(I[i].item(), label.item(), feature)
-
             else:
                 node = Node(i, label.item(), feature)
 
-            # Appends the node to the list
             self.nodes.append(node)
 
-        # Calculates the number of features
         self.n_features = self.nodes[0].features.shape[0]
 
     def destroy_arcs(self) -> None:
         """Destroy the arcs present in the subgraph."""
 
         for i in range(self.n_nodes):
-            # Reset the number of adjacent nodes and adjacency list
             self.nodes[i].n_plateaus = 0
             self.nodes[i].adjacency = []
 
@@ -211,15 +190,10 @@ class Subgraph:
 
         """
 
-        # While the node still has a predecessor
         while self.nodes[i].pred != c.NIL:
-            # Marks current node as relevant
             self.nodes[i].relevant = c.RELEVANT
-
-            # Gathers the predecessor node of current node
             i = self.nodes[i].pred
 
-        # Marks the first node as relevant
         self.nodes[i].relevant = c.RELEVANT
 
     def reset(self) -> None:

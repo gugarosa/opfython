@@ -29,14 +29,10 @@ def parse_loader(data: np.array) -> np.array:
         # Second column should be the label
         Y = data[:, 1]
 
-        # Calculates the amount of samples per class
         _, counts = np.unique(Y, return_counts=True)
 
-        # If there is only one class
         if len(counts) == 1:
             logger.warning("Parsed data only have a single label.")
-
-        # If there are unsequential labels
         if len(counts) != (np.max(Y) + 1):
             raise e.ValueError(
                 "Parsed data should have sequential labels, e.g., 0, 1, ..., n-1"

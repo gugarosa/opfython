@@ -39,28 +39,16 @@ class OPF:
 
         logger.info("Creating class: OPF.")
 
-        # Initializing an empty subgraph
         self.subgraph = None
 
-        # An indicator of the distance metric to be used
         self.distance = distance
-
-        # Gathers the distance function as a property
         self.distance_fn = d.DISTANCES[distance]
 
-        # If OPF should use a pre-computed distance
         if pre_computed_distance:
-            # Marks the boolean indicator as True
             self.pre_computed_distance = True
-
-            # Apply the distances matrix
             self._read_distances(pre_computed_distance)
-
         else:
-            # Marks the boolean indicator as False
             self.pre_computed_distance = False
-
-            # Marks the pre-distances property as None
             self.pre_distances = None
 
         logger.debug(
@@ -205,26 +193,20 @@ class OPF:
 
         logger.debug("Running private method: read_distances().")
 
-        # Getting file extension
         extension = file_name.split(".")[-1]
 
         if extension == "csv":
             distances = loader.load_csv(file_name)
-
         elif extension == "txt":
             distances = loader.load_txt(file_name)
-
         else:
-            # Raises an ArgumentError exception
             raise e.ArgumentError(
                 "File extension not recognized. It should be either `.csv` or .txt`"
             )
 
-        # Check if distances have been properly loaded
         if distances is None:
             raise e.ValueError("Pre-computed distances could not been properly loaded")
 
-        # Apply the distances matrix to the property
         self.pre_distances = distances
 
     def load(self, file_name: str) -> None:

@@ -30,46 +30,24 @@ class Node:
 
         """
 
-        # Node's index
         self.idx = idx
 
-        # True label
         self.label = label
-
-        # Predicted label
         self.predicted_label = 0
-
-        # Cluster assignment label (if used)
         self.cluster_label = 0
 
-        # Array of features
         self.features = np.asarray(features)
 
-        # Cost of the node
         self.cost = 0.0
-
-        # Density of the node
         self.density = 0.0
-
-        # Maximum distance among the k-nearest neighbors
         self.radius = 0.0
 
-        # Amount of adjacent nodes on plateaus
         self.n_plateaus = 0
-
-        # List of adjacent nodes
         self.adjacency = []
-
-        # The cluster's root node identifier
         self.root = 0
 
-        # Whether the node is a prototype or not
         self.status = c.STANDARD
-
-        # Identifier to the predecessor node
         self.pred = c.NIL
-
-        # Whether the node is relevant or not
         self.relevant = c.IRRELEVANT
 
     @property

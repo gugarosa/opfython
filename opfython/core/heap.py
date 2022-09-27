@@ -19,25 +19,14 @@ class Heap:
 
         """
 
-        # Maximum size of the heap
         self.size = size
-
-        # Policy that rules the heap
         self.policy = policy
 
-        # List of node's costs
         self.cost = [c.FLOAT_MAX for i in range(size)]
-
-        # List of node's colors
         self.color = [c.WHITE for i in range(size)]
-
-        # List of node's values
         self.p = [-1 for i in range(size)]
-
-        # List of node's positioning markers
         self.pos = [-1 for i in range(size)]
 
-        # Last element identifier
         self.last = -1
 
     @property
@@ -208,41 +197,28 @@ class Heap:
 
         """
 
-        # Gathers the dad's position
         j = self.dad(i)
 
-        # Checks if policy is `min`
         if self.policy == "min":
             # While the heap exists and the cost of post-node is bigger than current node
             while i > 0 and self.cost[self.p[j]] > self.cost[self.p[i]]:
-                # Swap the positions
                 self.p[j], self.p[i] = self.p[i], self.p[j]
 
-                # Applies node's `i` and `j` values to the positioning list
                 self.pos[self.p[i]] = i
                 self.pos[self.p[j]] = j
 
-                # Makes both indexes equal
                 i = j
-
-                # Gathers the new dad's position
                 j = self.dad(i)
 
-        # If policy is `max`
         else:
             # While the heap exists and the cost of post-node is smaller than current node
             while i > 0 and self.cost[self.p[j]] < self.cost[self.p[i]]:
-                # Swap the positions
                 self.p[j], self.p[i] = self.p[i], self.p[j]
 
-                # Applies node's `i` and `j` values to the positioning list
                 self.pos[self.p[i]] = i
                 self.pos[self.p[j]] = j
 
-                # Makes both indexes equal
                 i = j
-
-                # Gathers the new dad's position
                 j = self.dad(i)
 
     def go_down(self, i: int) -> None:
@@ -253,47 +229,35 @@ class Heap:
 
         """
 
-        # Gathers the left and right son's positions
         left = self.left_son(i)
         right = self.right_son(i)
 
-        # Equals the value of `j` and `i` counters
         j = i
 
-        # Checks if policy is `min`
         if self.policy == "min":
             # Checks if left node is not the last and its cost is smaller than previous
             if left <= self.last and self.cost[self.p[left]] < self.cost[self.p[i]]:
-                # Apply `j` counter as the left node
                 j = left
 
             # Checks if right node is not the last and its cost is smaller than previous
             if right <= self.last and self.cost[self.p[right]] < self.cost[self.p[j]]:
-                # Apply `j` counter as the right node
                 j = right
 
-        # If policy is `max`
         else:
             # Checks if left node is not the last and its cost is bigger than previous
             if left <= self.last and self.cost[self.p[left]] > self.cost[self.p[i]]:
-                # Apply `j` counter as the left node
                 j = left
 
             # Checks if right node is not the last and its cost is bigger than previous
             if right <= self.last and self.cost[self.p[right]] > self.cost[self.p[j]]:
-                # Apply `j` counter as the right node
                 j = right
 
-        # Checks if `j` is not equal to `i`
         if j != i:
-            # Swap node's position
             self.p[j], self.p[i] = self.p[i], self.p[j]
 
-            # Marks the new position in `i` and `j`
             self.pos[self.p[i]] = i
             self.pos[self.p[j]] = j
 
-            # Goes down in the heap
             self.go_down(j)
 
     def insert(self, p: int) -> bool:
@@ -308,10 +272,8 @@ class Heap:
         """
 
         if not self.is_full():
-            # Increases the last node's counter
             self.last += 1
 
-            # Adds the new node to the heap, mark it as gray and mark its positioning
             self.p[self.last] = p
             self.color[p] = c.GRAY
             self.pos[p] = self.last
@@ -331,21 +293,16 @@ class Heap:
         """
 
         if not self.is_empty():
-            # Gathers the node's value
             p = self.p[0]
 
-            # Marks it as not positioned and black-color
             self.pos[p] = -1
             self.color[p] = c.BLACK
 
-            # Gathers the new position of first node
             self.p[0] = self.p[self.last]
 
-            # Marks it as positioned and remove its value
             self.pos[self.p[0]] = 0
             self.p[self.last] = -1
 
-            # Decreases the last counter
             self.last -= 1
 
             self.go_down(0)
@@ -363,16 +320,12 @@ class Heap:
 
         """
 
-        # Applies the new cost
         self.cost[p] = cost
 
-        # Checks if node has been removed or not
         if self.color[p] == c.BLACK:
             pass
 
-        # Checks if node has not been inserted yet
         if self.color[p] == c.WHITE:
             self.insert(p)
-
         else:
             self.go_up(self.pos[p])

@@ -92,21 +92,13 @@ def load_json(json_path: str) -> np.array:
 
     logger.info("File loaded.")
 
-    # Creating a list to hold the parsed JSON
     json = []
-
-    # For every record in the JSON
     for d in json_file["data"]:
-        # Gathering meta informations
         meta = np.asarray([d["id"], d["label"]])
-
-        # Gathering features
         features = np.asarray(d["features"])
 
-        # Stacking and appending the whole record
         json.append(np.hstack((meta, features)))
 
-    # Transforming the list into a numpy array
     json = np.asarray(json)
 
     return json

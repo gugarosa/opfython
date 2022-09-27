@@ -63,49 +63,32 @@ class SemiSupervisedOPF(SupervisedOPF):
 
         start = time.time()
 
-        # Creating a subgraph
         self.subgraph = Subgraph(X_train, Y_train, I_train)
 
-        # Finding prototypes
         self._find_prototypes()
 
-        # Gather current number of nodes
         current_n_nodes = self.subgraph.n_nodes
-
         for i, feature in enumerate(X_unlabeled):
             node = Node(current_n_nodes + i, 0, feature)
 
             self.subgraph.nodes.append(node)
 
-        # Creating a minimum heap
         h = Heap(size=self.subgraph.n_nodes)
 
         for i in range(self.subgraph.n_nodes):
             if self.subgraph.nodes[i].status == c.PROTOTYPE:
-                # If yes, it does not have predecessor nodes
                 self.subgraph.nodes[i].pred = c.NIL
-
-                # Its predicted label is the same as its true label
                 self.subgraph.nodes[i].predicted_label = self.subgraph.nodes[i].label
 
-                # Its cost equals to zero
                 h.cost[i] = 0
-
-                # Inserts the node into the heap
                 h.insert(i)
-
             else:
-                # Its cost equals to maximum possible value
                 h.cost[i] = c.FLOAT_MAX
 
         while not h.is_empty():
-            # Removes a node
             p = h.remove()
 
-            # Appends its index to the ordered list
             self.subgraph.idx_nodes.append(p)
-
-            # Gathers its cost
             self.subgraph.nodes[p].cost = h.cost[p]
 
             for q in range(self.subgraph.n_nodes):
@@ -115,21 +98,15 @@ class SemiSupervisedOPF(SupervisedOPF):
                             weight = self.pre_distances[self.subgraph.nodes[p].idx][
                                 self.subgraph.nodes[q].idx
                             ]
-
                         else:
                             weight = self.distance_fn(
                                 self.subgraph.nodes[p].features,
                                 self.subgraph.nodes[q].features,
                             )
 
-                        # The current cost will be the maximum cost between the node's and its weight (arc)
                         current_cost = np.maximum(h.cost[p], weight)
-
                         if current_cost < h.cost[q]:
-                            # `q` node has `p` as its predecessor
                             self.subgraph.nodes[q].pred = p
-
-                            # And its predicted label is the same as `p`
                             self.subgraph.nodes[
                                 q
                             ].predicted_label = self.subgraph.nodes[p].predicted_label
@@ -139,10 +116,8 @@ class SemiSupervisedOPF(SupervisedOPF):
                                 q
                             ].predicted_label
 
-                            # Updates the heap `q` node and the current cost
                             h.update(q, current_cost)
 
-        # The subgraph has been properly trained
         self.subgraph.trained = True
 
         end = time.time()
