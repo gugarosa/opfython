@@ -7,7 +7,7 @@ import numpy as np
 
 
 def generate_uniform_random_number(
-    low: Optional[float] = 0.0, high: Optional[float] = 1.0, size: Optional[int] = 1
+    low: float = 0.0, high: float = 1.0, size: int = 1
 ) -> np.array:
     """Generates a random number or array based on an uniform distribution.
 
@@ -27,9 +27,9 @@ def generate_uniform_random_number(
 
 
 def generate_gaussian_random_number(
-    mean: Optional[float] = 0.0,
-    variance: Optional[float] = 1.0,
-    size: Optional[int] = 1,
+    mean: float = 0.0,
+    variance: float = 1.0,
+    size: int = 1,
 ) -> np.array:
     """Generates a random number or array based on a gaussian distribution.
 

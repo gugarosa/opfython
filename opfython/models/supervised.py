@@ -28,7 +28,7 @@ class SupervisedOPF(OPF):
 
     def __init__(
         self,
-        distance: Optional[str] = "log_squared_euclidean",
+        distance: str = "log_squared_euclidean",
         pre_computed_distance: Optional[str] = None,
     ) -> None:
         """Initialization method.
@@ -258,7 +258,7 @@ class SupervisedOPF(OPF):
         Y_train: np.array,
         X_val: np.array,
         Y_val: np.array,
-        n_iterations: Optional[int] = 10,
+        n_iterations: int = 10,
     ) -> None:
         """Learns the best classifier over a validation set.
 
@@ -337,7 +337,7 @@ class SupervisedOPF(OPF):
         Y_train: np.array,
         X_val: np.array,
         Y_val: np.array,
-        n_iterations: Optional[int] = 10,
+        n_iterations: int = 10,
     ) -> None:
         """Prunes a classifier over a validation set.
 

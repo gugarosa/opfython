@@ -17,8 +17,8 @@ class Node:
 
     def __init__(
         self,
-        idx: Optional[int] = 0,
-        label: Optional[int] = 0,
+        idx: int = 0,
+        label: int = 0,
         features: Optional[np.array] = None,
     ) -> None:
         """Initialization method.

@@ -27,10 +27,10 @@ copyright = "2020, Gustavo de Rosa"
 author = "Gustavo de Rosa"
 
 # The short X.Y version
-version = "1.0.13"
+version = "1.0.14"
 
 # The full version, including alpha/beta/rc tags
-release = "1.0.13"
+release = "1.0.14"
 
 
 # -- General configuration ---------------------------------------------------

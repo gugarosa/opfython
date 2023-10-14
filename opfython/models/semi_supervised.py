@@ -25,7 +25,7 @@ class SemiSupervisedOPF(SupervisedOPF):
 
     def __init__(
         self,
-        distance: Optional[str] = "log_squared_euclidean",
+        distance: str = "log_squared_euclidean",
         pre_computed_distance: Optional[str] = None,
     ) -> None:
         """Initialization method.

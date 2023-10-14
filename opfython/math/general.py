@@ -125,7 +125,7 @@ def opf_accuracy_per_label(
 
 
 def pre_compute_distance(
-    data: np.array, output: str, distance: Optional[str] = "log_squared_euclidean"
+    data: np.array, output: str, distance: str = "log_squared_euclidean"
 ) -> None:
     """Pre-computes a matrix of distances based on an input data.
 

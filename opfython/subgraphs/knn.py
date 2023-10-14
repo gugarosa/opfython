@@ -129,7 +129,7 @@ class KNNSubgraph(Subgraph):
         self,
         n_neighbours: int,
         distance_function: callable,
-        pre_computed_distance: Optional[bool] = False,
+        pre_computed_distance: bool = False,
         pre_distances: Optional[np.array] = None,
     ) -> None:
         """Calculates the probability density function for `k` neighbours.
@@ -190,7 +190,7 @@ class KNNSubgraph(Subgraph):
         self,
         k: int,
         distance_function: callable,
-        pre_computed_distance: Optional[bool] = False,
+        pre_computed_distance: bool = False,
         pre_distances: Optional[np.array] = None,
     ) -> np.array:
         """Creates arcs for each node (adjacency relation).

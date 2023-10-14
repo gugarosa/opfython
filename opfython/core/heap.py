@@ -10,7 +10,7 @@ import opfython.utils.exception as e
 class Heap:
     """A standard implementation of a Heap structure."""
 
-    def __init__(self, size: Optional[int] = 1, policy: Optional[str] = "min") -> None:
+    def __init__(self, size: int = 1, policy: str = "min") -> None:
         """Initialization method.
 
         Args:

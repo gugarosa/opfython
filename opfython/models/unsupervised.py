@@ -27,9 +27,9 @@ class UnsupervisedOPF(OPF):
 
     def __init__(
         self,
-        min_k: Optional[int] = 1,
-        max_k: Optional[int] = 1,
-        distance: Optional[str] = "log_squared_euclidean",
+        min_k: int = 1,
+        max_k: int = 1,
+        distance: str = "log_squared_euclidean",
         pre_computed_distance: Optional[str] = None,
     ):
         """Initialization method.

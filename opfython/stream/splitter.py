@@ -14,8 +14,8 @@ logger = logging.get_logger(__name__)
 def split(
     X: np.array,
     Y: np.array,
-    percentage: Optional[float] = 0.5,
-    random_state: Optional[int] = 1,
+    percentage: float = 0.5,
+    random_state: int = 1,
 ) -> Tuple[np.array, np.array, np.array, np.array]:
     """Splits data into two new sets.
 
@@ -58,8 +58,8 @@ def split(
 def split_with_index(
     X: np.array,
     Y: np.array,
-    percentage: Optional[float] = 0.5,
-    random_state: Optional[int] = 1,
+    percentage: float = 0.5,
+    random_state: int = 1,
 ) -> Tuple[np.array, np.array, np.array, np.array, np.array, np.array]:
     """Splits data into two new sets.
 

@@ -27,7 +27,7 @@ class KNNSupervisedOPF(OPF):
 
     def __init__(
         self,
-        max_k: Optional[int] = 1,
+        max_k: int = 1,
         distance: Optional[str] = "log_squared_euclidean",
         pre_computed_distance: Optional[str] = None,
     ) -> None:
@@ -63,7 +63,7 @@ class KNNSupervisedOPF(OPF):
 
         self._max_k = max_k
 
-    def _clustering(self, force_prototype: Optional[bool] = False) -> None:
+    def _clustering(self, force_prototype: bool = False) -> None:
         """Clusters the subgraph.
 
         Args:
