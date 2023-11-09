@@ -209,6 +209,32 @@ class OPF:
 
         self.pre_distances = distances
 
+    def get_distances(self, normalize: bool = False) -> np.array:
+        """Gets the distance matrix.
+
+        Args:
+            normalize: Whether the distance matrix should be normalized or not.
+
+        Returns:
+            Numpy array containing the distance matrix.
+
+        """
+
+        distances = np.zeros((self.subgraph.n_nodes, self.subgraph.n_nodes))
+
+        for i in range(self.subgraph.n_nodes):
+            for j in range(self.subgraph.n_nodes):
+                distances[i][j] = self.distance_fn(
+                    self.subgraph.nodes[i].features, self.subgraph.nodes[j].features
+                )
+
+        if normalize:
+            return (distances - distances.min()) / (
+                distances.max() - distances.min()
+            )
+
+        return distances
+
     def load(self, file_name: str) -> None:
         """Loads the object from a pickle encoding.
 
