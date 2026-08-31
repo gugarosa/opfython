@@ -1,5 +1,4 @@
-"""KNN-Supervised Optimum-Path Forest.
-"""
+"""KNN-Supervised Optimum-Path Forest."""
 
 import time
 from typing import List, Optional
@@ -9,8 +8,9 @@ import numpy as np
 import opfython.math.general as g
 import opfython.utils.constants as c
 import opfython.utils.exception as e
-from opfython.core import OPF, Heap
-from opfython.subgraphs import KNNSubgraph
+from opfython.core.heap import Heap
+from opfython.core.opf import OPF
+from opfython.subgraphs.knn import KNNSubgraph
 from opfython.utils import logging
 
 logger = logging.get_logger(__name__)
@@ -41,16 +41,13 @@ class KNNSupervisedOPF(OPF):
         """
 
         logger.info("Overriding class: OPF -> KNNSupervisedOPF.")
-
-        super(KNNSupervisedOPF, self).__init__(distance, pre_computed_distance)
-
+        super().__init__(distance, pre_computed_distance)
         self.max_k = max_k
-
         logger.info("Class overrided.")
 
     @property
     def max_k(self) -> int:
-        """Maximum `k` value for cutting the subgraph."""
+        """Maximum neighbourhood size."""
 
         return self._max_k
 
@@ -60,7 +57,6 @@ class KNNSupervisedOPF(OPF):
             raise e.TypeError("`max_k` should be an integer")
         if max_k < 1:
             raise e.ValueError("`max_k` should be >= 1")
-
         self._max_k = max_k
 
     def _clustering(self, force_prototype: bool = False) -> None:
@@ -152,7 +148,6 @@ class KNNSupervisedOPF(OPF):
         logger.info("Learning best `k` value ...")
 
         self.subgraph = KNNSubgraph(X_train, Y_train, I_train)
-
         if self.pre_computed_distance:
             if (
                 self.pre_distances.shape[0] != self.subgraph.n_nodes
@@ -163,6 +158,7 @@ class KNNSupervisedOPF(OPF):
                 )
 
         max_acc = 0.0
+        best_k = 1
 
         for k in range(1, self.max_k + 1):
             self.subgraph.best_k = k
@@ -184,7 +180,6 @@ class KNNSupervisedOPF(OPF):
                 best_k = k
 
             logger.info("Accuracy over k = %d: %s", k, acc)
-
             self.subgraph.destroy_arcs()
 
         self.subgraph.best_k = best_k
@@ -211,7 +206,6 @@ class KNNSupervisedOPF(OPF):
         """
 
         logger.info("Fitting classifier ...")
-
         start = time.time()
 
         # Performing the learning process in order to find the best `k` value
@@ -236,14 +230,14 @@ class KNNSupervisedOPF(OPF):
 
         self.subgraph.trained = True
 
-        end = time.time()
-
-        train_time = end - start
-
         logger.info("Classifier has been fitted with k = %d.", self.subgraph.best_k)
-        logger.info("Training time: %s seconds.", train_time)
+        logger.info("Training time: %s seconds.", time.time() - start)
 
-    def predict(self, X_test: np.array, I_test: Optional[np.array] = None) -> List[int]:
+    def predict(
+        self,
+        X_test: np.array,
+        I_test: Optional[np.array] = None,
+    ) -> List[int]:
         """Predicts new data using the pre-trained classifier.
 
         Args:
@@ -251,16 +245,14 @@ class KNNSupervisedOPF(OPF):
             I_test: Array of indexes.
 
         Returns:
-            (List[int]): A list of predictions for each record of the data.
+            Predictions for each sample.
 
         """
 
         logger.info("Predicting data ...")
-
         start = time.time()
 
         pred_subgraph = KNNSubgraph(X_test, I=I_test)
-
         best_k = self.subgraph.best_k
 
         distances = np.zeros(best_k + 1)
@@ -325,11 +317,6 @@ class KNNSupervisedOPF(OPF):
 
         preds = [pred.predicted_label for pred in pred_subgraph.nodes]
 
-        end = time.time()
-
-        predict_time = end - start
-
         logger.info("Data has been predicted.")
-        logger.info("Prediction time: %s seconds.", predict_time)
-
+        logger.info("Prediction time: %s seconds.", time.time() - start)
         return preds

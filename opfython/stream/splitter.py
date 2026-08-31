@@ -1,7 +1,6 @@
-"""Data splitting utilities.
-"""
+"""Data splitting utilities."""
 
-from typing import Optional, Tuple
+from typing import Tuple
 
 import numpy as np
 
@@ -11,38 +10,32 @@ from opfython.utils import logging
 logger = logging.get_logger(__name__)
 
 
+def _split_indexes(
+    X: np.array,
+    Y: np.array,
+    percentage: float,
+    random_state: int,
+) -> Tuple[np.array, np.array]:
+    np.random.seed(random_state)
+    if X.shape[0] != Y.shape[0]:
+        raise e.SizeError("`X` and `Y` should have the same amount of samples")
+
+    indexes = np.random.permutation(X.shape[0])
+    halt = int(len(X) * percentage)
+    return indexes[:halt], indexes[halt:]
+
+
 def split(
     X: np.array,
     Y: np.array,
     percentage: float = 0.5,
     random_state: int = 1,
 ) -> Tuple[np.array, np.array, np.array, np.array]:
-    """Splits data into two new sets.
-
-    Args:
-        X: Array of features.
-        Y: Array of labels.
-        percentage: Percentage of the data that should be in first set.
-        random_state: An integer that fixes the random seed.
-
-    Returns:
-        (Tuple[np.array, np.array, np.array, np.array]): Two new sets that were created from `X` and `Y`.
-
-    """
+    """Split features and labels into two shuffled sets."""
 
     logger.info("Splitting data ...")
-
-    np.random.seed(random_state)
-
-    if X.shape[0] != Y.shape[0]:
-        raise e.SizeError("`X` and `Y` should have the same amount of samples")
-
-    idx = np.random.permutation(X.shape[0])
-    halt = int(len(X) * percentage)
-
-    X_1, X_2 = X[idx[:halt], :], X[idx[halt:], :]
-    Y_1, Y_2 = Y[idx[:halt]], Y[idx[halt:]]
-
+    first, second = _split_indexes(X, Y, percentage, random_state)
+    X_1, X_2, Y_1, Y_2 = X[first], X[second], Y[first], Y[second]
     logger.debug(
         "X_1: %s | X_2: %s | Y_1: %s | Y_2: %s.",
         X_1.shape,
@@ -51,7 +44,6 @@ def split(
         Y_2.shape,
     )
     logger.info("Data splitted.")
-
     return X_1, X_2, Y_1, Y_2
 
 
@@ -61,33 +53,11 @@ def split_with_index(
     percentage: float = 0.5,
     random_state: int = 1,
 ) -> Tuple[np.array, np.array, np.array, np.array, np.array, np.array]:
-    """Splits data into two new sets.
-
-    Args:
-        X: Array of features.
-        Y: Array of labels.
-        percentage: Percentage of the data that should be in first set.
-        random_state: An integer that fixes the random seed.
-
-    Returns:
-        (Tuple[np.array, np.array, np.array, np.array, np.array, np.array]): Two new sets that were created from `X` and `Y`, along their indexes.
-
-    """
+    """Split features and labels while retaining the shuffled indexes."""
 
     logger.info("Splitting data ...")
-
-    np.random.seed(random_state)
-
-    if X.shape[0] != Y.shape[0]:
-        raise e.SizeError("`X` and `Y` should have the same amount of samples")
-
-    idx = np.random.permutation(X.shape[0])
-    halt = int(len(X) * percentage)
-
-    I_1, I_2 = idx[:halt], idx[halt:]
-    X_1, X_2 = X[I_1, :], X[I_2, :]
-    Y_1, Y_2 = Y[I_1], Y[I_2]
-
+    first, second = _split_indexes(X, Y, percentage, random_state)
+    X_1, X_2, Y_1, Y_2 = X[first], X[second], Y[first], Y[second]
     logger.debug(
         "X_1: %s| X_2: %s | Y_1: %s | Y_2: %s.",
         X_1.shape,
@@ -96,31 +66,17 @@ def split_with_index(
         Y_2.shape,
     )
     logger.info("Data splitted.")
-
-    return X_1, X_2, Y_1, Y_2, I_1, I_2
+    return X_1, X_2, Y_1, Y_2, first, second
 
 
 def merge(
     X_1: np.array, X_2: np.array, Y_1: np.array, Y_2: np.array
 ) -> Tuple[np.array, np.array]:
-    """Merge two sets into a new set.
-
-    Args:
-        X_1: First array of features.
-        X_2: Second array of features.
-        Y_1: First array of labels.
-        Y_2: Second array of labels.
-
-    Returns:
-        (Tuple[np.array, np.array]:): A new merged set that was created from `X_1`, `X_2`, `Y_1` and `Y_2`.
-
-    """
+    """Merge two feature and label sets."""
 
     logger.info("Merging data ...")
-
     X = np.vstack((X_1, X_2))
     Y = np.hstack((Y_1, Y_2))
-
     if X.shape[0] != Y.shape[0]:
         raise e.SizeError(
             "`(X_1, X_2)` and `(Y_1, Y_2)` should have the same amount of samples"
@@ -128,5 +84,4 @@ def merge(
 
     logger.debug("X: %s | Y: %s.", X.shape, Y.shape)
     logger.info("Data merged.")
-
     return X, Y

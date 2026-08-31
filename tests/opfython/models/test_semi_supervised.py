@@ -1,24 +1,24 @@
 import numpy as np
 
-from opfython.models import semi_supervised
+from opfython.models import SemiSupervisedOPF
 from opfython.stream import loader, parser
 
-csv = loader.load_csv("data/boat.csv")
-X, Y = parser.parse_loader(csv)
+X, Y = parser.parse_loader(loader.load_csv("data/boat.csv"))
 
 
-def test_supervised_opf_fit():
-    opf = semi_supervised.SemiSupervisedOPF()
+def test_semi_supervised_fit():
+    classifier = SemiSupervisedOPF()
 
-    opf.fit(X, Y, X)
+    classifier.fit(X, Y, X)
 
-    opf.pre_computed_distance = True
+    assert classifier.subgraph.trained is True
 
-    try:
-        opf.pre_distances = np.ones((100, 100))
-        opf.fit(X, Y, X)
-    except:
-        opf.pre_distances = np.ones((200, 200))
-        opf.fit(X, Y, X)
 
-    assert opf.subgraph.trained is True
+def test_semi_supervised_uses_precomputed_distances():
+    classifier = SemiSupervisedOPF()
+    classifier.pre_computed_distance = True
+    classifier.pre_distances = np.ones((200, 200))
+
+    classifier.fit(X, Y, X)
+
+    assert classifier.subgraph.trained is True

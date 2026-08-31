@@ -1,2 +1,1 @@
-"""An utility package for all common opfython modules.
-"""
+"""An utility package for all common opfython modules."""

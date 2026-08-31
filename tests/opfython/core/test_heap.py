@@ -1,201 +1,72 @@
-from opfython.core import heap
-
-
-def test_heap_size():
-    h = heap.Heap()
-
-    assert h.size == 1
-
-
-def test_heap_size_setter():
-    h = heap.Heap()
-
-    try:
-        h.size = 1.15
-    except:
-        h.size = 1
-
-    assert h.size == 1
-
-    try:
-        h.size = 0
-    except:
-        h.size = 1
-
-    assert h.size == 1
-
-
-def test_heap_policy():
-    h = heap.Heap()
-
-    assert h.policy == "min"
-
-
-def test_heap_policy_setter():
-    h = heap.Heap()
-
-    try:
-        h.policy = "a"
-    except:
-        h.policy = "min"
-
-    assert h.policy == "min"
-
-    try:
-        h.policy = "b"
-    except:
-        h.policy = "max"
-
-    assert h.policy == "max"
-
-
-def test_heap_cost():
-    h = heap.Heap()
-
-    assert len(h.cost) == 1
-
-
-def test_heap_cost_setter():
-    h = heap.Heap()
-
-    try:
-        h.cost = "a"
-    except:
-        h.cost = []
-
-    assert isinstance(h.cost, list)
-
-
-def test_heap_color():
-    h = heap.Heap()
-
-    assert len(h.color) == 1
-
-
-def test_heap_color_setter():
-    h = heap.Heap()
-
-    try:
-        h.color = "a"
-    except:
-        h.color = []
-
-    assert isinstance(h.color, list)
-
-
-def test_heap_p():
-    h = heap.Heap()
-
-    assert len(h.p) == 1
-
-
-def test_heap_p_setter():
-    h = heap.Heap()
-
-    try:
-        h.p = "a"
-    except:
-        h.p = []
-
-    assert isinstance(h.p, list)
-
-
-def test_heap_pos():
-    h = heap.Heap()
-
-    assert len(h.pos) == 1
-
-
-def test_heap_pos_setter():
-    h = heap.Heap()
-
-    try:
-        h.pos = "a"
-    except:
-        h.pos = []
-
-    assert isinstance(h.pos, list)
-
-
-def test_heap_last():
-    h = heap.Heap()
-
-    assert h.last == -1
-
-
-def test_heap_last_setter():
-    h = heap.Heap()
-
-    try:
-        h.last = 10.5
-    except:
-        h.last = -1
-
-    assert h.last == -1
-
-    try:
-        h.last = -2
-    except:
-        h.last = -1
-
-    assert h.last == -1
-
-
-def test_heap_is_full():
-    h = heap.Heap()
-
-    h.insert(0)
-
-    status = h.is_full()
-
-    assert status is True
-
-
-def test_heap_is_empty():
-    h = heap.Heap()
-
-    status = h.is_empty()
-
-    assert status is True
-
-
-def test_heap_dad():
-    h = heap.Heap(size=10)
-
-    dad = h.dad(5)
-
-    assert dad == 2
-
-
-def test_heap_left_son():
-    h = heap.Heap(size=10)
-
-    left_son = h.left_son(5)
-
-    assert left_son == 11
-
-
-def test_heap_right_son():
-    h = heap.Heap(size=10)
-
-    right_son = h.right_son(5)
-
-    assert right_son == 12
-
-
-def test_heap_insert():
-    h = heap.Heap()
-
-    h.insert(0)
-
-    status = h.insert(1)
-
-    assert status is False
-
-
-def test_heap_remove():
-    h = heap.Heap()
-
-    status = h.remove()
-
-    assert status is False
+import pytest
+
+from opfython.core import Heap
+from opfython.utils import exception
+
+
+def test_heap_min_policy_orders_updates():
+    heap = Heap(size=3)
+
+    heap.update(0, 3)
+    heap.update(1, 1)
+    heap.update(2, 2)
+    heap.update(0, 0)
+
+    assert heap.is_full()
+    assert [heap.remove(), heap.remove(), heap.remove()] == [0, 1, 2]
+    assert heap.is_empty()
+    assert heap.remove() is False
+
+
+def test_heap_max_policy_orders_updates():
+    heap = Heap(size=3, policy="max")
+
+    heap.update(0, 1)
+    heap.update(1, 3)
+    heap.update(2, 2)
+
+    assert [heap.remove(), heap.remove(), heap.remove()] == [1, 2, 0]
+
+
+@pytest.mark.parametrize(
+    ("kwargs", "error"),
+    [
+        ({"size": 1.5}, exception.TypeError),
+        ({"size": 0}, exception.ValueError),
+        ({"policy": "unknown"}, exception.ValueError),
+        ({"policy": []}, exception.ValueError),
+    ],
+)
+def test_heap_rejects_invalid_configuration(kwargs, error):
+    with pytest.raises(error):
+        Heap(**kwargs)
+
+
+@pytest.mark.parametrize(
+    ("attribute", "value", "error"),
+    [
+        ("size", 1.5, exception.TypeError),
+        ("size", 0, exception.ValueError),
+        ("policy", "unknown", exception.ValueError),
+        ("policy", [], exception.ValueError),
+        ("cost", "invalid", exception.TypeError),
+        ("color", "invalid", exception.TypeError),
+        ("p", "invalid", exception.TypeError),
+        ("pos", "invalid", exception.TypeError),
+        ("last", 1.5, exception.TypeError),
+        ("last", -2, exception.ValueError),
+    ],
+)
+def test_heap_validates_public_attributes(attribute, value, error):
+    heap = Heap()
+
+    with pytest.raises(error):
+        setattr(heap, attribute, value)
+
+
+def test_heap_navigation_helpers():
+    heap = Heap(size=10)
+
+    assert heap.dad(5) == 2
+    assert heap.left_son(5) == 11
+    assert heap.right_son(5) == 12

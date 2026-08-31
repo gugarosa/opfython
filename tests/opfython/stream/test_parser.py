@@ -1,26 +1,23 @@
 import numpy as np
+import pytest
 
 from opfython.stream import loader, parser
+from opfython.utils import exception
 
 
 def test_parse_loader():
-    X, Y = parser.parse_loader([])
+    X, Y = parser.parse_loader(loader.load_csv("data/boat.csv"))
 
-    assert X is None
-    assert Y is None
+    assert X.shape == (100, 2)
+    assert Y.shape == (100,)
 
-    try:
-        data = np.ones((4, 4))
-        X, Y = parser.parse_loader(data)
-    except:
-        try:
-            data = np.ones((4, 4))
-            data[3, 1] = 3
-            X, Y = parser.parse_loader(data)
-        except:
-            csv = loader.load_csv("data/boat.csv")
 
-            X, Y = parser.parse_loader(csv)
+def test_parse_loader_handles_non_array_input():
+    assert parser.parse_loader([]) == (None, None)
 
-            assert X.shape == (100, 2)
-            assert Y.shape == (100,)
+
+def test_parse_loader_rejects_nonsequential_labels():
+    data = np.asarray([[0, 0, 1], [1, 2, 1]])
+
+    with pytest.raises(exception.ValueError):
+        parser.parse_loader(data)

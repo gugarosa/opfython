@@ -1,5 +1,4 @@
-"""Decorators.
-"""
+"""Decorators."""
 
 from functools import wraps
 

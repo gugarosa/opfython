@@ -1,69 +1,43 @@
 import numpy as np
+import pytest
 
-from opfython.models import knn_supervised
-from opfython.stream import loader, parser, splitter
+from opfython.models import KNNSupervisedOPF
+from opfython.stream import loader, parser
+from opfython.utils import exception
 
-csv = loader.load_csv("data/boat.csv")
-X, Y = parser.parse_loader(csv)
-
-
-def test_knn_supervised_opf_max_k():
-    opf = knn_supervised.KNNSupervisedOPF()
-
-    assert opf.max_k == 1
+X, Y = parser.parse_loader(loader.load_csv("data/boat.csv"))
 
 
-def test_knn_supervised_opf_max_k_setter():
-    opf = knn_supervised.KNNSupervisedOPF()
+def test_knn_supervised_rejects_invalid_max_k():
+    with pytest.raises(exception.TypeError):
+        KNNSupervisedOPF(max_k=1.5)
+    with pytest.raises(exception.ValueError):
+        KNNSupervisedOPF(max_k=0)
 
-    try:
-        opf.max_k = 1.5
-    except:
-        opf.max_k = 3
-
-    assert opf.max_k == 3
-
-    try:
-        opf.max_k = 0
-    except:
-        opf.max_k = 3
-
-    assert opf.max_k == 3
+    classifier = KNNSupervisedOPF()
+    with pytest.raises(exception.ValueError):
+        classifier.max_k = 0
 
 
-def test_knn_supervised_opf_fit():
-    opf = knn_supervised.KNNSupervisedOPF()
+def test_knn_supervised_fit_and_predict():
+    classifier = KNNSupervisedOPF()
 
-    opf.fit(X, Y, X, Y)
+    classifier.fit(X, Y, X, Y)
+    predictions = classifier.predict(X)
 
-    assert opf.subgraph.trained is True
-
-    opf.pre_computed_distance = True
-    try:
-        opf.pre_distances = np.ones((99, 99))
-        opf.fit(X, Y, X, Y)
-    except:
-        opf.pre_distances = np.ones((100, 100))
-        opf.fit(X, Y, X, Y)
-
-    assert opf.subgraph.trained is True
+    assert classifier.subgraph.trained is True
+    assert len(predictions) == 100
 
 
-def test_knn_supervised_opf_predict():
-    opf = knn_supervised.KNNSupervisedOPF()
+def test_knn_supervised_validates_precomputed_distances():
+    classifier = KNNSupervisedOPF()
+    classifier.pre_computed_distance = True
+    classifier.pre_distances = np.ones((99, 99))
 
-    try:
-        _ = opf.predict(X)
-    except:
-        opf.fit(X, Y, X, Y)
-        preds = opf.predict(X)
+    with pytest.raises(exception.BuildError):
+        classifier.fit(X, Y, X, Y)
 
-    assert len(preds) == 100
+    classifier.pre_distances = np.ones((100, 100))
+    classifier.fit(X, Y, X, Y)
 
-    opf.pre_computed_distance = True
-    opf.pre_distances = np.ones((100, 100))
-
-    opf.fit(X, Y, X, Y)
-    preds = opf.predict(X)
-
-    assert len(preds) == 100
+    assert len(classifier.predict(X)) == 100

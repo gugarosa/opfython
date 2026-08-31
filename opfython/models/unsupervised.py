@@ -1,5 +1,4 @@
-"""Unsupervised Optimum-Path Forest.
-"""
+"""Unsupervised Optimum-Path Forest."""
 
 import time
 from typing import List, Optional
@@ -8,8 +7,9 @@ import numpy as np
 
 import opfython.utils.constants as c
 import opfython.utils.exception as e
-from opfython.core import OPF, Heap
-from opfython.subgraphs import KNNSubgraph
+from opfython.core.heap import Heap
+from opfython.core.opf import OPF
+from opfython.subgraphs.knn import KNNSubgraph
 from opfython.utils import logging
 
 logger = logging.get_logger(__name__)
@@ -43,17 +43,14 @@ class UnsupervisedOPF(OPF):
         """
 
         logger.info("Overriding class: OPF -> UnsupervisedOPF.")
-
-        super(UnsupervisedOPF, self).__init__(distance, pre_computed_distance)
-
+        super().__init__(distance, pre_computed_distance)
         self.min_k = min_k
         self.max_k = max_k
-
         logger.info("Class overrided.")
 
     @property
     def min_k(self) -> int:
-        """Minimum `k` value for cutting the subgraph."""
+        """Minimum neighbourhood size."""
 
         return self._min_k
 
@@ -63,12 +60,11 @@ class UnsupervisedOPF(OPF):
             raise e.TypeError("`min_k` should be an integer")
         if min_k < 1:
             raise e.ValueError("`min_k` should be >= 1")
-
         self._min_k = min_k
 
     @property
     def max_k(self) -> int:
-        """Maximum `k` value for cutting the subgraph."""
+        """Maximum neighbourhood size."""
 
         return self._max_k
 
@@ -80,7 +76,6 @@ class UnsupervisedOPF(OPF):
             raise e.ValueError("`max_k` should be >= 1")
         if max_k < self.min_k:
             raise e.ValueError("`max_k` should be >= `min_k`")
-
         self._max_k = max_k
 
     def _clustering(self, n_neighbours: int) -> None:
@@ -211,7 +206,9 @@ class UnsupervisedOPF(OPF):
         """
 
         logger.debug(
-            "Calculating the best minimum cut within [%d, %d] ...", min_k, max_k
+            "Calculating the best minimum cut within [%d, %d] ...",
+            min_k,
+            max_k,
         )
 
         max_distances = self.subgraph.create_arcs(
@@ -219,6 +216,7 @@ class UnsupervisedOPF(OPF):
         )
 
         min_cut = c.FLOAT_MAX
+        best_k = min_k
         for k in range(min_k, max_k + 1):
             if min_cut != 0.0:
                 self.subgraph.density = max_distances[k - 1]
@@ -263,26 +261,24 @@ class UnsupervisedOPF(OPF):
         """
 
         logger.info("Clustering with classifier ...")
-
         start = time.time()
 
         self.subgraph = KNNSubgraph(X_train, Y_train, I_train)
-
         self._best_minimum_cut(self.min_k, self.max_k)
 
         self._clustering(self.subgraph.best_k)
 
         self.subgraph.trained = True
 
-        end = time.time()
-
-        train_time = end - start
-
         logger.info("Classifier has been clustered with.")
         logger.info("Number of clusters: %d.", self.subgraph.n_clusters)
-        logger.info("Clustering time: %s seconds.", train_time)
+        logger.info("Clustering time: %s seconds.", time.time() - start)
 
-    def predict(self, X_val: np.array, I_val: Optional[np.array] = None) -> List[int]:
+    def predict(
+        self,
+        X_val: np.array,
+        I_val: Optional[np.array] = None,
+    ) -> List[int]:
         """Predicts new data using the pre-trained classifier.
 
         Args:
@@ -290,7 +286,7 @@ class UnsupervisedOPF(OPF):
             I_val: Array of validation indexes.
 
         Returns:
-            (List[int]): A list of predictions for each record of the data.
+            Predictions and cluster assignments for each sample.
 
         """
 
@@ -301,9 +297,7 @@ class UnsupervisedOPF(OPF):
             raise e.BuildError("Classifier has not been properly clustered")
 
         logger.info("Predicting data ...")
-
         start = time.time()
-
         pred_subgraph = KNNSubgraph(X_val, I=I_val)
 
         best_k = self.subgraph.best_k
@@ -377,13 +371,8 @@ class UnsupervisedOPF(OPF):
         preds = [pred.predicted_label for pred in pred_subgraph.nodes]
         clusters = [pred.cluster_label for pred in pred_subgraph.nodes]
 
-        end = time.time()
-
-        predict_time = end - start
-
         logger.info("Data has been predicted.")
-        logger.info("Prediction time: %s seconds.", predict_time)
-
+        logger.info("Prediction time: %s seconds.", time.time() - start)
         return preds, clusters
 
     def propagate_labels(self) -> None:

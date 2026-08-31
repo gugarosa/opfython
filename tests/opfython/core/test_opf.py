@@ -1,108 +1,85 @@
-import os
-
 import numpy as np
 import pytest
 
-from opfython.core import opf
-from opfython.core.subgraph import Subgraph
+from opfython.core import OPF, Subgraph
+from opfython.utils import exception
 
 
-def test_opf_subgraph():
-    clf = opf.OPF()
+def test_opf_defaults():
+    classifier = OPF()
 
-    try:
-        clf.subgraph = "a"
-    except:
-        clf.subgraph = Subgraph()
-
-    assert isinstance(clf.subgraph, Subgraph)
-
-
-def test_opf_distance():
-    clf = opf.OPF()
-
-    try:
-        clf.distance = "a"
-    except:
-        clf.distance = "euclidean"
-
-    assert clf.distance == "euclidean"
+    assert classifier.subgraph is None
+    assert classifier.distance == "log_squared_euclidean"
+    assert callable(classifier.distance_fn)
+    assert classifier.pre_computed_distance is False
+    assert classifier.pre_distances is None
 
 
-def test_opf_distance_fn():
-    clf = opf.OPF()
-
-    try:
-        clf.distance_fn = "a"
-    except:
-        clf.distance_fn = callable
-
-    assert clf.distance_fn == callable
+def test_opf_rejects_unknown_distance():
+    with pytest.raises(exception.TypeError):
+        OPF(distance="unknown")
 
 
-def test_opf_pre_computed_distance():
-    clf = opf.OPF()
+def test_opf_reads_precomputed_distances():
+    classifier = OPF(pre_computed_distance="data/boat.txt")
 
-    try:
-        clf.pre_computed_distance = "a"
-    except:
-        clf.pre_computed_distance = False
+    assert classifier.pre_computed_distance is True
+    assert classifier.pre_distances.shape == (100, 4)
 
-    assert clf.pre_computed_distance is False
-
-
-def test_opf_pre_distances():
-    clf = opf.OPF()
-
-    try:
-        clf.pre_distances = "a"
-    except:
-        clf.pre_distances = np.ones(10)
-
-    assert clf.pre_distances.shape == (10,)
+    with pytest.raises(exception.ArgumentError):
+        classifier._read_distances("data/boat.json")
 
 
-def test_opf_read_distances():
-    try:
-        clf = opf.OPF(pre_computed_distance="data/boat")
-    except:
-        clf = opf.OPF(pre_computed_distance="data/boat.txt")
+def test_opf_gets_distances():
+    classifier = OPF(distance="euclidean")
+    classifier.subgraph = Subgraph(
+        np.asarray([[0.0, 0.0], [3.0, 4.0]]),
+        np.asarray([0, 1]),
+    )
 
-    assert clf.pre_distances.shape == (100, 4)
-
-    try:
-        clf = opf.OPF(pre_computed_distance="data/boa.txt")
-    except:
-        clf = opf.OPF(pre_computed_distance="data/boat.csv")
-
-    assert clf.pre_distances.shape == (100, 4)
+    assert np.array_equal(
+        classifier.get_distances(),
+        np.asarray([[0.0, 5.0], [5.0, 0.0]]),
+    )
 
 
-def test_opf_save():
-    clf = opf.OPF(distance="bray_curtis")
+def test_opf_round_trip(tmp_path):
+    path = tmp_path / "model.pkl"
+    classifier = OPF(distance="bray_curtis")
 
-    clf.save("data/test.pkl")
+    classifier.save(path)
+    loaded = OPF()
+    loaded.load(path)
 
-    assert os.path.isfile("data/test.pkl")
-
-
-def test_opf_load():
-    clf = opf.OPF()
-
-    clf.load("data/test.pkl")
-
-    assert clf.distance == "bray_curtis"
+    assert loaded.distance == "bray_curtis"
 
 
-def test_opf_fit():
-    clf = opf.OPF()
+def test_opf_requires_concrete_fit_and_predict():
+    classifier = OPF()
 
     with pytest.raises(NotImplementedError):
-        clf.fit(None, None)
-
-
-def test_opf_predict():
-    clf = opf.OPF()
-
+        classifier.fit(None, None)
     with pytest.raises(NotImplementedError):
-        clf.predict(None)
+        classifier.predict(None)
+
+
+@pytest.mark.parametrize(
+    ("attribute", "value"),
+    [
+        ("subgraph", "invalid"),
+        ("distance", "invalid"),
+        ("distance_fn", "invalid"),
+        ("pre_computed_distance", "invalid"),
+        ("pre_distances", "invalid"),
+    ],
+)
+def test_opf_validates_public_attributes(attribute, value):
+    classifier = OPF()
+
+    with pytest.raises(exception.TypeError):
+        setattr(classifier, attribute, value)
+
+
+def test_opf_rejects_unhashable_distance():
+    with pytest.raises(exception.TypeError):
+        OPF(distance=[])

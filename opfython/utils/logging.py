@@ -1,5 +1,4 @@
-"""Logging-based methods and helpers.
-"""
+"""Logging helpers."""
 
 import logging
 import sys
@@ -11,49 +10,27 @@ LOG_FILE = "opfython.log"
 
 
 def get_console_handler() -> StreamHandler:
-    """Gets a console handler to handle logging into console.
-
-    Returns:
-        (StreamHandler): Handler to output information into console.
-
-    """
+    """Return a formatted stdout handler."""
 
     console_handler = StreamHandler(sys.stdout)
     console_handler.setFormatter(FORMATTER)
-
     return console_handler
 
 
 def get_timed_file_handler() -> TimedRotatingFileHandler:
-    """Gets a timed file handler to handle logging into files.
-
-    Returns:
-        (TimedRotatingFileHandler): Handler to output information into timed files.
-
-    """
+    """Return a formatted daily rotating file handler."""
 
     file_handler = TimedRotatingFileHandler(LOG_FILE, delay=True, when="midnight")
     file_handler.setFormatter(FORMATTER)
-
     return file_handler
 
 
 def get_logger(logger_name: str) -> Logger:
-    """Gets a logger and make it avaliable for further use.
-
-    Args:
-        logger_name: The name of the logger.
-
-    Returns:
-        (Logger): Logger instance.
-
-    """
+    """Return the package-configured logger."""
 
     logger = logging.getLogger(logger_name)
-
     logger.setLevel(logging.DEBUG)
     logger.addHandler(get_console_handler())
     logger.addHandler(get_timed_file_handler())
     logger.propagate = False
-
     return logger

@@ -1,21 +1,26 @@
-import os
+import json
+
+import numpy as np
+import pytest
 
 from opfython.utils import converter
 
 
-def test_opf2txt():
-    converter.opf2txt("data/boat.dat")
+@pytest.mark.parametrize(
+    ("function", "suffix"),
+    [
+        (converter.opf2txt, ".txt"),
+        (converter.opf2csv, ".csv"),
+        (converter.opf2json, ".json"),
+    ],
+)
+def test_opf_converters(function, suffix, tmp_path):
+    output = tmp_path / f"boat{suffix}"
+    function("data/boat.dat", output)
 
-    assert os.path.isfile("data/boat.txt")
-
-
-def test_opf2csv():
-    converter.opf2csv("data/boat.dat")
-
-    assert os.path.isfile("data/boat.csv")
-
-
-def test_opf2json():
-    converter.opf2json("data/boat.dat")
-
-    assert os.path.isfile("data/boat.json")
+    if suffix == ".json":
+        with output.open(encoding="utf-8") as json_file:
+            assert len(json.load(json_file)["data"]) == 100
+    else:
+        delimiter = "," if suffix == ".csv" else None
+        assert np.loadtxt(output, delimiter=delimiter).shape == (100, 4)

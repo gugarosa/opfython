@@ -1,5 +1,4 @@
-"""Data parsing utilities.
-"""
+"""Data parsing utilities."""
 
 import numpy as np
 
@@ -10,27 +9,14 @@ logger = logging.get_logger(__name__)
 
 
 def parse_loader(data: np.array) -> np.array:
-    """Parses data in OPF file format that was pre-loaded (.csv, .txt or .json).
-
-    Args:
-        data: Numpy array holding the data in OPF file format.
-
-    Returns:
-        (np.array): Arrays holding the features and labels.
-
-    """
+    """Split OPF-formatted rows into features and integer labels."""
 
     logger.info("Parsing data ...")
-
     try:
-        # From third columns beyond, we should have the features
         X = data[:, 2:]
-
-        # Second column should be the label
         Y = data[:, 1]
 
         _, counts = np.unique(Y, return_counts=True)
-
         if len(counts) == 1:
             logger.warning("Parsed data only have a single label.")
         if len(counts) != (np.max(Y) + 1):
@@ -39,10 +25,7 @@ def parse_loader(data: np.array) -> np.array:
             )
 
         logger.info("Data parsed.")
-
         return X, Y.astype(int)
-
     except TypeError as error:
         logger.error(error)
-
         return None, None

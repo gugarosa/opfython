@@ -1,5 +1,4 @@
-"""Supervised Optimum-Path Forest.
-"""
+"""Supervised Optimum-Path Forest."""
 
 import copy
 import time
@@ -11,7 +10,9 @@ import opfython.math.general as g
 import opfython.math.random as r
 import opfython.utils.constants as c
 import opfython.utils.exception as e
-from opfython.core import OPF, Heap, Subgraph
+from opfython.core.heap import Heap
+from opfython.core.opf import OPF
+from opfython.core.subgraph import Subgraph
 from opfython.utils import logging
 
 logger = logging.get_logger(__name__)
@@ -40,9 +41,7 @@ class SupervisedOPF(OPF):
         """
 
         logger.info("Overriding class: OPF -> SupervisedOPF.")
-
-        super(SupervisedOPF, self).__init__(distance, pre_computed_distance)
-
+        super().__init__(distance, pre_computed_distance)
         logger.info("Class overrided.")
 
     def _find_prototypes(self) -> None:
@@ -51,7 +50,6 @@ class SupervisedOPF(OPF):
         logger.debug("Finding prototypes ...")
 
         h = Heap(self.subgraph.n_nodes)
-
         self.subgraph.nodes[0].pred = c.NIL
 
         h.insert(0)
@@ -94,7 +92,10 @@ class SupervisedOPF(OPF):
         logger.debug("Prototypes: %s.", prototypes)
 
     def fit(
-        self, X_train: np.array, Y_train: np.array, I_train: Optional[np.array] = None
+        self,
+        X_train: np.array,
+        Y_train: np.array,
+        I_train: Optional[np.array] = None,
     ) -> None:
         """Fits data in the classifier.
 
@@ -106,11 +107,9 @@ class SupervisedOPF(OPF):
         """
 
         logger.info("Fitting classifier ...")
-
         start = time.time()
 
         self.subgraph = Subgraph(X_train, Y_train, I=I_train)
-
         self._find_prototypes()
 
         h = Heap(size=self.subgraph.n_nodes)
@@ -149,22 +148,22 @@ class SupervisedOPF(OPF):
 
                         if current_cost < h.cost[q]:
                             self.subgraph.nodes[q].pred = p
-                            self.subgraph.nodes[
-                                q
-                            ].predicted_label = self.subgraph.nodes[p].predicted_label
+                            self.subgraph.nodes[q].predicted_label = (
+                                self.subgraph.nodes[p].predicted_label
+                            )
 
                             h.update(q, current_cost)
 
         self.subgraph.trained = True
 
-        end = time.time()
-
-        train_time = end - start
-
         logger.info("Classifier has been fitted.")
-        logger.info("Training time: %s seconds.", train_time)
+        logger.info("Training time: %s seconds.", time.time() - start)
 
-    def predict(self, X_val: np.array, I_val: Optional[np.array] = None) -> List[int]:
+    def predict(
+        self,
+        X_val: np.array,
+        I_val: Optional[np.array] = None,
+    ) -> List[int]:
         """Predicts new data using the pre-trained classifier.
 
         Args:
@@ -172,7 +171,7 @@ class SupervisedOPF(OPF):
             I_val: Array of validation or test indexes.
 
         Returns:
-            (List[int]): A list of predictions for each record of the data.
+            Predictions for each sample.
 
         """
 
@@ -183,9 +182,7 @@ class SupervisedOPF(OPF):
             raise e.BuildError("Classifier has not been properly fitted")
 
         logger.info("Predicting data ...")
-
         start = time.time()
-
         pred_subgraph = Subgraph(X_val, I=I_val)
 
         for i in range(pred_subgraph.n_nodes):
@@ -243,13 +240,8 @@ class SupervisedOPF(OPF):
 
         preds = [pred.predicted_label for pred in pred_subgraph.nodes]
 
-        end = time.time()
-
-        predict_time = end - start
-
         logger.info("Data has been predicted.")
-        logger.info("Prediction time: %s seconds.", predict_time)
-
+        logger.info("Prediction time: %s seconds.", time.time() - start)
         return preds
 
     def learn(
@@ -273,13 +265,14 @@ class SupervisedOPF(OPF):
 
         logger.info("Learning the best classifier ...")
 
-        max_acc = 0
+        max_acc = -np.inf
+        best_opf = self
+        best_t = 0
         previous_acc = 0
 
         t = 0
         while True:
             logger.info("Running iteration %d/%d ...", t + 1, n_iterations)
-
             self.fit(X_train, Y_train)
 
             preds = self.predict(X_val)
@@ -290,22 +283,28 @@ class SupervisedOPF(OPF):
                 best_opf = copy.deepcopy(self)
                 best_t = t
 
-            errors = np.argwhere(Y_val != preds)
+            errors = np.flatnonzero(Y_val != preds)
 
             non_prototypes = 0
             for n in self.subgraph.nodes:
                 if n.status != c.PROTOTYPE:
                     non_prototypes += 1
 
-            for err in errors:
+            for error_index in errors:
                 ctr = non_prototypes
 
                 while ctr > 0:
-                    j = int(r.generate_uniform_random_number(0, len(X_train)))
+                    j = int(r.generate_uniform_random_number(0, len(X_train)).item())
 
                     if self.subgraph.nodes[j].status != c.PROTOTYPE:
-                        X_train[j, :], X_val[err, :] = X_val[err, :], X_train[j, :]
-                        Y_train[j], Y_val[err] = Y_val[err], Y_train[j]
+                        X_train[j, :], X_val[error_index, :] = (
+                            X_val[error_index, :],
+                            X_train[j, :].copy(),
+                        )
+                        Y_train[j], Y_val[error_index] = (
+                            Y_val[error_index],
+                            Y_train[j],
+                        )
 
                         non_prototypes -= 1
                         ctr = 0
@@ -319,16 +318,18 @@ class SupervisedOPF(OPF):
             t += 1
 
             logger.info(
-                "Accuracy: %s | Delta: %s | Maximum Accuracy: %s", acc, delta, max_acc
+                "Accuracy: %s | Delta: %s | Maximum Accuracy: %s",
+                acc,
+                delta,
+                max_acc,
             )
 
             if delta < 0.0001 or t == n_iterations:
-                self = best_opf
-
+                self.__dict__.update(best_opf.__dict__)
                 logger.info(
-                    "Best classifier has been learned over iteration %d.", best_t + 1
+                    "Best classifier has been learned over iteration %d.",
+                    best_t + 1,
                 )
-
                 break
 
     def prune(
@@ -357,9 +358,8 @@ class SupervisedOPF(OPF):
 
         initial_nodes = self.subgraph.n_nodes
 
-        for t in range(n_iterations):
-            logger.info("Running iteration %d/%d ...", t + 1, n_iterations)
-
+        for iteration in range(n_iterations):
+            logger.info("Running iteration %d/%d ...", iteration + 1, n_iterations)
             X_temp, Y_temp = [], []
 
             # Removes irrelevant nodes
@@ -374,11 +374,7 @@ class SupervisedOPF(OPF):
             self.fit(X_train, Y_train)
             preds = self.predict(X_val)
 
-            acc = g.opf_accuracy(Y_val, preds)
-
-            logger.info("Current accuracy: %s.", acc)
+            logger.info("Current accuracy: %s.", g.opf_accuracy(Y_val, preds))
 
         final_nodes = self.subgraph.n_nodes
-        prune_ratio = 1 - final_nodes / initial_nodes
-
-        logger.info("Prune ratio: %s.", prune_ratio)
+        logger.info("Prune ratio: %s.", 1 - final_nodes / initial_nodes)

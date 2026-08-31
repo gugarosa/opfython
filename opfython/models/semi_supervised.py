@@ -1,5 +1,4 @@
-"""Semi-Supervised Optimum-Path Forest.
-"""
+"""Semi-Supervised Optimum-Path Forest."""
 
 import time
 from typing import Optional
@@ -7,8 +6,10 @@ from typing import Optional
 import numpy as np
 
 import opfython.utils.constants as c
-from opfython.core import Heap, Node, Subgraph
-from opfython.models import SupervisedOPF
+from opfython.core.heap import Heap
+from opfython.core.node import Node
+from opfython.core.subgraph import Subgraph
+from opfython.models.supervised import SupervisedOPF
 from opfython.utils import logging
 
 logger = logging.get_logger(__name__)
@@ -37,9 +38,7 @@ class SemiSupervisedOPF(SupervisedOPF):
         """
 
         logger.info("Overriding class: SupervisedOPF -> SemiSupervisedOPF.")
-
-        super(SemiSupervisedOPF, self).__init__(distance, pre_computed_distance)
-
+        super().__init__(distance, pre_computed_distance)
         logger.info("Class overrided.")
 
     def fit(
@@ -60,11 +59,9 @@ class SemiSupervisedOPF(SupervisedOPF):
         """
 
         logger.info("Fitting semi-supervised classifier ...")
-
         start = time.time()
 
         self.subgraph = Subgraph(X_train, Y_train, I_train)
-
         self._find_prototypes()
 
         current_n_nodes = self.subgraph.n_nodes
@@ -107,9 +104,9 @@ class SemiSupervisedOPF(SupervisedOPF):
                         current_cost = np.maximum(h.cost[p], weight)
                         if current_cost < h.cost[q]:
                             self.subgraph.nodes[q].pred = p
-                            self.subgraph.nodes[
-                                q
-                            ].predicted_label = self.subgraph.nodes[p].predicted_label
+                            self.subgraph.nodes[q].predicted_label = (
+                                self.subgraph.nodes[p].predicted_label
+                            )
 
                             # As we may have unlabeled nodes, make sure that `q` label equals to `q` predicted label
                             self.subgraph.nodes[q].label = self.subgraph.nodes[
@@ -120,9 +117,5 @@ class SemiSupervisedOPF(SupervisedOPF):
 
         self.subgraph.trained = True
 
-        end = time.time()
-
-        train_time = end - start
-
         logger.info("Semi-supervised classifier has been fitted.")
-        logger.info("Training time: %s seconds.", train_time)
+        logger.info("Training time: %s seconds.", time.time() - start)

@@ -15,10 +15,10 @@ Thank you!
 
 ### Pre-checkings
 
-- [ ] Check that you are up-to-date with the master branch of OPFython. You can update with:
-pip install git+git://github.com/gugarosa/opfython.git --upgrade --no-deps
+- [ ] Check that you are up-to-date with the main branch of OPFython:
+`uv add "opfython @ git+https://github.com/gugarosa/opfython.git"`
 
-- [ ] Check that you have read all of our [README](https://github.com/gugarosa/opfython/blob/master/README.md).
+- [ ] Check that you have read the [README](https://github.com/gugarosa/opfython/blob/main/README.md).
 
 ### Description
 

@@ -1,7 +1,6 @@
-"""Data loading utilities.
-"""
+"""Data loading utilities."""
 
-import json as j
+import json
 
 import numpy as np
 
@@ -11,94 +10,46 @@ logger = logging.get_logger(__name__)
 
 
 def load_csv(csv_path: str) -> np.array:
-    """Loads a CSV file into a numpy array.
-
-    Please make sure the .csv is uniform along all rows and columns.
-
-    Args:
-        csv_path: String holding the .csv's path.
-
-    Returns:
-        (np.array): A numpy array holding the loaded data.
-
-    """
+    """Load a comma-separated file into a NumPy array."""
 
     logger.info("Loading file: %s ...", csv_path)
-
     try:
-        csv = np.loadtxt(csv_path, delimiter=",")
-
-    except OSError as e:
-        logger.error(e)
-
+        data = np.loadtxt(csv_path, delimiter=",")
+    except OSError as error:
+        logger.error(error)
         return None
 
     logger.info("File loaded.")
-
-    return csv
+    return data
 
 
 def load_txt(txt_path: str) -> np.array:
-    """Loads a .txt file into a numpy array.
-
-    Please make sure the .txt is uniform along all rows and columns.
-
-    Args:
-        txt_path: A path to the .txt file.
-
-    Returns:
-        (np.array): A numpy array holding the loaded data.
-
-    """
+    """Load a whitespace-separated file into a NumPy array."""
 
     logger.info("Loading file: %s...", txt_path)
-
     try:
-        txt = np.loadtxt(txt_path, delimiter=" ")
-
-    except OSError as e:
-        logger.error(e)
-
+        data = np.loadtxt(txt_path, delimiter=" ")
+    except OSError as error:
+        logger.error(error)
         return None
 
     logger.info("File loaded.")
-
-    return txt
+    return data
 
 
 def load_json(json_path: str) -> np.array:
-    """Loads a .json file into a numpy array.
-
-    Please make sure the .json is uniform along all keys and items.
-
-    Args:
-        json_path: Path to the .json file.
-
-    Returns:
-        (np.array): A numpy array holding the loaded data.
-
-    """
+    """Load an OPF JSON file into a NumPy array."""
 
     logger.info("Loading file: %s ...", json_path)
-
     try:
-        with open(json_path) as f:
-            json_file = j.load(f)
-
-    except Exception as e:
-        logger.error(e)
-
+        with open(json_path, encoding="utf-8") as json_file:
+            records = json.load(json_file)["data"]
+    except Exception as error:
+        logger.error(error)
         return None
 
+    data = np.asarray(
+        [[record["id"], record["label"], *record["features"]] for record in records]
+    )
     logger.info("File loaded.")
-
-    json = []
-    for d in json_file["data"]:
-        meta = np.asarray([d["id"], d["label"]])
-        features = np.asarray(d["features"])
-
-        json.append(np.hstack((meta, features)))
-
-    json = np.asarray(json)
-
-    return json
+    return data

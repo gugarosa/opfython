@@ -1,165 +1,73 @@
-from opfython.core import subgraph
-from opfython.utils import constants
+import numpy as np
+import pytest
+
+from opfython.core import Subgraph
+from opfython.utils import constants, exception
 
 
-def test_subgraph_n_nodes():
-    s = subgraph.Subgraph()
+def test_subgraph_defaults():
+    subgraph = Subgraph()
 
-    assert s.n_nodes == 0
-
-
-def test_subgraph_n_nodes_setter():
-    s = subgraph.Subgraph()
-
-    try:
-        s.n_nodes = 10.5
-    except:
-        s.n_nodes = 0
-
-    assert s.n_nodes == 0
-
-    try:
-        s.n_nodes = -1
-    except:
-        s.n_nodes = 0
-
-    assert s.n_nodes == 0
+    assert subgraph.n_nodes == 0
+    assert subgraph.n_features == 0
+    assert subgraph.nodes == []
+    assert subgraph.idx_nodes == []
+    assert subgraph.trained is False
 
 
-def test_subgraph_n_features():
-    s = subgraph.Subgraph()
-
-    assert s.n_features == 0
-
-
-def test_subgraph_n_features_setter():
-    s = subgraph.Subgraph()
-
-    try:
-        s.n_features = 10.5
-    except:
-        s.n_features = 1
-
-    assert s.n_features == 1
-
-    try:
-        s.n_features = -1
-    except:
-        s.n_features = 1
-
-    assert s.n_features == 1
-
-
-def test_subgraph_nodes():
-    s = subgraph.Subgraph()
-
-    assert isinstance(s.nodes, list)
-
-
-def test_subgraph_nodes_setter():
-    s = subgraph.Subgraph()
-
-    try:
-        s.nodes = 10
-    except:
-        s.nodes = []
-
-    assert isinstance(s.nodes, list)
-
-
-def test_subgraph_idx_nodes():
-    s = subgraph.Subgraph()
-
-    assert isinstance(s.idx_nodes, list)
-
-
-def test_subgraph_idx_nodes_setter():
-    s = subgraph.Subgraph()
-
-    try:
-        s.idx_nodes = 10
-    except:
-        s.idx_nodes = []
-
-    assert isinstance(s.idx_nodes, list)
-
-
-def test_subgraph_trained():
-    s = subgraph.Subgraph()
-
-    assert s.trained is False
-
-
-def test_subgraph_trained_setter():
-    s = subgraph.Subgraph()
-
-    try:
-        s.trained = 10
-    except:
-        s.trained = True
-
-    assert s.trained is True
-
-
-def test_subgraph_load():
-    s = subgraph.Subgraph()
-
-    try:
-        X, Y = s._load("data/boat")
-    except:
-        X, Y = s._load("data/boat.csv")
-        X, Y = s._load("data/boat.json")
-        X, Y = s._load("data/boat.txt")
+@pytest.mark.parametrize("suffix", ["csv", "json", "txt"])
+def test_subgraph_loads_supported_files(suffix):
+    X, Y = Subgraph()._load(f"data/boat.{suffix}")
 
     assert X.shape == (100, 2)
     assert Y.shape == (100,)
 
 
-def test_subgraph_build():
-    s = subgraph.Subgraph()
-
-    X, Y = s._load("data/boat.txt")
-
-    s._build(X, Y, None)
-
-    assert len(s.nodes) == 100
-    assert s.n_features == 2
+def test_subgraph_rejects_unknown_file_type():
+    with pytest.raises(exception.ArgumentError):
+        Subgraph()._load("data/boat.dat")
 
 
-def test_subgraph_build_with_index():
-    s = subgraph.Subgraph()
+def test_subgraph_builds_with_indexes():
+    X, Y = Subgraph()._load("data/boat.txt")
+    indexes = np.arange(len(X)) + 100
+    subgraph = Subgraph(X, Y, indexes)
 
-    X, Y = s._load("data/boat.txt")
-
-    I = Y
-
-    s._build(X, Y, I)
-
-    assert len(s.nodes) == 100
-    assert s.n_features == 2
+    assert subgraph.n_nodes == 100
+    assert subgraph.n_features == 2
+    assert subgraph.nodes[0].idx == 100
 
 
-def test_subgraph_destroy_arcs():
-    s = subgraph.Subgraph(from_file="data/boat.txt")
+def test_subgraph_resets_paths_and_arcs():
+    subgraph = Subgraph(from_file="data/boat.txt")
+    subgraph.nodes[0].adjacency = [1]
+    subgraph.nodes[0].n_plateaus = 1
+    subgraph.mark_nodes(0)
 
-    s.destroy_arcs()
+    assert subgraph.nodes[0].relevant == constants.RELEVANT
 
-    assert s.nodes[0].n_plateaus == 0
-    assert len(s.nodes[0].adjacency) == 0
+    subgraph.reset()
 
-
-def test_subgraph_mark_nodes():
-    s = subgraph.Subgraph(from_file="data/boat.txt")
-
-    s.mark_nodes(0)
-
-    assert s.nodes[0].relevant == constants.RELEVANT
+    assert subgraph.nodes[0].pred == constants.NIL
+    assert subgraph.nodes[0].relevant == constants.IRRELEVANT
+    assert subgraph.nodes[0].n_plateaus == 0
+    assert subgraph.nodes[0].adjacency == []
 
 
-def test_subgraph_reset():
-    s = subgraph.Subgraph(from_file="data/boat.txt")
+@pytest.mark.parametrize(
+    ("attribute", "value", "error"),
+    [
+        ("n_nodes", 1.5, exception.TypeError),
+        ("n_nodes", -1, exception.ValueError),
+        ("n_features", 1.5, exception.TypeError),
+        ("n_features", -1, exception.ValueError),
+        ("nodes", (), exception.TypeError),
+        ("idx_nodes", (), exception.TypeError),
+        ("trained", 1, exception.TypeError),
+    ],
+)
+def test_subgraph_validates_public_attributes(attribute, value, error):
+    subgraph = Subgraph()
 
-    s.reset()
-
-    assert s.nodes[0].pred == constants.NIL
-    assert s.nodes[0].relevant == constants.IRRELEVANT
+    with pytest.raises(error):
+        setattr(subgraph, attribute, value)

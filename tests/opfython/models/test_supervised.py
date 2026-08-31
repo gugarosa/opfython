@@ -1,79 +1,63 @@
 import numpy as np
+import pytest
 
-from opfython.models import supervised
+from opfython.models import SupervisedOPF
 from opfython.stream import loader, parser, splitter
+from opfython.utils import exception
 
-csv = loader.load_csv("data/boat.csv")
-X, Y = parser.parse_loader(csv)
-
-
-def test_supervised_opf_fit():
-    opf = supervised.SupervisedOPF()
-
-    opf.fit(X, Y)
-
-    assert opf.subgraph.trained is True
-
-    opf.pre_computed_distance = True
-    try:
-        opf.pre_distances = np.ones((99, 99))
-        opf.fit(X, Y)
-    except:
-        opf.pre_distances = np.ones((100, 100))
-        opf.fit(X, Y)
-
-    assert opf.subgraph.trained is True
+X, Y = parser.parse_loader(loader.load_csv("data/boat.csv"))
 
 
-def test_supervised_opf_predict():
-    opf = supervised.SupervisedOPF()
+def test_supervised_requires_fitted_subgraph():
+    classifier = SupervisedOPF()
 
-    try:
-        _ = opf.predict(X)
-    except:
-        opf.fit(X, Y)
-        preds = opf.predict(X)
-
-    assert len(preds) == 100
-
-    try:
-        opf.fit(X, Y)
-        opf.subgraph.trained = False
-        _ = opf.predict(X)
-    except:
-        opf.fit(X, Y)
-        preds = opf.predict(X)
-
-    assert len(preds) == 100
-
-    opf.pre_computed_distance = True
-    opf.pre_distances = np.ones((100, 100))
-
-    opf.fit(X, Y)
-    preds = opf.predict(X)
-
-    assert len(preds) == 100
+    with pytest.raises(exception.BuildError):
+        classifier.predict(X)
 
 
-def test_supervised_opf_learn():
-    opf = supervised.SupervisedOPF()
+def test_supervised_fit_and_predict():
+    classifier = SupervisedOPF()
 
+    classifier.fit(X, Y)
+    predictions = classifier.predict(X)
+
+    assert classifier.subgraph.trained is True
+    assert len(predictions) == 100
+
+
+def test_supervised_uses_precomputed_distances():
+    classifier = SupervisedOPF()
+    classifier.pre_computed_distance = True
+    classifier.pre_distances = np.ones((100, 100))
+
+    classifier.fit(X, Y)
+
+    assert len(classifier.predict(X)) == 100
+
+
+def test_supervised_learn():
+    classifier = SupervisedOPF()
     X_train, X_val, Y_train, Y_val = splitter.split(
-        X, Y, percentage=0.1, random_state=1
+        X,
+        Y,
+        percentage=0.1,
+        random_state=1,
     )
 
-    opf.learn(X_train, Y_train, X_val, Y_val, n_iterations=5)
+    classifier.learn(X_train, Y_train, X_val, Y_val, n_iterations=5)
 
-    assert isinstance(opf, supervised.SupervisedOPF)
+    assert classifier.subgraph.trained is True
 
 
-def test_supervised_opf_prune():
-    opf = supervised.SupervisedOPF()
-
+def test_supervised_prune():
+    classifier = SupervisedOPF()
     X_train, X_val, Y_train, Y_val = splitter.split(
-        X, Y, percentage=0.1, random_state=1
+        X,
+        Y,
+        percentage=0.1,
+        random_state=1,
     )
 
-    opf.prune(X_train, Y_train, X_val, Y_val, n_iterations=5)
+    classifier.prune(X_train, Y_train, X_val, Y_val, n_iterations=5)
 
-    assert opf.subgraph.n_nodes == 10
+    assert classifier.subgraph.n_nodes == 10

@@ -1,5 +1,4 @@
-"""Distance-based metrics.
-"""
+"""Distance-based metrics."""
 
 import math
 

@@ -1,124 +1,66 @@
 import numpy as np
+import pytest
 
-from opfython.models import unsupervised
+from opfython.models import UnsupervisedOPF
 from opfython.stream import loader, parser
+from opfython.utils import exception
 
-csv = loader.load_csv("data/boat.csv")
-X, Y = parser.parse_loader(csv)
-
-
-def test_unsupervised_opf_min_k():
-    opf = unsupervised.UnsupervisedOPF()
-
-    assert opf.min_k == 1
+X, Y = parser.parse_loader(loader.load_csv("data/boat.csv"))
 
 
-def test_unsupervised_opf_min_k_setter():
-    opf = unsupervised.UnsupervisedOPF()
-
-    try:
-        opf.min_k = 1.5
-    except:
-        opf.min_k = 1
-
-    assert opf.min_k == 1
-
-    try:
-        opf.min_k = 0
-    except:
-        opf.min_k = 1
-
-    assert opf.min_k == 1
+@pytest.mark.parametrize(
+    ("kwargs", "error"),
+    [
+        ({"min_k": 1.5}, exception.TypeError),
+        ({"max_k": 1.5}, exception.TypeError),
+        ({"min_k": 0}, exception.ValueError),
+        ({"min_k": 2, "max_k": 1}, exception.ValueError),
+    ],
+)
+def test_unsupervised_rejects_invalid_k(kwargs, error):
+    with pytest.raises(error):
+        UnsupervisedOPF(**kwargs)
 
 
-def test_unsupervised_opf_max_k():
-    opf = unsupervised.UnsupervisedOPF()
+def test_unsupervised_requires_fitted_subgraph():
+    classifier = UnsupervisedOPF()
 
-    assert opf.max_k == 1
-
-
-def test_unsupervised_opf_max_k_setter():
-    opf = unsupervised.UnsupervisedOPF()
-    opf.min_k = 2
-
-    try:
-        opf.max_k = 1.5
-    except:
-        opf.max_k = 3
-
-    assert opf.max_k == 3
-
-    try:
-        opf.max_k = 0
-    except:
-        opf.max_k = 3
-
-    assert opf.max_k == 3
-
-    try:
-        opf.max_k = 1
-    except:
-        opf.max_k = 3
-
-    assert opf.max_k == 3
+    with pytest.raises(exception.BuildError):
+        classifier.predict(X)
 
 
-def test_unsupervised_opf_fit():
-    opf = unsupervised.UnsupervisedOPF()
+def test_unsupervised_validates_public_k_values():
+    classifier = UnsupervisedOPF()
 
-    opf.fit(X, Y)
-
-    assert opf.subgraph.trained is True
-
-    opf.pre_computed_distance = True
-    try:
-        opf.pre_distances = np.ones((99, 99))
-        opf.fit(X, Y)
-    except:
-        opf.pre_distances = np.ones((100, 100))
-        opf.fit(X, Y)
-
-    assert opf.subgraph.trained is True
+    with pytest.raises(exception.TypeError):
+        classifier.min_k = 1.5
+    with pytest.raises(exception.ValueError):
+        classifier.min_k = 0
+    classifier.min_k = 2
+    with pytest.raises(exception.ValueError):
+        classifier.max_k = 1
 
 
-def test_unsupervised_opf_predict():
-    opf = unsupervised.UnsupervisedOPF()
+def test_unsupervised_fit_predict_and_propagate():
+    classifier = UnsupervisedOPF()
 
-    try:
-        _ = opf.predict(X)
-    except:
-        opf.fit(X, Y)
-        preds, clusters = opf.predict(X)
+    classifier.fit(X, Y)
+    predictions, clusters = classifier.predict(X)
+    classifier.propagate_labels()
 
-    assert len(preds) == 100
+    assert classifier.subgraph.trained is True
+    assert len(predictions) == 100
     assert len(clusters) == 100
+    assert classifier.subgraph.nodes[0].predicted_label == 0
 
-    try:
-        opf.fit(X, Y)
-        opf.subgraph.trained = False
-        _, _ = opf.predict(X)
-    except:
-        opf.fit(X, Y)
-        preds, clusters = opf.predict(X)
 
-    assert len(preds) == 100
+def test_unsupervised_uses_precomputed_distances():
+    classifier = UnsupervisedOPF()
+    classifier.pre_computed_distance = True
+    classifier.pre_distances = np.ones((100, 100))
+
+    classifier.fit(X, Y)
+    predictions, clusters = classifier.predict(X)
+
+    assert len(predictions) == 100
     assert len(clusters) == 100
-
-    opf.pre_computed_distance = True
-    opf.pre_distances = np.ones((100, 100))
-
-    opf.fit(X, Y)
-    preds, clusters = opf.predict(X)
-
-    assert len(preds) == 100
-    assert len(clusters) == 100
-
-
-def test_unsupervised_opf_propagate_labels():
-    opf = unsupervised.UnsupervisedOPF()
-
-    opf.fit(X, Y)
-
-    opf.propagate_labels()
-
-    assert opf.subgraph.nodes[0].predicted_label == 0

@@ -1,2 +1,1 @@
-"""A mathematical package for all common opfython modules.
-"""
+"""A mathematical package for all common opfython modules."""

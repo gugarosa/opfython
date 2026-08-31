@@ -1,21 +1,15 @@
 from opfython.utils import logging
 
 
-def test_get_console_handler():
-    c = logging.get_console_handler()
-
-    assert c is not None
-
-
-def test_get_file_handler():
-    f = logging.get_timed_file_handler()
-
-    assert f is not None
-
-
-def test_get_logger():
+def test_logging_helpers():
+    console = logging.get_console_handler()
+    file_handler = logging.get_timed_file_handler()
     logger = logging.get_logger(__name__)
 
-    assert logger.name == "test_logging"
+    assert console.formatter is logging.FORMATTER
+    assert file_handler.formatter is logging.FORMATTER
+    assert logger.name == __name__
+    assert logger.hasHandlers()
 
-    assert logger.hasHandlers() is True
+    console.close()
+    file_handler.close()
