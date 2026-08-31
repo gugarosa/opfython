@@ -1,5 +1,5 @@
 coverage>=5.5
-numba>=0.53.0
+numba>=0.67.0
 numpy>=2.4.4
 pre-commit>=2.17.0
 pylint>=2.7.2
