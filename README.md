@@ -14,7 +14,7 @@ This implementation follows [LibOPF](https://github.com/jppbsi/LibOPF).
 Please cite the original LibOPF authors as well as OPFython when using it in
 research.
 
-OPFython requires Python 3.6.1 or newer.
+OPFython requires Python 3.11 or newer.
 
 ## Installation
 

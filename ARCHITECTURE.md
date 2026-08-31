@@ -79,5 +79,5 @@ custom exception types remain available for applications that rely on them.
 ## Tooling
 
 Project metadata, dependency groups, test configuration, and build settings
-live in `pyproject.toml`. GitHub Actions tests Python 3.6 through 3.13, and
+live in `pyproject.toml`. GitHub Actions tests Python 3.11 through 3.13, and
 releases publish built artifacts to PyPI.
