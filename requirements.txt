@@ -2,5 +2,5 @@ coverage>=5.5
 numba>=0.67.0
 numpy>=2.4.4
 pre-commit>=2.17.0
-pylint>=2.7.2
+pylint>=4.0.7
 pytest>=9.0.3
