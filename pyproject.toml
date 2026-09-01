@@ -48,7 +48,7 @@ dev = [
     "pytest>=9.0.0",
 ]
 docs = [
-    "sphinx>=8.2.3,<9",
+    "sphinx>=8.2.3,<10",
 ]
 
 [tool.black]
