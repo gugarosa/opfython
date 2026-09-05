@@ -49,6 +49,7 @@ class SupervisedOPF(OPF):
 
         logger.debug("Finding prototypes ...")
 
+        self._validate_pre_distances(self.subgraph)
         h = Heap(self.subgraph.n_nodes)
         self.subgraph.nodes[0].pred = c.NIL
 
@@ -88,6 +89,12 @@ class SupervisedOPF(OPF):
                             self.subgraph.nodes[q].pred = p
 
                             h.update(q, weight)
+
+        if not prototypes and all(
+            node.label == self.subgraph.nodes[0].label for node in self.subgraph.nodes
+        ):
+            self.subgraph.nodes[0].status = c.PROTOTYPE
+            prototypes.append(0)
 
         logger.debug("Prototypes: %s.", prototypes)
 
@@ -184,12 +191,13 @@ class SupervisedOPF(OPF):
         logger.info("Predicting data ...")
         start = time.time()
         pred_subgraph = Subgraph(X_val, I=I_val)
+        self._validate_pre_distances(self.subgraph, pred_subgraph)
 
         for i in range(pred_subgraph.n_nodes):
-            conqueror = -1
             j = 0
 
             k = self.subgraph.idx_nodes[j]
+            conqueror = k
 
             if self.pre_computed_distance:
                 weight = self.pre_distances[self.subgraph.nodes[k].idx][
@@ -230,13 +238,11 @@ class SupervisedOPF(OPF):
                     current_label = self.subgraph.nodes[l].predicted_label
 
                 j += 1
-                k = l
 
             # Node's `i` predicted label is the same as current label
             pred_subgraph.nodes[i].predicted_label = current_label
 
-            if conqueror > -1:
-                self.subgraph.mark_nodes(conqueror)
+            self.subgraph.mark_nodes(conqueror)
 
         preds = [pred.predicted_label for pred in pred_subgraph.nodes]
 

@@ -1,7 +1,7 @@
 """Unsupervised Optimum-Path Forest."""
 
 import time
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import numpy as np
 
@@ -86,22 +86,17 @@ class UnsupervisedOPF(OPF):
 
         """
 
-        for i in range(self.subgraph.n_nodes):
-            for k in range(n_neighbours):
-                j = int(self.subgraph.nodes[i].adjacency[k])
+        self.subgraph.idx_nodes = []
 
-                if self.subgraph.nodes[i].density == self.subgraph.nodes[j].density:
-                    insert = True
-
-                    for l in range(n_neighbours):
-                        adj = int(self.subgraph.nodes[j].adjacency[l])
-
-                        if i == adj:
-                            insert = False
-
-                        if insert:
-                            self.subgraph.nodes[j].adjacency.insert(0, i)
-                            self.subgraph.nodes[j].n_plateaus += 1
+        for i, node in enumerate(self.subgraph.nodes):
+            start = node.n_plateaus
+            for adjacent in node.adjacency[start : start + n_neighbours]:
+                neighbour = self.subgraph.nodes[int(adjacent)]
+                if node.density == neighbour.density:
+                    end = neighbour.n_plateaus + n_neighbours
+                    if i not in neighbour.adjacency[:end]:
+                        neighbour.adjacency.insert(0, i)
+                        neighbour.n_plateaus += 1
 
         h = Heap(size=self.subgraph.n_nodes, policy="max")
 
@@ -146,14 +141,14 @@ class UnsupervisedOPF(OPF):
         # The final number of clusters will be equal to `l`
         self.subgraph.n_clusters = l
 
-    def _normalized_cut(self, n_neighbours: int) -> int:
+    def _normalized_cut(self, n_neighbours: int) -> float:
         """Performs a normalized cut over the subgraph using a `k` value (number of neighbours).
 
         Args:
             n_neighbours: Number of neighbours to be used.
 
         Returns:
-            (int): The value of the normalized cut.
+            (float): The value of the normalized cut.
 
         """
 
@@ -219,7 +214,14 @@ class UnsupervisedOPF(OPF):
         best_k = min_k
         for k in range(min_k, max_k + 1):
             if min_cut != 0.0:
+                # Restore the nearest-neighbour order after plateau symmetrization.
+                for node in self.subgraph.nodes:
+                    del node.adjacency[: node.n_plateaus]
+                    node.n_plateaus = 0
+
                 self.subgraph.density = max_distances[k - 1]
+                if self.subgraph.density < 0.00001:
+                    self.subgraph.density = 1
                 self.subgraph.best_k = k
                 self.subgraph.calculate_pdf(
                     k, self.distance_fn, self.pre_computed_distance, self.pre_distances
@@ -232,8 +234,6 @@ class UnsupervisedOPF(OPF):
                     min_cut = cut
                     best_k = k
 
-        self.subgraph.destroy_arcs()
-
         self.subgraph.best_k = best_k
 
         self.subgraph.create_arcs(
@@ -243,7 +243,7 @@ class UnsupervisedOPF(OPF):
             best_k, self.distance_fn, self.pre_computed_distance, self.pre_distances
         )
 
-        logger.debug("Best: %d | Minimum cut: %d.", best_k, min_cut)
+        logger.debug("Best: %d | Minimum cut: %s.", best_k, min_cut)
 
     def fit(
         self,
@@ -264,6 +264,11 @@ class UnsupervisedOPF(OPF):
         start = time.time()
 
         self.subgraph = KNNSubgraph(X_train, Y_train, I_train)
+        if not self.min_k <= self.max_k < self.subgraph.n_nodes:
+            raise e.ValueError(
+                "Neighbourhoods should satisfy `min_k <= max_k < n_nodes`"
+            )
+        self._validate_pre_distances(self.subgraph)
         self._best_minimum_cut(self.min_k, self.max_k)
 
         self._clustering(self.subgraph.best_k)
@@ -278,7 +283,7 @@ class UnsupervisedOPF(OPF):
         self,
         X_val: np.array,
         I_val: Optional[np.array] = None,
-    ) -> List[int]:
+    ) -> Tuple[List[int], List[int]]:
         """Predicts new data using the pre-trained classifier.
 
         Args:
@@ -299,6 +304,7 @@ class UnsupervisedOPF(OPF):
         logger.info("Predicting data ...")
         start = time.time()
         pred_subgraph = KNNSubgraph(X_val, I=I_val)
+        self._validate_pre_distances(pred_subgraph, self.subgraph)
 
         best_k = self.subgraph.best_k
 
@@ -310,32 +316,31 @@ class UnsupervisedOPF(OPF):
             distances.fill(c.FLOAT_MAX)
 
             for j in range(self.subgraph.n_nodes):
-                if j != i:
-                    if self.pre_computed_distance:
-                        distances[best_k] = self.pre_distances[
-                            pred_subgraph.nodes[i].idx
-                        ][self.subgraph.nodes[j].idx]
-                    else:
-                        distances[best_k] = self.distance_fn(
-                            pred_subgraph.nodes[i].features,
-                            self.subgraph.nodes[j].features,
-                        )
+                if self.pre_computed_distance:
+                    distances[best_k] = self.pre_distances[pred_subgraph.nodes[i].idx][
+                        self.subgraph.nodes[j].idx
+                    ]
+                else:
+                    distances[best_k] = self.distance_fn(
+                        pred_subgraph.nodes[i].features,
+                        self.subgraph.nodes[j].features,
+                    )
 
-                    neighbours_idx[best_k] = j
+                neighbours_idx[best_k] = j
 
-                    cur_k = best_k
-                    while cur_k > 0 and distances[cur_k] < distances[cur_k - 1]:
-                        distances[cur_k], distances[cur_k - 1] = (
-                            distances[cur_k - 1],
-                            distances[cur_k],
-                        )
+                cur_k = best_k
+                while cur_k > 0 and distances[cur_k] < distances[cur_k - 1]:
+                    distances[cur_k], distances[cur_k - 1] = (
+                        distances[cur_k - 1],
+                        distances[cur_k],
+                    )
 
-                        neighbours_idx[cur_k], neighbours_idx[cur_k - 1] = (
-                            neighbours_idx[cur_k - 1],
-                            neighbours_idx[cur_k],
-                        )
+                    neighbours_idx[cur_k], neighbours_idx[cur_k - 1] = (
+                        neighbours_idx[cur_k - 1],
+                        neighbours_idx[cur_k],
+                    )
 
-                        cur_k -= 1
+                    cur_k -= 1
 
             density = 0.0
             for k in range(best_k):

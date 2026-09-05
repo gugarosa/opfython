@@ -67,6 +67,8 @@ class KNNSupervisedOPF(OPF):
 
         """
 
+        self.subgraph.idx_nodes = []
+
         for i in range(self.subgraph.n_nodes):
             for j in self.subgraph.nodes[i].adjacency:
                 j = int(j)
@@ -148,14 +150,9 @@ class KNNSupervisedOPF(OPF):
         logger.info("Learning best `k` value ...")
 
         self.subgraph = KNNSubgraph(X_train, Y_train, I_train)
-        if self.pre_computed_distance:
-            if (
-                self.pre_distances.shape[0] != self.subgraph.n_nodes
-                or self.pre_distances.shape[1] != self.subgraph.n_nodes
-            ):
-                raise e.BuildError(
-                    "Pre-computed distance matrix should have the size of `n_nodes x n_nodes`"
-                )
+        if self.max_k >= self.subgraph.n_nodes:
+            raise e.ValueError("`max_k` should be < `n_nodes`")
+        self._validate_pre_distances(self.subgraph)
 
         max_acc = 0.0
         best_k = 1
@@ -253,6 +250,7 @@ class KNNSupervisedOPF(OPF):
         start = time.time()
 
         pred_subgraph = KNNSubgraph(X_test, I=I_test)
+        self._validate_pre_distances(pred_subgraph, self.subgraph)
         best_k = self.subgraph.best_k
 
         distances = np.zeros(best_k + 1)
@@ -264,33 +262,32 @@ class KNNSupervisedOPF(OPF):
             distances.fill(c.FLOAT_MAX)
 
             for j in range(self.subgraph.n_nodes):
-                if j != i:
-                    if self.pre_computed_distance:
-                        distances[best_k] = self.pre_distances[
-                            pred_subgraph.nodes[i].idx
-                        ][self.subgraph.nodes[j].idx]
-                    else:
-                        distances[best_k] = self.distance_fn(
-                            pred_subgraph.nodes[i].features,
-                            self.subgraph.nodes[j].features,
-                        )
+                if self.pre_computed_distance:
+                    distances[best_k] = self.pre_distances[pred_subgraph.nodes[i].idx][
+                        self.subgraph.nodes[j].idx
+                    ]
+                else:
+                    distances[best_k] = self.distance_fn(
+                        pred_subgraph.nodes[i].features,
+                        self.subgraph.nodes[j].features,
+                    )
 
-                    neighbours_idx[best_k] = j
-                    cur_k = best_k
+                neighbours_idx[best_k] = j
+                cur_k = best_k
 
-                    # While current `k` is bigger than 0 and the `k` distance is smaller than `k-1` distance
-                    while cur_k > 0 and distances[cur_k] < distances[cur_k - 1]:
-                        distances[cur_k], distances[cur_k - 1] = (
-                            distances[cur_k - 1],
-                            distances[cur_k],
-                        )
+                # While current `k` is bigger than 0 and the `k` distance is smaller than `k-1` distance
+                while cur_k > 0 and distances[cur_k] < distances[cur_k - 1]:
+                    distances[cur_k], distances[cur_k - 1] = (
+                        distances[cur_k - 1],
+                        distances[cur_k],
+                    )
 
-                        neighbours_idx[cur_k], neighbours_idx[cur_k - 1] = (
-                            neighbours_idx[cur_k - 1],
-                            neighbours_idx[cur_k],
-                        )
+                    neighbours_idx[cur_k], neighbours_idx[cur_k - 1] = (
+                        neighbours_idx[cur_k - 1],
+                        neighbours_idx[cur_k],
+                    )
 
-                        cur_k -= 1
+                    cur_k -= 1
 
             density = 0.0
             for k in range(best_k):

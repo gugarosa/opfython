@@ -132,6 +132,11 @@ class Subgraph:
     ) -> None:
         """Build nodes from feature, label, and optional index arrays."""
 
+        if len(X) != len(Y):
+            raise e.SizeError("`X` and `Y` should have the same amount of samples")
+        if I is not None and len(X) != len(I):
+            raise e.SizeError("`X` and `I` should have the same amount of samples")
+
         for index, (features, label) in enumerate(zip(X, Y)):
             if I is not None:
                 node = Node(I[index].item(), label.item(), features)

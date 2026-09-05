@@ -45,3 +45,30 @@ def test_merge_rejects_mismatched_lengths():
             np.ones(3),
             np.ones(3),
         )
+
+
+def test_merge_rejects_mismatches_even_when_combined_lengths_match():
+    with pytest.raises(exception.SizeError):
+        splitter.merge(
+            np.ones((2, 2)),
+            np.ones((3, 2)),
+            np.zeros(3, dtype=int),
+            np.zeros(2, dtype=int),
+        )
+
+
+@pytest.mark.parametrize(
+    ("X_1", "X_2", "Y_1", "Y_2", "expected_X", "expected_Y"),
+    [
+        ([[0], [1]], [[2]], [0, 1], [1], [[0], [1], [2]], [0, 1, 1]),
+        ([0, 1], [2, 3], [0], [1], [[0, 1], [2, 3]], [0, 1]),
+        (0, 1, 0, 1, [[0], [1]], [0, 1]),
+    ],
+)
+def test_merge_preserves_numpy_stacking_inputs(
+    X_1, X_2, Y_1, Y_2, expected_X, expected_Y
+):
+    features, labels = splitter.merge(X_1, X_2, Y_1, Y_2)
+
+    np.testing.assert_array_equal(features, expected_X)
+    np.testing.assert_array_equal(labels, expected_Y)

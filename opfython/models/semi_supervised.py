@@ -53,7 +53,8 @@ class SemiSupervisedOPF(SupervisedOPF):
         Args:
             X_train: Array of training features.
             Y_train: Array of training labels.
-            X_unlabeled: Array of unlabeled features.
+            X_unlabeled: Array of unlabeled features. Their distance-matrix
+                indexes start at `len(X_train)` and follow this array's order.
             I_train: Array of training indexes.
 
         """
@@ -70,6 +71,7 @@ class SemiSupervisedOPF(SupervisedOPF):
 
             self.subgraph.nodes.append(node)
 
+        self._validate_pre_distances(self.subgraph)
         h = Heap(size=self.subgraph.n_nodes)
 
         for i in range(self.subgraph.n_nodes):
