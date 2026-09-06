@@ -18,8 +18,22 @@ OPFython requires Python 3.11 or newer.
 
 ## Installation
 
+Install with pip:
+
+```bash
+python -m pip install opfython
+```
+
+Or add it to a UV-managed project:
+
 ```bash
 uv add opfython
+```
+
+For an editable source checkout:
+
+```bash
+python -m pip install -e .
 ```
 
 ## Quick start
@@ -74,13 +88,21 @@ See [the documentation](https://opfython.readthedocs.io/) and the
 [`examples/applications`](examples/applications) directory for complete
 workflows.
 
+The [usage guide](docs/usage.rst) describes array ownership, model lifecycle,
+index mapping, failure behavior, and trusted model persistence.
+
 ## Development
+
+Follow [CONVENTIONS.md](CONVENTIONS.md) for the cpmux-derived Python and
+Google-style documentation rules. OPFython retains its public API, Apache
+license, and Python 3.11 support while using the compatible modern typing syntax.
 
 ```bash
 uv sync --all-groups
 uv run pytest
 uv run pre-commit run --all-files
 uv run --group docs sphinx-build -W -b html docs docs/_build/html
+uv run --group docs sphinx-build -W -b doctest docs docs/_build/doctest
 uv build --no-sources
 ```
 

@@ -1,15 +1,13 @@
+# Copyright (c) 2020-2026 Gustavo de Rosa.
+# Licensed under the Apache License, Version 2.0.
+
 import opfython.stream.parser as p
 import opfython.stream.splitter as s
 from opfython.stream import loader
 
-# Loading a .txt file to a numpy array
 txt = loader.load_txt("data/boat.txt")
-
-# Parsing a pre-loaded numpy array
 X, Y = p.parse_loader(txt)
 
-# Splitting data into training and testing sets
 X_train, X_test, Y_train, Y_test = s.split(X, Y, percentage=0.5, random_state=1)
 
-# Merging data into a unique set
 X, Y = s.merge(X_train, X_test, Y_train, Y_test)

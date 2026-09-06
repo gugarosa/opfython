@@ -1,7 +1,11 @@
+# Copyright (c) 2020-2026 Gustavo de Rosa.
+# Licensed under the Apache License, Version 2.0.
+
 import numpy as np
 import pytest
 
 from opfython.core import OPF, Subgraph
+from opfython.math import distance
 from opfython.utils import exception
 
 
@@ -83,3 +87,56 @@ def test_opf_validates_public_attributes(attribute, value):
 def test_opf_rejects_unhashable_distance():
     with pytest.raises(exception.TypeError):
         OPF(distance=[])
+
+
+def test_opf_named_distance_updates_its_callable():
+    classifier = OPF(distance="euclidean")
+    classifier.subgraph = Subgraph(np.asarray([[0.0, 0.0], [3.0, 4.0]]))
+
+    assert classifier.get_distances()[0, 1] == 5.0
+    classifier.distance = "manhattan"
+
+    assert classifier.distance == "manhattan"
+    assert classifier.distance_fn is distance.manhattan_distance
+    assert classifier.get_distances()[0, 1] == 7.0
+
+
+@pytest.mark.parametrize("invalid", [None, [], "unknown"])
+def test_opf_invalid_metric_update_preserves_configuration(invalid):
+    classifier = OPF(distance="euclidean")
+    original = classifier.distance_fn
+
+    with pytest.raises(exception.TypeError):
+        classifier.distance = invalid
+
+    assert classifier.distance == "euclidean"
+    assert classifier.distance_fn is original
+
+
+def test_opf_invalid_registered_callable_preserves_configuration(monkeypatch):
+    classifier = OPF(distance="euclidean")
+    original = classifier.distance_fn
+    monkeypatch.setitem(distance.DISTANCES, "invalid_callable", None)
+
+    with pytest.raises(exception.TypeError):
+        classifier.distance = "invalid_callable"
+
+    assert classifier.distance == "euclidean"
+    assert classifier.distance_fn is original
+
+
+def test_opf_custom_callable_remains_active_until_a_named_metric_is_selected():
+    classifier = OPF(distance="euclidean")
+    classifier.subgraph = Subgraph(np.asarray([[0.0, 0.0], [3.0, 4.0]]))
+    classifier.distance_fn = lambda left, right: 42.0
+
+    assert classifier.get_distances()[0, 1] == 42.0
+
+    classifier.distance = "manhattan"
+
+    assert classifier.get_distances()[0, 1] == 7.0
+
+
+def test_opf_get_distances_requires_a_subgraph():
+    with pytest.raises(exception.BuildError, match=r"`subgraph` is None\."):
+        OPF().get_distances()

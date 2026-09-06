@@ -1,40 +1,46 @@
+# Copyright (c) 2020-2026 Gustavo de Rosa.
+# Licensed under the Apache License, Version 2.0.
+
 """General-based mathematical methods."""
 
-from typing import List, Tuple, Union
+from os import PathLike
+from typing import TextIO
 
 import numpy as np
+from numpy.typing import ArrayLike
 
 import opfython.math.distance as d
 import opfython.utils.exception as e
-from opfython.utils import logging
+from opfython.utils.logging import get_logger
 
-logger = logging.get_logger(__name__)
+logger = get_logger(__name__)
 
 
-def _label_arrays(
-    labels: Union[np.ndarray, List[int]], preds: Union[np.ndarray, List[int]]
-) -> Tuple[np.ndarray, np.ndarray]:
+def _label_arrays(labels: ArrayLike, preds: ArrayLike) -> tuple[np.ndarray, np.ndarray]:
     labels = np.asarray(labels)
     preds = np.asarray(preds)
+
     if labels.ndim != 1 or preds.ndim != 1 or labels.shape != preds.shape:
-        raise e.SizeError(
-            "`labels` and `preds` should be one-dimensional arrays "
-            "with the same amount of samples"
-        )
+        raise e.SizeError("`labels` and `preds` should be one-dimensional arrays with the same amount of samples.")
+
     return labels, preds
 
 
-def confusion_matrix(
-    labels: Union[np.array, List[int]], preds: Union[np.array, List[int]]
-) -> np.array:
+def confusion_matrix(labels: ArrayLike, preds: ArrayLike) -> np.ndarray:
     """Calculates the confusion matrix between true and predicted labels.
 
     Args:
-        labels: List or numpy array holding the true labels.
-        preds: List or numpy array holding the predicted labels.
+        labels: Nonempty one-dimensional nonnegative integer true labels of shape (n_samples,).
+        preds: Nonnegative integer predicted labels with the same shape as labels.
 
     Returns:
-        (np.array): The confusion matrix.
+        np.ndarray: Float counts indexed by true-label rows and predicted-label columns, including absent label indexes.
+
+    Raises:
+        opfython.utils.exception.SizeError: Label and prediction arrays differ in shape or are not one-dimensional.
+
+    Notes:
+        Both axes span zero through the largest true or predicted label.
 
     """
 
@@ -49,14 +55,20 @@ def confusion_matrix(
     return c_matrix
 
 
-def normalize(array: np.array) -> np.array:
+def normalize(array: ArrayLike) -> np.ndarray:
     """Standardizes an input array along its first axis.
 
     Args:
-        array: Array to be normalized.
+        array: Numeric array-like input with at least one axis, standardized along axis zero.
 
     Returns:
-        (np.array): Z-scores with zero mean and unit standard deviation.
+        np.ndarray: Z-scores with the input shape and NumPy's arithmetic dtype, without changing the input.
+
+    Raises:
+        numpy.exceptions.AxisError: The input is scalar and has no axis zero.
+
+    Notes:
+        Zero standard deviations retain NumPy's division behavior rather than receiving a special-case replacement.
 
     """
 
@@ -68,19 +80,21 @@ def normalize(array: np.array) -> np.array:
     return norm_array
 
 
-def opf_accuracy(
-    labels: Union[np.array, List[int]], preds: Union[np.array, List[int]]
-) -> float:
+def opf_accuracy(labels: ArrayLike, preds: ArrayLike) -> np.floating:
     """Calculates the accuracy between true and predicted labels using OPF-style measure.
 
-    Error rates with zero denominators contribute zero.
-
     Args:
-        labels: List or numpy array holding the true labels.
-        preds: List or numpy array holding the predicted labels.
+        labels: Nonempty one-dimensional nonnegative integer true labels of shape (n_samples,).
+        preds: Nonnegative integer predicted labels with the same shape as labels.
 
     Returns:
-        (float): The OPF accuracy measure between 0 and 1.
+        np.floating: OPF accuracy in [0, 1], averaged over indexes through the largest true or predicted label.
+
+    Raises:
+        opfython.utils.exception.SizeError: Label and prediction arrays differ in shape or are not one-dimensional.
+
+    Notes:
+        Error rates with zero denominators contribute zero.
 
     """
 
@@ -106,19 +120,21 @@ def opf_accuracy(
     return accuracy
 
 
-def opf_accuracy_per_label(
-    labels: Union[np.array, List[int]], preds: Union[np.array, List[int]]
-) -> np.ndarray:
+def opf_accuracy_per_label(labels: ArrayLike, preds: ArrayLike) -> np.ndarray:
     """Calculates the accuracy per label between true and predicted labels using OPF-style measure.
 
-    Labels with no true samples have zero false-negative error and score 1.
-
     Args:
-        labels: List or numpy array holding the true labels.
-        preds: List or numpy array holding the predicted labels.
+        labels: Nonempty one-dimensional nonnegative integer true labels of shape (n_samples,).
+        preds: Nonnegative integer predicted labels with the same shape as labels.
 
     Returns:
-        (np.ndarray): OPF accuracies in label-index order, between 0 and 1.
+        np.ndarray: Float accuracies between zero and one, indexed from zero through the largest true label.
+
+    Raises:
+        opfython.utils.exception.SizeError: Label and prediction arrays differ in shape or are not one-dimensional.
+
+    Notes:
+        Labels with no true samples have zero false-negative error and score one.
 
     """
 
@@ -140,14 +156,18 @@ def opf_accuracy_per_label(
 
 
 def pre_compute_distance(
-    data: np.array, output: str, distance: str = "log_squared_euclidean"
+    data: np.ndarray, output: str | PathLike[str] | TextIO, distance: str = "log_squared_euclidean"
 ) -> None:
-    """Pre-computes a matrix of distances based on an input data.
+    """Saves all pairwise sample distances as a text matrix.
 
     Args:
-        data: Array of samples.
-        output: File to be saved.
-        distance: Distance metric to be used.
+        data: Feature array of shape (n_samples, n_features).
+        output: Destination path or writable text stream for the (n_samples, n_samples) matrix.
+        distance: Metric name registered in opfython.math.distance.DISTANCES.
+
+    Raises:
+        KeyError: The distance name is not registered when a sample pair is evaluated.
+        OSError: The destination cannot be written.
 
     """
 
@@ -165,26 +185,29 @@ def pre_compute_distance(
     logger.info("Distances saved to: %s.", output)
 
 
-def purity(
-    labels: Union[np.array, List[int]], preds: Union[np.array, List[int]]
-) -> float:
+def purity(labels: ArrayLike, preds: ArrayLike) -> np.floating:
     """Calculate clustering purity independently of cluster numbering.
 
-    Clusters may outnumber the true classes. Each cluster contributes the
-    number of samples in its most frequent true class.
-
     Args:
-        labels: List or numpy array holding the true labels.
-        preds: List or numpy array holding the assigned labels by the clusters.
+        labels: Nonempty one-dimensional true class identifiers of shape (n_samples,).
+        preds: Assigned cluster identifiers with the same shape as labels.
 
     Returns:
-        (float): The purity measure.
+        np.floating: Fraction of samples belonging to the most frequent true class within their assigned cluster.
+
+    Raises:
+        opfython.utils.exception.SizeError: Label and prediction arrays differ in shape or are not one-dimensional.
+
+    Notes:
+        Clusters may outnumber the true classes and their identifiers need not match true class identifiers.
 
     """
 
     labels, preds = _label_arrays(labels, preds)
+
     classes, label_indexes = np.unique(labels, return_inverse=True)
     clusters, cluster_indexes = np.unique(preds, return_inverse=True)
+
     counts = np.zeros((len(classes), len(clusters)), dtype=int)
     np.add.at(counts, (label_indexes, cluster_indexes), 1)
 

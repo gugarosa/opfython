@@ -1,4 +1,8 @@
+# Copyright (c) 2020-2026 Gustavo de Rosa.
+# Licensed under the Apache License, Version 2.0.
+
 import numpy as np
+import pytest
 
 from opfython.math import distance
 
@@ -129,6 +133,17 @@ def test_gaussian_distance():
     assert dist == 0.6394073191618967
 
 
+@pytest.mark.parametrize("gamma", [0, 0.5, 2])
+def test_gaussian_distance_scales_the_euclidean_distance(gamma):
+    x = np.array([0.0, 0.0])
+    y = np.array([3.0, 4.0])
+
+    dist = distance.gaussian_distance(x, y, gamma)
+
+    assert isinstance(dist, float)
+    assert dist == pytest.approx(np.exp(-gamma * 5))
+
+
 def test_gower_distance():
     x = np.asarray([5.1, 3.5, 1.4, 0.3])
     y = np.asarray([5.4, 3.4, 1.7, 0.2])
@@ -144,6 +159,7 @@ def test_hamming_distance():
 
     dist = distance.hamming_distance(x, y)
 
+    assert isinstance(dist, int)
     assert dist == 4
 
 
@@ -172,6 +188,17 @@ def test_jaccard_distance():
     dist = distance.jaccard_distance(x, y)
 
     assert dist == 0.004752851711026626
+
+
+@pytest.mark.parametrize("dtype", [np.float32, np.float64])
+def test_jaccard_distance_preserves_numpy_scalar_dtype(dtype):
+    x = np.array([1, 2], dtype=dtype)
+    y = np.array([2, 3], dtype=dtype)
+
+    dist = distance.jaccard_distance(x, y)
+
+    assert isinstance(dist, dtype)
+    assert dist == pytest.approx(0.2)
 
 
 def test_jeffreys_distance():
@@ -370,6 +397,17 @@ def test_squared_euclidean_distance():
     dist = distance.squared_euclidean_distance(x, y)
 
     assert dist == 0.20000000000000046
+
+
+@pytest.mark.parametrize(("dtype", "result_type"), [(np.int64, int), (np.float32, float), (np.float64, float)])
+def test_squared_euclidean_distance_preserves_numeric_result_type(dtype, result_type):
+    x = np.array([1, 2], dtype=dtype)
+    y = np.array([2, 3], dtype=dtype)
+
+    dist = distance.squared_euclidean_distance(x, y)
+
+    assert isinstance(dist, result_type)
+    assert dist == 2
 
 
 def test_statistic_distance():

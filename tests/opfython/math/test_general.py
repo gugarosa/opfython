@@ -1,3 +1,6 @@
+# Copyright (c) 2020-2026 Gustavo de Rosa.
+# Licensed under the Apache License, Version 2.0.
+
 import numpy as np
 import pytest
 
@@ -21,6 +24,34 @@ def test_normalize():
     norm_array = general.normalize(array)
 
     assert norm_array[3] == 1.7320508075688774
+
+
+@pytest.mark.parametrize("dtype", [np.float32, np.float64])
+@pytest.mark.parametrize("storage", ["writable", "readonly", "view"])
+def test_normalize_preserves_input_storage_and_dtype(dtype, storage):
+    base = np.array([[1, 10], [2, 20], [3, 30], [4, 40]], dtype=dtype)
+    original = base.copy()
+    array = base[::2] if storage == "view" else base
+    if storage == "readonly":
+        array.setflags(write=False)
+
+    normalized = general.normalize(array)
+
+    assert normalized.dtype == dtype
+    assert normalized.shape == array.shape
+    np.testing.assert_array_equal(base, original)
+    np.testing.assert_allclose(normalized.mean(axis=0), 0, atol=1e-7)
+    np.testing.assert_allclose(normalized.std(axis=0), 1, atol=1e-7)
+
+
+def test_normalize_preserves_constant_input_and_rejects_scalars():
+    with pytest.raises(IndexError, match="axis 0"):
+        general.normalize(1.0)
+
+    with np.errstate(invalid="ignore"):
+        constant = general.normalize((1.0, 1.0))
+
+    np.testing.assert_array_equal(constant, [np.nan, np.nan])
 
 
 def test_opf_accuracy():
@@ -85,10 +116,25 @@ def test_purity_is_independent_of_cluster_numbering(clusters, expected):
         general.purity,
     ],
 )
-@pytest.mark.parametrize("predictions", [[0, 1], [0, 1, 0, 1]])
-def test_metrics_reject_mismatched_sample_counts(metric, predictions):
-    with pytest.raises(exception.SizeError):
+@pytest.mark.parametrize("predictions", [[0, 1], [0, 1, 0, 1], [[0, 1, 0]], 0])
+def test_metrics_reject_invalid_label_shapes(metric, predictions):
+    with pytest.raises(exception.SizeError, match=r"`labels` and `preds` .* samples\.$"):
         metric([0, 1, 0], predictions)
+
+
+@pytest.mark.parametrize(
+    ("metric", "expected"),
+    [
+        (general.confusion_matrix, [[1, 0], [1, 0]]),
+        (general.opf_accuracy, 0.5),
+        (general.opf_accuracy_per_label, [1.0, 0.0]),
+        (general.purity, 0.5),
+    ],
+)
+def test_metrics_accept_tuple_labels(metric, expected):
+    actual = metric((0, 1), (0, 0))
+
+    np.testing.assert_array_equal(actual, expected)
 
 
 def test_opf_accuracy_handles_a_single_class_without_invalid_division():

@@ -1,8 +1,12 @@
+# Copyright (c) 2020-2026 Gustavo de Rosa.
+# Licensed under the Apache License, Version 2.0.
+
 import numpy as np
 import pytest
 
-from opfython.models import KNNSupervisedOPF
+from opfython.models.knn_supervised import KNNSupervisedOPF
 from opfython.stream import loader, parser
+from opfython.subgraphs.knn import KNNSubgraph
 from opfython.utils import exception
 
 X, Y = parser.parse_loader(loader.load_csv("data/boat.csv"))
@@ -65,9 +69,38 @@ def test_knn_supervised_handles_missing_classes_in_validation():
     classifier = KNNSupervisedOPF(distance="euclidean")
 
     with np.errstate(divide="raise", invalid="raise"):
-        classifier.fit(
-            features, np.asarray([0, 0, 1, 1]), validation, np.asarray([0, 0])
-        )
+        classifier.fit(features, np.asarray([0, 0, 1, 1]), validation, np.asarray([0, 0]))
 
     assert classifier.subgraph.trained
     assert classifier.predict(validation) == [1, 0]
+
+
+def test_knn_supervised_learning_does_not_call_public_prediction(monkeypatch):
+    features = np.asarray([[0.0], [0.1], [10.0], [10.1]])
+    labels = np.asarray([0, 0, 1, 1])
+    classifier = KNNSupervisedOPF(max_k=3, distance="euclidean")
+    public_calls = []
+    monkeypatch.setattr(classifier, "predict", lambda *args: public_calls.append(args))
+
+    classifier._learn(features, labels, None, features, labels, None)
+
+    assert public_calls == []
+    assert classifier.subgraph.trained is False
+    assert classifier.subgraph.best_k == 1
+    assert all(node.adjacency == [] for node in classifier.subgraph.nodes)
+
+
+def test_knn_supervised_failed_validation_leaves_prediction_unavailable():
+    classifier = KNNSupervisedOPF(distance="euclidean")
+    classifier.pre_computed_distance = True
+    classifier.pre_distances = np.ones((4, 4))
+    features = np.asarray([[0.0], [0.1], [10.0], [10.1]])
+    labels = np.asarray([0, 0, 1, 1])
+
+    with pytest.raises(exception.BuildError):
+        classifier.fit(features, labels, features[:1], labels[:1], I_val=np.asarray([4]))
+
+    assert isinstance(classifier.subgraph, KNNSubgraph)
+    assert classifier.subgraph.trained is False
+    with pytest.raises(exception.BuildError, match="`subgraph.trained` is not True"):
+        classifier.predict(features)

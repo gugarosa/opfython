@@ -1,39 +1,45 @@
-"""Semi-Supervised Optimum-Path Forest."""
+# Copyright (c) 2020-2026 Gustavo de Rosa.
+# Licensed under the Apache License, Version 2.0.
+
+"""Provide the semi-supervised Optimum-Path Forest classifier."""
 
 import time
-from typing import Optional
+from os import PathLike
 
 import numpy as np
 
-import opfython.utils.constants as c
-from opfython.core.heap import Heap
 from opfython.core.node import Node
 from opfython.core.subgraph import Subgraph
+from opfython.models._common import _grow_minimax_forest
 from opfython.models.supervised import SupervisedOPF
-from opfython.utils import logging
+from opfython.utils.logging import get_logger
 
-logger = logging.get_logger(__name__)
+logger = get_logger(__name__)
 
 
 class SemiSupervisedOPF(SupervisedOPF):
-    """A SemiSupervisedOPF which implements the semi-supervised version of OPF classifier.
-
-    References:
-        W. P. Amorim, A. X. Falcão and M. H. Carvalho. Semi-supervised Pattern Classification Using Optimum-Path Forest.
-        27th SIBGRAPI Conference on Graphics, Patterns and Images (2014).
-
-    """
+    """Classify labelled and unlabelled samples with a semi-supervised Optimum-Path Forest."""
 
     def __init__(
         self,
         distance: str = "log_squared_euclidean",
-        pre_computed_distance: Optional[str] = None,
+        pre_computed_distance: str | PathLike[str] | None = None,
     ) -> None:
-        """Initialization method.
+        """Initialize the distance configuration for semi-supervised training.
 
         Args:
-            distance: An indicator of the distance metric to be used.
-            pre_computed_distance: A pre-computed distance file for feeding into OPF.
+            distance: Registered distance metric name.
+            pre_computed_distance: Optional CSV or text distance-matrix path indexed by sample identifiers.
+
+        Raises:
+            opfython.utils.exception.TypeError: The distance metric name is invalid.
+            opfython.utils.exception.ArgumentError: The distance file extension is unsupported.
+            opfython.utils.exception.ValueError: The distance file cannot be loaded.
+
+        References:
+            W. P. Amorim, A. X. Falcão and M. H. Carvalho.
+            Semi-supervised Pattern Classification Using Optimum-Path Forest.
+            27th SIBGRAPI Conference on Graphics, Patterns and Images (2014).
 
         """
 
@@ -43,19 +49,26 @@ class SemiSupervisedOPF(SupervisedOPF):
 
     def fit(
         self,
-        X_train: np.array,
-        Y_train: np.array,
-        X_unlabeled: np.array,
-        I_train: Optional[np.array] = None,
+        X_train: np.ndarray,
+        Y_train: np.ndarray,
+        X_unlabeled: np.ndarray,
+        I_train: np.ndarray | None = None,
     ) -> None:
-        """Fits data in the semi-supervised classifier.
+        """Grow a forest over labelled and unlabelled samples from labelled prototypes.
 
         Args:
-            X_train: Array of training features.
-            Y_train: Array of training labels.
-            X_unlabeled: Array of unlabeled features. Their distance-matrix
-                indexes start at `len(X_train)` and follow this array's order.
-            I_train: Array of training indexes.
+            X_train: Labelled features with shape (n_train, n_features), retained without intentional mutation.
+            Y_train: Nonnegative training labels with shape (n_train,), left unchanged.
+            X_unlabeled: Unlabelled features whose distance-matrix indexes start at len(X_train), in array order.
+            I_train: Labelled distance-matrix indexes, or positional indexes when None.
+
+        Raises:
+            opfython.utils.exception.BuildError: Precomputed distances do not cover labelled and unlabelled indexes.
+
+        Notes:
+            Fitting replaces the stored subgraph and returns None. Successful relaxations update both label and
+            predicted_label on graph nodes, including labelled non-prototypes, without modifying Y_train.
+            Unlabelled indexes do not depend on the values in I_train.
 
         """
 
@@ -72,50 +85,7 @@ class SemiSupervisedOPF(SupervisedOPF):
             self.subgraph.nodes.append(node)
 
         self._validate_pre_distances(self.subgraph)
-        h = Heap(size=self.subgraph.n_nodes)
-
-        for i in range(self.subgraph.n_nodes):
-            if self.subgraph.nodes[i].status == c.PROTOTYPE:
-                self.subgraph.nodes[i].pred = c.NIL
-                self.subgraph.nodes[i].predicted_label = self.subgraph.nodes[i].label
-
-                h.cost[i] = 0
-                h.insert(i)
-            else:
-                h.cost[i] = c.FLOAT_MAX
-
-        while not h.is_empty():
-            p = h.remove()
-
-            self.subgraph.idx_nodes.append(p)
-            self.subgraph.nodes[p].cost = h.cost[p]
-
-            for q in range(self.subgraph.n_nodes):
-                if p != q:
-                    if h.cost[p] < h.cost[q]:
-                        if self.pre_computed_distance:
-                            weight = self.pre_distances[self.subgraph.nodes[p].idx][
-                                self.subgraph.nodes[q].idx
-                            ]
-                        else:
-                            weight = self.distance_fn(
-                                self.subgraph.nodes[p].features,
-                                self.subgraph.nodes[q].features,
-                            )
-
-                        current_cost = np.maximum(h.cost[p], weight)
-                        if current_cost < h.cost[q]:
-                            self.subgraph.nodes[q].pred = p
-                            self.subgraph.nodes[q].predicted_label = (
-                                self.subgraph.nodes[p].predicted_label
-                            )
-
-                            # As we may have unlabeled nodes, make sure that `q` label equals to `q` predicted label
-                            self.subgraph.nodes[q].label = self.subgraph.nodes[
-                                q
-                            ].predicted_label
-
-                            h.update(q, current_cost)
+        _grow_minimax_forest(self, update_labels=True)
 
         self.subgraph.trained = True
 

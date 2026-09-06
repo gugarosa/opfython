@@ -17,6 +17,7 @@ opfython/
 |   |-- general.py    Accuracy, normalization, and purity helpers
 |   `-- random.py     Uniform and Gaussian generators
 |-- models/
+|   |-- _common.py   Shared private prediction and forest-growth operations
 |   |-- supervised.py
 |   |-- knn_supervised.py
 |   |-- semi_supervised.py
@@ -74,6 +75,11 @@ used by each model. Concrete models implement `fit` and `predict`. Package
 logging and custom exception types remain available for applications that
 rely on them.
 
+The KNN models share a private prediction kernel while retaining their distinct
+public returns. Supervised and semi-supervised models share minimax forest growth,
+with semi-supervised label propagation kept explicit. Private operations do not
+change model class identities or persisted graph fields.
+
 ## Classifiers
 
 - `SupervisedOPF` finds prototypes with a minimum spanning tree and propagates
@@ -87,5 +93,7 @@ rely on them.
 ## Tooling
 
 Project metadata, dependency groups, test configuration, and build settings
-live in `pyproject.toml`. GitHub Actions tests Python 3.11 through 3.13, and
-releases publish built artifacts to PyPI.
+live in `pyproject.toml`. [CONVENTIONS.md](CONVENTIONS.md) defines the project
+style and compatibility rules. GitHub Actions tests Python 3.11 through 3.13,
+runs the existing quality hooks, and builds the documentation and its examples.
+Releases publish built artifacts to PyPI.

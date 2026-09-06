@@ -1,9 +1,12 @@
+# Copyright (c) 2020-2026 Gustavo de Rosa.
+# Licensed under the Apache License, Version 2.0.
+
 import numpy as np
 import pytest
 
-from opfython.models import UnsupervisedOPF
+from opfython.models.unsupervised import UnsupervisedOPF
 from opfython.stream import loader, parser
-from opfython.subgraphs import KNNSubgraph
+from opfython.subgraphs.knn import KNNSubgraph
 from opfython.utils import constants, exception
 
 X, Y = parser.parse_loader(loader.load_csv("data/boat.csv"))
@@ -91,9 +94,7 @@ def test_unsupervised_selected_forest_matches_fixed_k():
         [node.cost for node in searched.subgraph.nodes],
         [node.cost for node in fixed.subgraph.nodes],
     )
-    assert [node.root for node in searched.subgraph.nodes] == [
-        node.root for node in fixed.subgraph.nodes
-    ]
+    assert [node.root for node in searched.subgraph.nodes] == [node.root for node in fixed.subgraph.nodes]
     assert sorted(searched.subgraph.idx_nodes) == list(range(len(features)))
 
 
@@ -120,9 +121,7 @@ def test_unsupervised_clusters_identical_samples_without_invalid_densities():
         classifier.fit(np.zeros((4, 2)))
 
     assert classifier.subgraph.n_clusters == 1
-    assert all(
-        node.density == constants.MAX_DENSITY for node in classifier.subgraph.nodes
-    )
+    assert all(node.density == constants.MAX_DENSITY for node in classifier.subgraph.nodes)
     assert classifier.predict(np.zeros((2, 2))) == ([0, 0], [0, 0])
 
 
