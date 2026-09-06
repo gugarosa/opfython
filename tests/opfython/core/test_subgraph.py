@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from opfython.core import Subgraph
+from opfython.subgraphs import KNNSubgraph
 from opfython.utils import constants, exception
 
 
@@ -71,3 +72,17 @@ def test_subgraph_validates_public_attributes(attribute, value, error):
 
     with pytest.raises(error):
         setattr(subgraph, attribute, value)
+
+
+@pytest.mark.parametrize("graph_type", [Subgraph, KNNSubgraph])
+@pytest.mark.parametrize("n_labels", [2, 4])
+def test_subgraph_rejects_mismatched_labels(graph_type, n_labels):
+    with pytest.raises(exception.SizeError):
+        graph_type(np.ones((3, 2)), np.zeros(n_labels, dtype=int))
+
+
+@pytest.mark.parametrize("graph_type", [Subgraph, KNNSubgraph])
+@pytest.mark.parametrize("n_indexes", [2, 4])
+def test_subgraph_rejects_mismatched_indexes(graph_type, n_indexes):
+    with pytest.raises(exception.SizeError):
+        graph_type(np.ones((3, 2)), np.zeros(3, dtype=int), np.arange(n_indexes))

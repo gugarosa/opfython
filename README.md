@@ -42,6 +42,17 @@ Labels must be zero-based and sequential. Pre-computed distance matrices can
 be supplied through each classifier's `pre_computed_distance` constructor
 argument.
 
+Features, labels, and optional sample indexes must have matching sample
+counts; mismatches raise `opfython.utils.exception.SizeError`. Supervised
+and semi-supervised models also support a single labeled class. KNN models
+require `1 <= k < number of training samples`.
+
+When splitting a pre-computed matrix's dataset, retain its original sample
+indexes with `stream.splitter.split_with_index` and pass the corresponding
+indexes to `fit` and `predict`. The matrix must cover those indexes, not
+merely match the training subset's size. See the
+[`pre-computed distance example`](examples/applications/supervised_opf_pre_computed_distances.py).
+
 ## Classifiers
 
 | Class | Purpose |
@@ -54,6 +65,10 @@ argument.
 The package also includes 47 distance metrics, random generators, OPF
 evaluation measures, dataset loaders and splitters, package logging and
 exception helpers, and converters for LibOPF binary datasets.
+
+Clustering purity is independent of cluster numbering and supports more
+clusters than true classes. Evaluation measures require one prediction for
+each true label and handle class IDs missing from an evaluation split.
 
 See [the documentation](https://opfython.readthedocs.io/) and the
 [`examples/applications`](examples/applications) directory for complete

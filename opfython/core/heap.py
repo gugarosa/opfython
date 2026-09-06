@@ -186,10 +186,10 @@ class Heap:
             return False
 
         node = self.p[0]
-        self.pos[node] = -1
         self.color[node] = c.BLACK
         self.p[0] = self.p[self.last]
         self.pos[self.p[0]] = 0
+        self.pos[node] = -1
         self.p[self.last] = -1
         self.last -= 1
         self.go_down(0)

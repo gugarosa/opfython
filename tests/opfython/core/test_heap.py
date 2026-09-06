@@ -70,3 +70,17 @@ def test_heap_navigation_helpers():
     assert heap.dad(5) == 2
     assert heap.left_son(5) == 11
     assert heap.right_son(5) == 12
+
+
+@pytest.mark.parametrize("policy", ["min", "max"])
+@pytest.mark.parametrize("size", [1, 3])
+def test_heap_removal_clears_position(policy, size):
+    heap = Heap(size=size, policy=policy)
+    for node in range(size):
+        heap.update(node, node)
+
+    while not heap.is_empty():
+        removed = heap.remove()
+        assert heap.pos[removed] == -1
+        for position in range(heap.last + 1):
+            assert heap.pos[heap.p[position]] == position

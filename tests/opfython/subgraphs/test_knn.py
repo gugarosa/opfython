@@ -76,3 +76,55 @@ def test_knn_subgraph_validates_public_attributes(attribute, value, error):
 
     with pytest.raises(error):
         setattr(subgraph, attribute, value)
+
+
+@pytest.mark.parametrize("k", [0, 1, 4])
+def test_knn_subgraph_retains_available_neighbours(k):
+    subgraph = KNNSubgraph(np.arange(4.0).reshape(-1, 1))
+
+    max_distances = subgraph.create_arcs(k, distance.euclidean_distance)
+
+    assert max_distances.shape == (k,)
+    assert all(len(node.adjacency) == min(k, 3) for node in subgraph.nodes)
+
+
+@pytest.mark.parametrize("k", [1, np.int32(1), np.int64(1), np.asarray(1)])
+def test_knn_subgraph_preserves_numpy_integer_indexes(k):
+    subgraph = KNNSubgraph(np.arange(4.0).reshape(-1, 1))
+
+    subgraph.create_arcs(k, distance.euclidean_distance)
+
+    assert all(len(node.adjacency) == 1 for node in subgraph.nodes)
+    assert k == 1
+
+
+@pytest.mark.parametrize("k", [-1, 1.5])
+def test_knn_subgraph_invalid_k_does_not_destroy_existing_arcs(k):
+    subgraph = KNNSubgraph(np.arange(4.0).reshape(-1, 1))
+    subgraph.create_arcs(1, distance.euclidean_distance)
+    adjacency = [node.adjacency.copy() for node in subgraph.nodes]
+    density = subgraph.density
+
+    with pytest.raises((TypeError, ValueError)):
+        subgraph.create_arcs(k, distance.euclidean_distance)
+
+    assert [node.adjacency for node in subgraph.nodes] == adjacency
+    assert subgraph.density == density
+
+
+def test_knn_subgraph_rebuilding_arcs_replaces_old_state():
+    features = np.asarray([[0.0], [1.0], [3.0], [10.0]])
+    rebuilt = KNNSubgraph(features)
+    fresh = KNNSubgraph(features)
+
+    rebuilt.create_arcs(3, distance.euclidean_distance)
+    rebuilt.create_arcs(1, distance.euclidean_distance)
+    fresh.create_arcs(1, distance.euclidean_distance)
+
+    assert [node.adjacency for node in rebuilt.nodes] == [
+        node.adjacency for node in fresh.nodes
+    ]
+    assert rebuilt.density == fresh.density
+    assert [node.radius for node in rebuilt.nodes] == [
+        node.radius for node in fresh.nodes
+    ]

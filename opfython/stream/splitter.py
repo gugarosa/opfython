@@ -75,11 +75,17 @@ def merge(
     """Merge two feature and label sets."""
 
     logger.info("Merging data ...")
+    X_1, X_2 = np.atleast_2d(X_1, X_2)
+    Y_1, Y_2 = np.atleast_1d(Y_1, Y_2)
     X = np.vstack((X_1, X_2))
     Y = np.hstack((Y_1, Y_2))
-    if X.shape[0] != Y.shape[0]:
+    if (
+        X_1.shape[0] != Y_1.shape[0]
+        or X_2.shape[0] != Y_2.shape[0]
+        or X.shape[0] != Y.shape[0]
+    ):
         raise e.SizeError(
-            "`(X_1, X_2)` and `(Y_1, Y_2)` should have the same amount of samples"
+            "Each feature set and its labels should have the same amount of samples"
         )
 
     logger.debug("X: %s | Y: %s.", X.shape, Y.shape)

@@ -3,7 +3,7 @@ import pytest
 
 from opfython.models import SupervisedOPF
 from opfython.stream import loader, parser, splitter
-from opfython.utils import exception
+from opfython.utils import constants, exception
 
 X, Y = parser.parse_loader(loader.load_csv("data/boat.csv"))
 
@@ -61,3 +61,44 @@ def test_supervised_prune():
     classifier.prune(X_train, Y_train, X_val, Y_val, n_iterations=5)
 
     assert classifier.subgraph.n_nodes == 10
+
+
+def test_supervised_prune_retains_every_winning_prototype():
+    features = np.asarray([[0.0], [10.0]])
+    labels = np.asarray([0, 1])
+    classifier = SupervisedOPF(distance="euclidean")
+
+    classifier.fit(features, labels)
+    assert classifier.predict(features) == labels.tolist()
+    assert all(
+        node.relevant == constants.RELEVANT for node in classifier.subgraph.nodes
+    )
+
+    classifier.prune(features, labels, features, labels, n_iterations=2)
+
+    assert classifier.subgraph.n_nodes == 2
+    assert classifier.predict(features) == labels.tolist()
+
+
+@pytest.mark.parametrize("n_samples", [1, 3])
+def test_supervised_fits_single_class(n_samples):
+    features = np.arange(n_samples, dtype=float).reshape(-1, 1)
+    labels = np.zeros(n_samples, dtype=int)
+    classifier = SupervisedOPF(distance="euclidean")
+
+    classifier.fit(features, labels)
+
+    assert classifier.predict(np.asarray([[-1.0], [4.0]])) == [0, 0]
+    assert sorted(classifier.subgraph.idx_nodes) == list(range(n_samples))
+
+
+def test_supervised_pruning_can_retain_a_single_class():
+    features = np.asarray([[0.0], [10.0]])
+    labels = np.asarray([0, 1])
+    classifier = SupervisedOPF(distance="euclidean")
+
+    with np.errstate(divide="raise", invalid="raise"):
+        classifier.prune(features, labels, features[:1], labels[:1], n_iterations=2)
+
+    assert classifier.subgraph.n_nodes == 1
+    assert classifier.predict(features[:1]) == [0]

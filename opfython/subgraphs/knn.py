@@ -1,5 +1,6 @@
 """KNN-based subgraph."""
 
+import operator
 from typing import Optional
 
 import numpy as np
@@ -162,11 +163,15 @@ class KNNSubgraph(Subgraph):
         pre_computed_distance: bool = False,
         pre_distances: Optional[np.array] = None,
     ) -> np.array:
-        """Create each node's k-nearest-neighbour adjacency."""
+        """Replace each node's adjacency with up to k nearest neighbours."""
 
+        k = operator.index(k)
         distances = np.zeros(k + 1)
         neighbours_idx = np.zeros(k + 1)
         max_distances = np.zeros(k)
+
+        self.destroy_arcs()
+        self.density = 0.0
 
         for i in range(self.n_nodes):
             distances.fill(c.FLOAT_MAX)

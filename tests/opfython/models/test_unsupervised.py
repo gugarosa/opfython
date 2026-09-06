@@ -3,7 +3,8 @@ import pytest
 
 from opfython.models import UnsupervisedOPF
 from opfython.stream import loader, parser
-from opfython.utils import exception
+from opfython.subgraphs import KNNSubgraph
+from opfython.utils import constants, exception
 
 X, Y = parser.parse_loader(loader.load_csv("data/boat.csv"))
 
@@ -41,6 +42,14 @@ def test_unsupervised_validates_public_k_values():
         classifier.max_k = 1
 
 
+def test_unsupervised_checks_mutated_k_range_before_fitting():
+    classifier = UnsupervisedOPF()
+    classifier.min_k = 2
+
+    with pytest.raises(exception.ValueError):
+        classifier.fit(np.arange(4.0).reshape(-1, 1))
+
+
 def test_unsupervised_fit_predict_and_propagate():
     classifier = UnsupervisedOPF()
 
@@ -64,3 +73,76 @@ def test_unsupervised_uses_precomputed_distances():
 
     assert len(predictions) == 100
     assert len(clusters) == 100
+
+
+def test_unsupervised_selected_forest_matches_fixed_k():
+    features = np.random.default_rng(1).normal(size=(8, 2))
+    searched = UnsupervisedOPF(min_k=2, max_k=4, distance="euclidean")
+    searched.fit(features)
+    fixed = UnsupervisedOPF(
+        min_k=searched.subgraph.best_k,
+        max_k=searched.subgraph.best_k,
+        distance="euclidean",
+    )
+    fixed.fit(features)
+
+    assert searched.subgraph.density == fixed.subgraph.density
+    np.testing.assert_allclose(
+        [node.cost for node in searched.subgraph.nodes],
+        [node.cost for node in fixed.subgraph.nodes],
+    )
+    assert [node.root for node in searched.subgraph.nodes] == [
+        node.root for node in fixed.subgraph.nodes
+    ]
+    assert sorted(searched.subgraph.idx_nodes) == list(range(len(features)))
+
+
+def test_unsupervised_plateau_arcs_are_unique_and_symmetric():
+    classifier = UnsupervisedOPF(min_k=2, max_k=2, distance="euclidean")
+    classifier.subgraph = KNNSubgraph(np.zeros((4, 2)))
+    classifier.subgraph.create_arcs(2, classifier.distance_fn)
+    classifier.subgraph.calculate_pdf(2, classifier.distance_fn)
+
+    classifier._clustering(2)
+
+    for index, node in enumerate(classifier.subgraph.nodes):
+        assert len(node.adjacency) == len(set(node.adjacency))
+        assert index not in node.adjacency
+        for adjacent in node.adjacency:
+            assert index in classifier.subgraph.nodes[int(adjacent)].adjacency
+    assert classifier.subgraph.n_clusters == 1
+
+
+def test_unsupervised_clusters_identical_samples_without_invalid_densities():
+    classifier = UnsupervisedOPF(min_k=2, max_k=3, distance="euclidean")
+
+    with np.errstate(divide="raise", invalid="raise"):
+        classifier.fit(np.zeros((4, 2)))
+
+    assert classifier.subgraph.n_clusters == 1
+    assert all(
+        node.density == constants.MAX_DENSITY for node in classifier.subgraph.nodes
+    )
+    assert classifier.predict(np.zeros((2, 2))) == ([0, 0], [0, 0])
+
+
+def test_unsupervised_candidate_cuts_match_independent_forests(monkeypatch):
+    features = np.random.default_rng(1).normal(size=(8, 2))
+    classifier = UnsupervisedOPF(min_k=2, max_k=4, distance="euclidean")
+    normalized_cut = classifier._normalized_cut
+    candidate_cuts = {}
+
+    def record_cut(k):
+        cut = normalized_cut(k)
+        candidate_cuts[k] = cut
+        return cut
+
+    monkeypatch.setattr(classifier, "_normalized_cut", record_cut)
+    classifier.fit(features)
+
+    assert len(candidate_cuts) > 1
+    for k, cut in candidate_cuts.items():
+        independent = UnsupervisedOPF(min_k=k, max_k=k, distance="euclidean")
+        independent.fit(features)
+        assert cut == pytest.approx(independent._normalized_cut(k))
+    assert classifier.subgraph.best_k == min(candidate_cuts, key=candidate_cuts.get)

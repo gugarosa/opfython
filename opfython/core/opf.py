@@ -125,6 +125,27 @@ class OPF:
 
         self.pre_distances = distances
 
+    def _validate_pre_distances(
+        self, rows: Subgraph, columns: Optional[Subgraph] = None
+    ) -> None:
+        """Check that the matrix covers the node indexes used on each axis."""
+
+        if not self.pre_computed_distance:
+            return
+
+        if self.pre_distances is None or self.pre_distances.ndim != 2:
+            raise e.BuildError(
+                "Pre-computed distance matrix should be a two-dimensional array"
+            )
+
+        if columns is None:
+            columns = rows
+        for graph, size in zip((rows, columns), self.pre_distances.shape):
+            if any(node.idx >= size for node in graph.nodes):
+                raise e.BuildError(
+                    "Pre-computed distance matrix should cover every sample index"
+                )
+
     def get_distances(self, normalize: bool = False) -> np.array:
         """Return the pairwise distance matrix for the current subgraph."""
 

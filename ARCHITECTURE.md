@@ -45,7 +45,8 @@ opfython/
    labels.
 
 Labels are zero-based and sequential. Optional sample indexes are retained so
-models can address pre-computed distance matrices.
+models can address pre-computed distance matrices. Feature, label, and index
+counts are checked before building nodes.
 
 ## Core structures
 
@@ -56,15 +57,22 @@ validation.
 
 `Subgraph.n_nodes` is derived from `len(nodes)` so graph size cannot drift from
 the actual population. `KNNSubgraph` adds density bounds, cluster count, and
-the selected neighbourhood size.
+the selected neighbourhood size. Rebuilding arcs replaces adjacency and
+resets the distance scale. Each clustering pass replaces its node visit order.
+
+Unsupervised neighbourhood selection computes the maximum-k arcs once.
+Plateau-only reverse edges are removed between candidate evaluations so the
+next candidate uses the original nearest-neighbour ordering.
 
 `Heap` keeps mutable priorities and stable tie behavior required by the OPF
 algorithms while supporting both minimum and maximum policies.
 
 `OPF` resolves a distance name through `math.distance.DISTANCES`, optionally
 loads a pre-computed matrix, and provides serialization plus pairwise distance
-generation. Concrete models implement `fit` and `predict`. Package logging and
-custom exception types remain available for applications that rely on them.
+generation. Indexed matrix access is validated on the row and column axes
+used by each model. Concrete models implement `fit` and `predict`. Package
+logging and custom exception types remain available for applications that
+rely on them.
 
 ## Classifiers
 
