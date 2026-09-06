@@ -1,3 +1,6 @@
+# Copyright (c) 2020-2026 Gustavo de Rosa.
+# Licensed under the Apache License, Version 2.0.
+
 import numpy as np
 import pytest
 
@@ -12,13 +15,17 @@ def test_node_defaults():
     assert node.label == 0
     assert node.predicted_label == 0
     assert node.cluster_label == 0
+
     assert isinstance(node.features, np.ndarray)
+
     assert node.cost == 0
     assert node.density == 0
     assert node.radius == 0
+
     assert node.n_plateaus == 0
     assert node.adjacency == []
     assert node.root == 0
+
     assert node.status == constants.STANDARD
     assert node.pred == constants.NIL
     assert node.relevant == constants.IRRELEVANT
@@ -75,3 +82,13 @@ def test_node_validates_public_attributes(attribute, value, error):
 
     with pytest.raises(error):
         setattr(node, attribute, value)
+
+
+@pytest.mark.parametrize("attribute", ["cost", "density", "radius"])
+@pytest.mark.parametrize("value", [0.25, 1, np.int32(1), np.int64(1), np.float64(1)])
+def test_node_preserves_supported_numeric_values(attribute, value):
+    node = Node()
+
+    setattr(node, attribute, value)
+
+    assert getattr(node, attribute) is value

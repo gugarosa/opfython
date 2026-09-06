@@ -10,6 +10,7 @@ OPFython requires Python 3.11 or newer.
     :maxdepth: 2
     :caption: Reference
 
+    usage
     api
 
 Indices and tables

@@ -1,3 +1,6 @@
+# Copyright (c) 2020-2026 Gustavo de Rosa.
+# Licensed under the Apache License, Version 2.0.
+
 """Distance-based metrics."""
 
 import math
@@ -11,15 +14,15 @@ import opfython.utils.decorator as d
 
 @d.avoid_zero_division
 @njit(cache=True)
-def additive_symmetric_distance(x: np.array, y: np.array) -> float:
+def additive_symmetric_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Additive Symmetric Distance (Symmetric Divergence).
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Additive Symmetric Distance between x and y.
+        float: The Additive Symmetric Distance between x and y.
 
     """
 
@@ -29,15 +32,15 @@ def additive_symmetric_distance(x: np.array, y: np.array) -> float:
 
 
 @njit(cache=True)
-def average_euclidean_distance(x: np.array, y: np.array) -> float:
+def average_euclidean_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Average Euclidean Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Average Euclidean Distance between x and y.
+        float: The Average Euclidean Distance between x and y.
 
     """
 
@@ -48,15 +51,15 @@ def average_euclidean_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def bhattacharyya_distance(x: np.array, y: np.array) -> float:
+def bhattacharyya_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Bhattacharyya Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Bhattacharyya Distance between x and y.
+        float: The Bhattacharyya Distance between x and y.
 
     """
 
@@ -67,15 +70,15 @@ def bhattacharyya_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def bray_curtis_distance(x: np.array, y: np.array) -> float:
+def bray_curtis_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Bray-Curtis Distance (Sorensen Distance).
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Bray-Curtis Distance between x and y.
+        float: The Bray-Curtis Distance between x and y.
 
     """
 
@@ -86,15 +89,15 @@ def bray_curtis_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def canberra_distance(x: np.array, y: np.array) -> float:
+def canberra_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Canberra Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Canberra Distance between x and y.
+        float: The Canberra Distance between x and y.
 
     """
 
@@ -104,15 +107,15 @@ def canberra_distance(x: np.array, y: np.array) -> float:
 
 
 @njit(cache=True)
-def chebyshev_distance(x: np.array, y: np.array) -> float:
+def chebyshev_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Chebyshev Distance (Maximum Value Distance, Lagrange, Chessboard Distance).
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Chebyshev Distance between x and y.
+        float: The Chebyshev Distance between x and y.
 
     """
 
@@ -123,15 +126,15 @@ def chebyshev_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def chi_squared_distance(x: np.array, y: np.array) -> float:
+def chi_squared_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Chi-Squared Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Chi-Squared Distance between x and y.
+        float: The Chi-Squared Distance between x and y.
 
     """
 
@@ -142,15 +145,15 @@ def chi_squared_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def chord_distance(x: np.array, y: np.array) -> float:
+def chord_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Chord Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Chord Distance between x and y.
+        float: The Chord Distance between x and y.
 
     """
 
@@ -161,15 +164,15 @@ def chord_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def clark_distance(x: np.array, y: np.array) -> float:
+def clark_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Clark Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Clark Distance between x and y.
+        float: The Clark Distance between x and y.
 
     """
 
@@ -180,15 +183,15 @@ def clark_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def cosine_distance(x: np.array, y: np.array) -> float:
+def cosine_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Cosine Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The cosine Distance between x and y.
+        float: The Cosine Distance between x and y.
 
     """
 
@@ -199,15 +202,15 @@ def cosine_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def dice_distance(x: np.array, y: np.array) -> float:
+def dice_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Dice Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Dice Distance between x and y.
+        float: The Dice Distance between x and y.
 
     """
 
@@ -218,15 +221,15 @@ def dice_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def divergence_distance(x: np.array, y: np.array) -> float:
+def divergence_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Divergence Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Divergence Distance between x and y.
+        float: The Divergence Distance between x and y.
 
     """
 
@@ -236,15 +239,15 @@ def divergence_distance(x: np.array, y: np.array) -> float:
 
 
 @njit(cache=True)
-def euclidean_distance(x: np.array, y: np.array) -> float:
+def euclidean_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Euclidean Distance (L2 Norm, Ruler Distance).
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Euclidean Distance between x and y.
+        float: The Euclidean Distance between x and y.
 
     """
 
@@ -254,15 +257,16 @@ def euclidean_distance(x: np.array, y: np.array) -> float:
 
 
 @njit(cache=True)
-def gaussian_distance(x, y, gamma=1):
+def gaussian_distance(x: np.ndarray, y: np.ndarray, gamma: float = 1) -> float:
     """Calculates the Gaussian Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
+        gamma: Scale applied to the Euclidean distance in the negative exponential.
 
     Returns:
-        (float): The Gaussian Distance between x and y.
+        float: The Gaussian Distance between x and y.
 
     """
 
@@ -272,15 +276,15 @@ def gaussian_distance(x, y, gamma=1):
 
 
 @njit(cache=True)
-def gower_distance(x: np.array, y: np.array) -> float:
+def gower_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Gower Distance (Average Manhattan, Mean Character Distance).
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Gower Distance between x and y.
+        float: The Gower Distance between x and y.
 
     """
 
@@ -290,15 +294,15 @@ def gower_distance(x: np.array, y: np.array) -> float:
 
 
 @njit(cache=True)
-def hamming_distance(x: np.array, y: np.array) -> float:
+def hamming_distance(x: np.ndarray, y: np.ndarray) -> int:
     """Calculates the Hamming Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Hamming Distance between x and y.
+        int: The number of unequal features between x and y.
 
     """
 
@@ -309,47 +313,43 @@ def hamming_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def hassanat_distance(x: np.array, y: np.array) -> float:
+def hassanat_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Hassanat Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Hassanat Distance between x and y.
+        float: The Hassanat Distance between x and y.
 
     """
 
-    # Creates an empty variable to hold each dimension's
     dist = np.zeros(x.shape[0])
-
-    # Creates a binary mask
     mask = np.minimum(x, y) >= 0
 
-    # Iterates through all dimensions
     for i in range(x.shape[0]):
         if mask[i] is True:
             dist[i] = 1 - (1 + np.minimum(x[i], y[i])) / (1 + np.maximum(x[i], y[i]))
 
         else:
-            dist[i] = 1 - (
-                1 + np.minimum(x[i], y[i]) + np.fabs(np.minimum(x[i], y[i]))
-            ) / (1 + np.maximum(x[i], y[i]) + np.fabs(np.minimum(x[i], y[i])))
+            dist[i] = 1 - (1 + np.minimum(x[i], y[i]) + np.fabs(np.minimum(x[i], y[i]))) / (
+                1 + np.maximum(x[i], y[i]) + np.fabs(np.minimum(x[i], y[i]))
+            )
 
     return np.sum(dist)
 
 
 @njit(cache=True)
-def hellinger_distance(x: np.array, y: np.array) -> float:
+def hellinger_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Hellinger Distance (Jeffries-Matusita Distance).
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Hellinger Distance between x and y.
+        float: The Hellinger Distance between x and y.
 
     """
 
@@ -359,15 +359,15 @@ def hellinger_distance(x: np.array, y: np.array) -> float:
 
 
 @d.avoid_zero_division
-def jaccard_distance(x: np.array, y: np.array) -> float:
+def jaccard_distance(x: np.ndarray, y: np.ndarray) -> np.floating:
     """Calculates the Jaccard Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Jaccard Distance between x and y.
+        np.floating: The Jaccard Distance between x and y, retaining NumPy's scalar dtype.
 
     """
 
@@ -378,15 +378,15 @@ def jaccard_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def jeffreys_distance(x: np.array, y: np.array) -> float:
+def jeffreys_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Jeffreys Distance (J-Divergence, KL2 Divergence).
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Jeffreys Distance between x and y.
+        float: The Jeffreys Distance between x and y.
 
     """
 
@@ -397,15 +397,15 @@ def jeffreys_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def jensen_distance(x: np.array, y: np.array) -> float:
+def jensen_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Jensen Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Jensen Distance between x and y.
+        float: The Jensen Distance between x and y.
 
     """
 
@@ -416,15 +416,15 @@ def jensen_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def jensen_shannon_distance(x: np.array, y: np.array) -> float:
+def jensen_shannon_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Jensen-Shannon Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Jensen-Shannon Distance between x and y.
+        float: The Jensen-Shannon Distance between x and y.
 
     """
 
@@ -436,15 +436,15 @@ def jensen_shannon_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def k_divergence_distance(x: np.array, y: np.array) -> float:
+def k_divergence_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the K Divergence Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The K Divergence Distance between x and y.
+        float: The K Divergence Distance between x and y.
 
     """
 
@@ -455,15 +455,15 @@ def k_divergence_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def kulczynski_distance(x: np.array, y: np.array) -> float:
+def kulczynski_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Kulczynski Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Kulczynski Distance between x and y.
+        float: The Kulczynski Distance between x and y.
 
     """
 
@@ -474,15 +474,15 @@ def kulczynski_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def kullback_leibler_distance(x: np.array, y: np.array) -> float:
+def kullback_leibler_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Kullback-Leibler Distance (KL Divergence).
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Kullback-Leibler Distance between x and y.
+        float: The Kullback-Leibler Distance between x and y.
 
     """
 
@@ -492,15 +492,15 @@ def kullback_leibler_distance(x: np.array, y: np.array) -> float:
 
 
 @njit(cache=True)
-def log_euclidean_distance(x: np.array, y: np.array) -> float:
+def log_euclidean_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the log-Euclidean Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The log-Euclidean Distance between x and y.
+        float: The log-Euclidean Distance between x and y.
 
     """
 
@@ -510,15 +510,15 @@ def log_euclidean_distance(x: np.array, y: np.array) -> float:
 
 
 @njit(cache=True)
-def log_squared_euclidean_distance(x: np.array, y: np.array) -> float:
+def log_squared_euclidean_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the log-Squared Euclidean Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Log Squared Euclidean Distance between x and y.
+        float: The Log Squared Euclidean Distance between x and y.
 
     """
 
@@ -528,15 +528,15 @@ def log_squared_euclidean_distance(x: np.array, y: np.array) -> float:
 
 
 @njit(cache=True)
-def lorentzian_distance(x: np.array, y: np.array) -> float:
+def lorentzian_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Lorentzian Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Lorentzian Distance between x and y.
+        float: The Lorentzian Distance between x and y.
 
     """
 
@@ -546,15 +546,15 @@ def lorentzian_distance(x: np.array, y: np.array) -> float:
 
 
 @njit(cache=True)
-def manhattan_distance(x: np.array, y: np.array) -> float:
+def manhattan_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Manhattan Distance (L1 Norm, Taxicab Norm, City Block Distance).
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Manhattan Distance between x and y.
+        float: The Manhattan Distance between x and y.
 
     """
 
@@ -564,15 +564,15 @@ def manhattan_distance(x: np.array, y: np.array) -> float:
 
 
 @njit(cache=True)
-def matusita_distance(x: np.array, y: np.array) -> float:
+def matusita_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Matusita Distance, where features must be positive.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Positive feature vector of shape (n_features,).
+        y: Positive comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Matusita Distance between x and y.
+        float: The Matusita Distance between x and y.
 
     """
 
@@ -583,15 +583,15 @@ def matusita_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def max_symmetric_distance(x: np.array, y: np.array) -> float:
+def max_symmetric_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Max Symmetric Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Max Symmetric Distance between x and y.
+        float: The Max Symmetric Distance between x and y.
 
     """
 
@@ -603,15 +603,15 @@ def max_symmetric_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def mean_censored_euclidean_distance(x: np.array, y: np.array) -> float:
+def mean_censored_euclidean_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Mean Censored Euclidean Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Mean Censored Euclidean Distance between x and y.
+        float: The Mean Censored Euclidean Distance between x and y.
 
     """
 
@@ -623,15 +623,15 @@ def mean_censored_euclidean_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def min_symmetric_distance(x: np.array, y: np.array) -> float:
+def min_symmetric_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Min Symmetric Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Min Symmetric Distance between x and y.
+        float: The Min Symmetric Distance between x and y.
 
     """
 
@@ -643,15 +643,15 @@ def min_symmetric_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def neyman_distance(x: np.array, y: np.array) -> float:
+def neyman_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Neyman Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Neyman Distance between x and y.
+        float: The Neyman Distance between x and y.
 
     """
 
@@ -661,15 +661,15 @@ def neyman_distance(x: np.array, y: np.array) -> float:
 
 
 @njit(cache=True)
-def non_intersection_distance(x: np.array, y: np.array) -> float:
+def non_intersection_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Non-Intersection Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Non-Intersection Distance between x and y.
+        float: The Non-Intersection Distance between x and y.
 
     """
 
@@ -680,15 +680,15 @@ def non_intersection_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def pearson_distance(x: np.array, y: np.array) -> float:
+def pearson_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Pearson Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Pearson Distance between x and y.
+        float: The Pearson Distance between x and y.
 
     """
 
@@ -699,15 +699,15 @@ def pearson_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def sangvi_distance(x: np.array, y: np.array) -> float:
+def sangvi_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Sangvi Distance (Probabilistic Symmetric).
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Sangvi Distance between x and y.
+        float: The Sangvi Distance between x and y.
 
     """
 
@@ -718,15 +718,15 @@ def sangvi_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def soergel_distance(x: np.array, y: np.array) -> float:
+def soergel_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Soergel Distance (Ruzicka Distance).
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Soergel Distance between x and y.
+        float: The Soergel Distance between x and y.
 
     """
 
@@ -737,15 +737,15 @@ def soergel_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def squared_distance(x: np.array, y: np.array) -> float:
+def squared_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Squared Distance (Triangular Discrimination Distance).
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Squared Distance between x and y.
+        float: The Squared Distance between x and y.
 
     """
 
@@ -755,15 +755,15 @@ def squared_distance(x: np.array, y: np.array) -> float:
 
 
 @njit(cache=True)
-def squared_chord_distance(x: np.array, y: np.array) -> float:
+def squared_chord_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Squared Chord Distance, where features must be positive.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Positive feature vector of shape (n_features,).
+        y: Positive comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Squared Chord Distance between x and y.
+        float: The Squared Chord Distance between x and y.
 
     """
 
@@ -773,15 +773,15 @@ def squared_chord_distance(x: np.array, y: np.array) -> float:
 
 
 @njit(cache=True)
-def squared_euclidean_distance(x: np.array, y: np.array) -> float:
+def squared_euclidean_distance(x: np.ndarray, y: np.ndarray) -> int | float:
     """Calculates the Squared Euclidean Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Squared Euclidean Distance between x and y.
+        int | float: The Squared Euclidean Distance, with an integer result for integer arithmetic.
 
     """
 
@@ -792,15 +792,15 @@ def squared_euclidean_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def statistic_distance(x: np.array, y: np.array) -> float:
+def statistic_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Statistic Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Statistic Distance between x and y.
+        float: The Statistic Distance between x and y.
 
     """
 
@@ -812,15 +812,15 @@ def statistic_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def topsoe_distance(x: np.array, y: np.array) -> float:
+def topsoe_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Topsoe Distance (Information Statistics).
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Topsoe Distance between x and y.
+        float: The Topsoe Distance between x and y.
 
     """
 
@@ -832,15 +832,15 @@ def topsoe_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def vicis_symmetric1_distance(x: np.array, y: np.array) -> float:
+def vicis_symmetric1_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Vicis Symmetric 1 Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Vicis Symmetric 1 Distance between x and y.
+        float: The Vicis Symmetric 1 Distance between x and y.
 
     """
 
@@ -851,15 +851,15 @@ def vicis_symmetric1_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def vicis_symmetric2_distance(x: np.array, y: np.array) -> float:
+def vicis_symmetric2_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Vicis Symmetric 2 Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Vicis Symmetric 2 Distance between x and y.
+        float: The Vicis Symmetric 2 Distance between x and y.
 
     """
 
@@ -870,15 +870,15 @@ def vicis_symmetric2_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def vicis_symmetric3_distance(x: np.array, y: np.array) -> float:
+def vicis_symmetric3_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Vicis Symmetric 3 Distance.
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Vicis Symmetric 3 Distance between x and y.
+        float: The Vicis Symmetric 3 Distance between x and y.
 
     """
 
@@ -889,15 +889,15 @@ def vicis_symmetric3_distance(x: np.array, y: np.array) -> float:
 
 @d.avoid_zero_division
 @njit(cache=True)
-def vicis_wave_hedges_distance(x: np.array, y: np.array) -> float:
+def vicis_wave_hedges_distance(x: np.ndarray, y: np.ndarray) -> float:
     """Calculates the Vicis-Wave Hedges Distance (Wave-Hedges).
 
     Args:
-        x: N-dimensional array.
-        y: N-dimensional array.
+        x: Feature vector of shape (n_features,).
+        y: Comparison feature vector with the same shape as x.
 
     Returns:
-        (float): The Vicis-Wave Hedges Distance between x and y.
+        float: The Vicis-Wave Hedges Distance between x and y.
 
     """
 
@@ -906,8 +906,6 @@ def vicis_wave_hedges_distance(x: np.array, y: np.array) -> float:
     return np.sum(dist)
 
 
-# A distances constant dictionary for selecting the desired
-# distance metric to be used
 DISTANCES = {
     "additive_symmetric": additive_symmetric_distance,
     "average_euclidean": average_euclidean_distance,

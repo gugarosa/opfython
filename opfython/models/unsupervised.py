@@ -1,7 +1,10 @@
-"""Unsupervised Optimum-Path Forest."""
+# Copyright (c) 2020-2026 Gustavo de Rosa.
+# Licensed under the Apache License, Version 2.0.
+
+"""Provide unsupervised Optimum-Path Forest clustering."""
 
 import time
-from typing import List, Optional, Tuple
+from os import PathLike
 
 import numpy as np
 
@@ -9,83 +12,83 @@ import opfython.utils.constants as c
 import opfython.utils.exception as e
 from opfython.core.heap import Heap
 from opfython.core.opf import OPF
+from opfython.models._common import _predict_knn
 from opfython.subgraphs.knn import KNNSubgraph
-from opfython.utils import logging
+from opfython.utils.logging import get_logger
 
-logger = logging.get_logger(__name__)
+logger = get_logger(__name__)
 
 
 class UnsupervisedOPF(OPF):
-    """An UnsupervisedOPF which implements the unsupervised version of OPF classifier.
-
-    References:
-        L. M. Rocha, F. A. M. Cappabianco, A. X. Falcão.
-        Data clustering as an optimum-path forest problem with applications in image analysis.
-        International Journal of Imaging Systems and Technology (2009).
-
-    """
+    """Cluster samples with an unsupervised KNN Optimum-Path Forest."""
 
     def __init__(
         self,
         min_k: int = 1,
         max_k: int = 1,
         distance: str = "log_squared_euclidean",
-        pre_computed_distance: Optional[str] = None,
-    ):
-        """Initialization method.
+        pre_computed_distance: str | PathLike[str] | None = None,
+    ) -> None:
+        """Initialize the neighbourhood range and distance configuration.
 
         Args:
             min_k: Minimum `k` value for cutting the subgraph.
             max_k: Maximum `k` value for cutting the subgraph.
-            distance: An indicator of the distance metric to be used.
-            pre_computed_distance: A pre-computed distance file for feeding into OPF.
+            distance: Registered distance metric name.
+            pre_computed_distance: Optional CSV or text distance-matrix path indexed by sample identifiers.
+
+        Raises:
+            opfython.utils.exception.TypeError: A neighbourhood size is not an integer or the metric name is invalid.
+            opfython.utils.exception.ValueError: Neighbourhood bounds are invalid or the distance file cannot be loaded.
+            opfython.utils.exception.ArgumentError: The distance file extension is unsupported.
+
+        References:
+            L. M. Rocha, F. A. M. Cappabianco, A. X. Falcão.
+            Data clustering as an optimum-path forest problem with applications in image analysis.
+            International Journal of Imaging Systems and Technology (2009).
 
         """
 
         logger.info("Overriding class: OPF -> UnsupervisedOPF.")
         super().__init__(distance, pre_computed_distance)
+
         self.min_k = min_k
         self.max_k = max_k
         logger.info("Class overrided.")
 
     @property
     def min_k(self) -> int:
-        """Minimum neighbourhood size."""
+        """Return the positive integer lower bound for neighbourhood selection."""
 
         return self._min_k
 
     @min_k.setter
     def min_k(self, min_k: int) -> None:
         if not isinstance(min_k, int):
-            raise e.TypeError("`min_k` should be an integer")
+            raise e.TypeError(f"`min_k` should be an integer, but got {type(min_k).__name__}.")
         if min_k < 1:
-            raise e.ValueError("`min_k` should be >= 1")
+            raise e.ValueError(f"`min_k` should be >= 1, but got {min_k}.")
+
         self._min_k = min_k
 
     @property
     def max_k(self) -> int:
-        """Maximum neighbourhood size."""
+        """Return the integer upper bound, which must be at least min_k."""
 
         return self._max_k
 
     @max_k.setter
     def max_k(self, max_k: int) -> None:
         if not isinstance(max_k, int):
-            raise e.TypeError("`max_k` should be an integer")
+            raise e.TypeError(f"`max_k` should be an integer, but got {type(max_k).__name__}.")
         if max_k < 1:
-            raise e.ValueError("`max_k` should be >= 1")
+            raise e.ValueError(f"`max_k` should be >= 1, but got {max_k}.")
         if max_k < self.min_k:
-            raise e.ValueError("`max_k` should be >= `min_k`")
+            raise e.ValueError(f"`max_k` should be >= `min_k`, but got {max_k} < {self.min_k}.")
+
         self._max_k = max_k
 
     def _clustering(self, n_neighbours: int) -> None:
-        """Clusters the subgraph using using a `k` value (number of neighbours).
-
-        Args:
-            n_neighbours: Number of neighbours to be used.
-
-        """
-
         self.subgraph.idx_nodes = []
 
         for i, node in enumerate(self.subgraph.nodes):
@@ -132,26 +135,13 @@ class UnsupervisedOPF(OPF):
                     if current_cost > h.cost[q]:
                         self.subgraph.nodes[q].pred = p
                         self.subgraph.nodes[q].root = self.subgraph.nodes[p].root
-                        self.subgraph.nodes[q].cluster_label = self.subgraph.nodes[
-                            p
-                        ].cluster_label
+                        self.subgraph.nodes[q].cluster_label = self.subgraph.nodes[p].cluster_label
 
                         h.update(q, current_cost)
 
-        # The final number of clusters will be equal to `l`
         self.subgraph.n_clusters = l
 
     def _normalized_cut(self, n_neighbours: int) -> float:
-        """Performs a normalized cut over the subgraph using a `k` value (number of neighbours).
-
-        Args:
-            n_neighbours: Number of neighbours to be used.
-
-        Returns:
-            (float): The value of the normalized cut.
-
-        """
-
         internal_cluster = np.zeros(self.subgraph.n_clusters)
         external_cluster = np.zeros(self.subgraph.n_clusters)
 
@@ -164,26 +154,15 @@ class UnsupervisedOPF(OPF):
                 j = int(self.subgraph.nodes[i].adjacency[k])
 
                 if self.pre_computed_distance:
-                    distance = self.pre_distances[self.subgraph.nodes[i].idx][
-                        self.subgraph.nodes[j].idx
-                    ]
+                    distance = self.pre_distances[self.subgraph.nodes[i].idx][self.subgraph.nodes[j].idx]
                 else:
-                    distance = self.distance_fn(
-                        self.subgraph.nodes[i].features, self.subgraph.nodes[j].features
-                    )
+                    distance = self.distance_fn(self.subgraph.nodes[i].features, self.subgraph.nodes[j].features)
 
                 if distance > 0.0:
-                    if (
-                        self.subgraph.nodes[i].cluster_label
-                        == self.subgraph.nodes[j].cluster_label
-                    ):
-                        internal_cluster[self.subgraph.nodes[i].cluster_label] += (
-                            1 / distance
-                        )
+                    if self.subgraph.nodes[i].cluster_label == self.subgraph.nodes[j].cluster_label:
+                        internal_cluster[self.subgraph.nodes[i].cluster_label] += 1 / distance
                     else:
-                        external_cluster[self.subgraph.nodes[i].cluster_label] += (
-                            1 / distance
-                        )
+                        external_cluster[self.subgraph.nodes[i].cluster_label] += 1 / distance
 
         for l in range(self.subgraph.n_clusters):
             if internal_cluster[l] + external_cluster[l] > 0.0:
@@ -192,14 +171,6 @@ class UnsupervisedOPF(OPF):
         return cut
 
     def _best_minimum_cut(self, min_k: int, max_k: int) -> None:
-        """Performs a minimum cut on the subgraph using the best `k` value.
-
-        Args:
-            min_k: Minimum value of k.
-            max_k: Maximum value of k.
-
-        """
-
         logger.debug(
             "Calculating the best minimum cut within [%d, %d] ...",
             min_k,
@@ -214,7 +185,7 @@ class UnsupervisedOPF(OPF):
         best_k = min_k
         for k in range(min_k, max_k + 1):
             if min_cut != 0.0:
-                # Restore the nearest-neighbour order after plateau symmetrization.
+                # Restore the nearest-neighbour order after plateau symmetrization
                 for node in self.subgraph.nodes:
                     del node.adjacency[: node.n_plateaus]
                     node.n_plateaus = 0
@@ -223,9 +194,7 @@ class UnsupervisedOPF(OPF):
                 if self.subgraph.density < 0.00001:
                     self.subgraph.density = 1
                 self.subgraph.best_k = k
-                self.subgraph.calculate_pdf(
-                    k, self.distance_fn, self.pre_computed_distance, self.pre_distances
-                )
+                self.subgraph.calculate_pdf(k, self.distance_fn, self.pre_computed_distance, self.pre_distances)
 
                 self._clustering(k)
 
@@ -236,27 +205,31 @@ class UnsupervisedOPF(OPF):
 
         self.subgraph.best_k = best_k
 
-        self.subgraph.create_arcs(
-            best_k, self.distance_fn, self.pre_computed_distance, self.pre_distances
-        )
-        self.subgraph.calculate_pdf(
-            best_k, self.distance_fn, self.pre_computed_distance, self.pre_distances
-        )
+        self.subgraph.create_arcs(best_k, self.distance_fn, self.pre_computed_distance, self.pre_distances)
+        self.subgraph.calculate_pdf(best_k, self.distance_fn, self.pre_computed_distance, self.pre_distances)
 
         logger.debug("Best: %d | Minimum cut: %s.", best_k, min_cut)
 
     def fit(
         self,
-        X_train: np.array,
-        Y_train: Optional[np.array] = None,
-        I_train: Optional[np.array] = None,
+        X_train: np.ndarray,
+        Y_train: np.ndarray | None = None,
+        I_train: np.ndarray | None = None,
     ) -> None:
-        """Fits data in the classifier.
+        """Fit a forest with the neighbourhood that minimizes the normalized cut.
 
         Args:
-            X_train: Array of training features.
-            Y_train: Array of training labels.
-            I_train: Array of training indexes.
+            X_train: Training features with shape (n_samples, n_features), retained without intentional mutation.
+            Y_train: Optional nonnegative class labels for later root-label propagation.
+            I_train: Training distance-matrix indexes, or positional indexes when None.
+
+        Raises:
+            opfython.utils.exception.ValueError: The graph cannot supply the configured neighbourhood range.
+            opfython.utils.exception.BuildError: Precomputed distances do not cover the training indexes.
+
+        Notes:
+            Fitting replaces the stored subgraph and returns None. Cluster identifiers are zero-based.
+            Call propagate_labels to assign class predictions from cluster roots.
 
         """
 
@@ -266,7 +239,8 @@ class UnsupervisedOPF(OPF):
         self.subgraph = KNNSubgraph(X_train, Y_train, I_train)
         if not self.min_k <= self.max_k < self.subgraph.n_nodes:
             raise e.ValueError(
-                "Neighbourhoods should satisfy `min_k <= max_k < n_nodes`"
+                f"`min_k` and `max_k` should satisfy 1 <= min_k <= max_k < n_nodes, "
+                f"but got {self.min_k}, {self.max_k}, and {self.subgraph.n_nodes}."
             )
         self._validate_pre_distances(self.subgraph)
         self._best_minimum_cut(self.min_k, self.max_k)
@@ -281,98 +255,37 @@ class UnsupervisedOPF(OPF):
 
     def predict(
         self,
-        X_val: np.array,
-        I_val: Optional[np.array] = None,
-    ) -> Tuple[List[int], List[int]]:
+        X_val: np.ndarray,
+        I_val: np.ndarray | None = None,
+    ) -> tuple[list[int], list[int]]:
         """Predicts new data using the pre-trained classifier.
 
         Args:
-            X_val: Array of validation features.
-            I_val: Array of validation indexes.
+            X_val: Query features with shape (n_samples, n_features), left unchanged.
+            I_val: Query distance-matrix row indexes, or positional indexes when None.
 
         Returns:
-            Predictions and cluster assignments for each sample.
+            Class-label and zero-based cluster-label lists, both in query order.
+
+        Raises:
+            opfython.utils.exception.BuildError: The model is not fitted or the distance matrix misses sample indexes.
+
+        Notes:
+            Class labels remain zero until propagate_labels is called.
+            Equal distances retain training order, and equal winning costs retain nearest-neighbour order.
+            Precomputed distances use query rows and training columns.
 
         """
 
-        if not self.subgraph:
-            raise e.BuildError("KNNSubgraph has not been properly created")
+        if self.subgraph is None:
+            raise e.BuildError("`subgraph` is None; call `fit` before predicting.")
 
         if not self.subgraph.trained:
-            raise e.BuildError("Classifier has not been properly clustered")
+            raise e.BuildError("`subgraph.trained` is not True; call `fit` before predicting.")
 
         logger.info("Predicting data ...")
         start = time.time()
-        pred_subgraph = KNNSubgraph(X_val, I=I_val)
-        self._validate_pre_distances(pred_subgraph, self.subgraph)
-
-        best_k = self.subgraph.best_k
-
-        distances = np.zeros(best_k + 1)
-        neighbours_idx = np.zeros(best_k + 1)
-
-        for i in range(pred_subgraph.n_nodes):
-            cost = -c.FLOAT_MAX
-            distances.fill(c.FLOAT_MAX)
-
-            for j in range(self.subgraph.n_nodes):
-                if self.pre_computed_distance:
-                    distances[best_k] = self.pre_distances[pred_subgraph.nodes[i].idx][
-                        self.subgraph.nodes[j].idx
-                    ]
-                else:
-                    distances[best_k] = self.distance_fn(
-                        pred_subgraph.nodes[i].features,
-                        self.subgraph.nodes[j].features,
-                    )
-
-                neighbours_idx[best_k] = j
-
-                cur_k = best_k
-                while cur_k > 0 and distances[cur_k] < distances[cur_k - 1]:
-                    distances[cur_k], distances[cur_k - 1] = (
-                        distances[cur_k - 1],
-                        distances[cur_k],
-                    )
-
-                    neighbours_idx[cur_k], neighbours_idx[cur_k - 1] = (
-                        neighbours_idx[cur_k - 1],
-                        neighbours_idx[cur_k],
-                    )
-
-                    cur_k -= 1
-
-            density = 0.0
-            for k in range(best_k):
-                density += np.exp(-distances[k] / self.subgraph.constant)
-
-            density /= best_k
-
-            # Scale the density between minimum and maximum values
-            density = (
-                (c.MAX_DENSITY - 1)
-                * (density - self.subgraph.min_density)
-                / (self.subgraph.max_density - self.subgraph.min_density + c.EPSILON)
-            ) + 1
-
-            for k in range(best_k):
-                if distances[k] != c.FLOAT_MAX:
-                    neighbour = int(neighbours_idx[k])
-
-                    temp_cost = np.minimum(self.subgraph.nodes[neighbour].cost, density)
-                    if temp_cost > cost:
-                        cost = temp_cost
-
-                        # Propagates the predicted label from the neighbour
-                        pred_subgraph.nodes[i].predicted_label = self.subgraph.nodes[
-                            neighbour
-                        ].predicted_label
-
-                        # Propagates the cluster label from the neighbour
-                        pred_subgraph.nodes[i].cluster_label = self.subgraph.nodes[
-                            neighbour
-                        ].cluster_label
-
+        pred_subgraph = _predict_knn(self, X_val, I_val)
         preds = [pred.predicted_label for pred in pred_subgraph.nodes]
         clusters = [pred.cluster_label for pred in pred_subgraph.nodes]
 
@@ -381,7 +294,12 @@ class UnsupervisedOPF(OPF):
         return preds, clusters
 
     def propagate_labels(self) -> None:
-        """Runs through the clusters and propagate the clusters roots labels to the samples."""
+        """Assign each stored node the class label of its cluster root.
+
+        Notes:
+            This mutates predicted_label on the fitted graph, not the caller's training labels or cluster assignments.
+
+        """
 
         logger.info("Assigning predicted labels from clusters ...")
 

@@ -1,13 +1,9 @@
+# Copyright (c) 2020-2026 Gustavo de Rosa.
+# Licensed under the Apache License, Version 2.0.
+
 from opfython.core import Heap
 
-# Defining the maximum size of heap
-size = 5
+h = Heap(size=5, policy="min")
 
-# Creating the heap
-h = Heap(size=size, policy="min")
-
-# Inserting a new node
 h.insert(1)
-
-# Removing the node
 n = h.remove()

@@ -1,7 +1,10 @@
+# Copyright (c) 2020-2026 Gustavo de Rosa.
+# Licensed under the Apache License, Version 2.0.
+
 import numpy as np
 import pytest
 
-from opfython.models import SupervisedOPF
+from opfython.models.supervised import SupervisedOPF
 from opfython.stream import loader, parser, splitter
 from opfython.utils import constants, exception
 
@@ -70,9 +73,7 @@ def test_supervised_prune_retains_every_winning_prototype():
 
     classifier.fit(features, labels)
     assert classifier.predict(features) == labels.tolist()
-    assert all(
-        node.relevant == constants.RELEVANT for node in classifier.subgraph.nodes
-    )
+    assert all(node.relevant == constants.RELEVANT for node in classifier.subgraph.nodes)
 
     classifier.prune(features, labels, features, labels, n_iterations=2)
 

@@ -1,3 +1,6 @@
+# Copyright (c) 2020-2026 Gustavo de Rosa.
+# Licensed under the Apache License, Version 2.0.
+
 import numpy as np
 import pytest
 
@@ -11,6 +14,7 @@ def test_subgraph_defaults():
 
     assert subgraph.n_nodes == 0
     assert subgraph.n_features == 0
+
     assert subgraph.nodes == []
     assert subgraph.idx_nodes == []
     assert subgraph.trained is False

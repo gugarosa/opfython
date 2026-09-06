@@ -1,8 +1,11 @@
-"""Supervised Optimum-Path Forest."""
+# Copyright (c) 2020-2026 Gustavo de Rosa.
+# Licensed under the Apache License, Version 2.0.
+
+"""Provide the supervised Optimum-Path Forest classifier."""
 
 import copy
 import time
-from typing import List, Optional
+from os import PathLike
 
 import numpy as np
 
@@ -13,30 +16,35 @@ import opfython.utils.exception as e
 from opfython.core.heap import Heap
 from opfython.core.opf import OPF
 from opfython.core.subgraph import Subgraph
-from opfython.utils import logging
+from opfython.models._common import _grow_minimax_forest
+from opfython.utils.logging import get_logger
 
-logger = logging.get_logger(__name__)
+logger = get_logger(__name__)
 
 
 class SupervisedOPF(OPF):
-    """A SupervisedOPF which implements the supervised version of OPF classifier.
-
-    References:
-        J. P. Papa, A. X. Falcão and C. T. N. Suzuki. Supervised Pattern Classification based on Optimum-Path Forest.
-        International Journal of Imaging Systems and Technology (2009).
-
-    """
+    """Classify samples with a supervised Optimum-Path Forest on a complete graph."""
 
     def __init__(
         self,
         distance: str = "log_squared_euclidean",
-        pre_computed_distance: Optional[str] = None,
+        pre_computed_distance: str | PathLike[str] | None = None,
     ) -> None:
-        """Initialization method.
+        """Initialize the distance configuration for supervised training.
 
         Args:
-            distance: An indicator of the distance metric to be used.
-            pre_computed_distance: A pre-computed distance file for feeding into OPF.
+            distance: Registered distance metric name.
+            pre_computed_distance: Optional CSV or text distance-matrix path indexed by sample identifiers.
+
+        Raises:
+            opfython.utils.exception.TypeError: The distance metric name is invalid.
+            opfython.utils.exception.ArgumentError: The distance file extension is unsupported.
+            opfython.utils.exception.ValueError: The distance file cannot be loaded.
+
+        References:
+            J. P. Papa, A. X. Falcão and C. T. N. Suzuki.
+            Supervised Pattern Classification based on Optimum-Path Forest.
+            International Journal of Imaging Systems and Technology (2009).
 
         """
 
@@ -45,8 +53,6 @@ class SupervisedOPF(OPF):
         logger.info("Class overrided.")
 
     def _find_prototypes(self) -> None:
-        """Find prototype nodes using the Minimum Spanning Tree (MST) approach."""
-
         logger.debug("Finding prototypes ...")
 
         self._validate_pre_distances(self.subgraph)
@@ -76,9 +82,7 @@ class SupervisedOPF(OPF):
                 if h.color[q] != c.BLACK:
                     if p != q:
                         if self.pre_computed_distance:
-                            weight = self.pre_distances[self.subgraph.nodes[p].idx][
-                                self.subgraph.nodes[q].idx
-                            ]
+                            weight = self.pre_distances[self.subgraph.nodes[p].idx][self.subgraph.nodes[q].idx]
                         else:
                             weight = self.distance_fn(
                                 self.subgraph.nodes[p].features,
@@ -90,9 +94,7 @@ class SupervisedOPF(OPF):
 
                             h.update(q, weight)
 
-        if not prototypes and all(
-            node.label == self.subgraph.nodes[0].label for node in self.subgraph.nodes
-        ):
+        if not prototypes and all(node.label == self.subgraph.nodes[0].label for node in self.subgraph.nodes):
             self.subgraph.nodes[0].status = c.PROTOTYPE
             prototypes.append(0)
 
@@ -100,16 +102,23 @@ class SupervisedOPF(OPF):
 
     def fit(
         self,
-        X_train: np.array,
-        Y_train: np.array,
-        I_train: Optional[np.array] = None,
+        X_train: np.ndarray,
+        Y_train: np.ndarray,
+        I_train: np.ndarray | None = None,
     ) -> None:
-        """Fits data in the classifier.
+        """Fit a minimax forest from the class-boundary prototypes of a minimum spanning tree.
 
         Args:
-            X_train: Array of training features.
-            Y_train: Array of training labels.
-            I_train: Array of training indexes.
+            X_train: Training features with shape (n_samples, n_features), retained without intentional mutation.
+            Y_train: Nonnegative training labels with shape (n_samples,), left unchanged.
+            I_train: Training distance-matrix indexes, or positional indexes when None.
+
+        Raises:
+            opfython.utils.exception.BuildError: Precomputed distances do not cover the training indexes.
+
+        Notes:
+            Fitting replaces the stored subgraph and returns None.
+            A single-class graph uses its first node as prototype.
 
         """
 
@@ -119,47 +128,7 @@ class SupervisedOPF(OPF):
         self.subgraph = Subgraph(X_train, Y_train, I=I_train)
         self._find_prototypes()
 
-        h = Heap(size=self.subgraph.n_nodes)
-
-        for i in range(self.subgraph.n_nodes):
-            if self.subgraph.nodes[i].status == c.PROTOTYPE:
-                self.subgraph.nodes[i].pred = c.NIL
-                self.subgraph.nodes[i].predicted_label = self.subgraph.nodes[i].label
-
-                h.cost[i] = 0
-                h.insert(i)
-            else:
-                h.cost[i] = c.FLOAT_MAX
-
-        while not h.is_empty():
-            p = h.remove()
-
-            self.subgraph.idx_nodes.append(p)
-            self.subgraph.nodes[p].cost = h.cost[p]
-
-            for q in range(self.subgraph.n_nodes):
-                if p != q:
-                    if h.cost[p] < h.cost[q]:
-                        if self.pre_computed_distance:
-                            weight = self.pre_distances[self.subgraph.nodes[p].idx][
-                                self.subgraph.nodes[q].idx
-                            ]
-                        else:
-                            weight = self.distance_fn(
-                                self.subgraph.nodes[p].features,
-                                self.subgraph.nodes[q].features,
-                            )
-
-                        # The current cost will be the maximum cost between the node's and its weight (arc)
-                        current_cost = np.maximum(h.cost[p], weight)
-
-                        if current_cost < h.cost[q]:
-                            self.subgraph.nodes[q].pred = p
-                            self.subgraph.nodes[q].predicted_label = (
-                                self.subgraph.nodes[p].predicted_label
-                            )
-
-                            h.update(q, current_cost)
+        _grow_minimax_forest(self)
 
         self.subgraph.trained = True
 
@@ -168,25 +137,33 @@ class SupervisedOPF(OPF):
 
     def predict(
         self,
-        X_val: np.array,
-        I_val: Optional[np.array] = None,
-    ) -> List[int]:
+        X_val: np.ndarray,
+        I_val: np.ndarray | None = None,
+    ) -> list[int]:
         """Predicts new data using the pre-trained classifier.
 
         Args:
-            X_val: Array of validation or test features.
-            I_val: Array of validation or test indexes.
+            X_val: Query features with shape (n_samples, n_features), left unchanged.
+            I_val: Query distance-matrix column indexes, or positional indexes when None.
 
         Returns:
-            Predictions for each sample.
+            Predicted class labels in query order.
+
+        Raises:
+            opfython.utils.exception.BuildError: The model is not fitted or the distance matrix misses sample indexes.
+
+        Notes:
+            Winning paths are marked relevant on the stored graph for pruning.
+            Equal costs retain the first winner in forest order.
+            Precomputed distances use training rows and query columns.
 
         """
 
-        if not self.subgraph:
-            raise e.BuildError("Subgraph has not been properly created")
+        if self.subgraph is None:
+            raise e.BuildError("`subgraph` is None; call `fit` before predicting.")
 
         if not self.subgraph.trained:
-            raise e.BuildError("Classifier has not been properly fitted")
+            raise e.BuildError("`subgraph.trained` is not True; call `fit` before predicting.")
 
         logger.info("Predicting data ...")
         start = time.time()
@@ -200,37 +177,25 @@ class SupervisedOPF(OPF):
             conqueror = k
 
             if self.pre_computed_distance:
-                weight = self.pre_distances[self.subgraph.nodes[k].idx][
-                    pred_subgraph.nodes[i].idx
-                ]
+                weight = self.pre_distances[self.subgraph.nodes[k].idx][pred_subgraph.nodes[i].idx]
             else:
-                weight = self.distance_fn(
-                    self.subgraph.nodes[k].features, pred_subgraph.nodes[i].features
-                )
+                weight = self.distance_fn(self.subgraph.nodes[k].features, pred_subgraph.nodes[i].features)
 
-            # The minimum cost will be the maximum between the `k` node cost and its weight (arc)
             min_cost = np.maximum(self.subgraph.nodes[k].cost, weight)
 
-            # The current label will be `k` node's predicted label
             current_label = self.subgraph.nodes[k].predicted_label
 
-            # While `j` is a possible node and the minimum cost is bigger than the current node's cost
+            # Later nodes cannot improve the prediction once their path costs reach the current minimum
             while (
-                j < (self.subgraph.n_nodes - 1)
-                and min_cost > self.subgraph.nodes[self.subgraph.idx_nodes[j + 1]].cost
+                j < (self.subgraph.n_nodes - 1) and min_cost > self.subgraph.nodes[self.subgraph.idx_nodes[j + 1]].cost
             ):
                 l = self.subgraph.idx_nodes[j + 1]
 
                 if self.pre_computed_distance:
-                    weight = self.pre_distances[self.subgraph.nodes[l].idx][
-                        pred_subgraph.nodes[i].idx
-                    ]
+                    weight = self.pre_distances[self.subgraph.nodes[l].idx][pred_subgraph.nodes[i].idx]
                 else:
-                    weight = self.distance_fn(
-                        self.subgraph.nodes[l].features, pred_subgraph.nodes[i].features
-                    )
+                    weight = self.distance_fn(self.subgraph.nodes[l].features, pred_subgraph.nodes[i].features)
 
-                # The temporary minimum cost will be the maximum between the `l` node cost and its weight (arc)
                 temp_min_cost = np.maximum(self.subgraph.nodes[l].cost, weight)
                 if temp_min_cost < min_cost:
                     min_cost = temp_min_cost
@@ -239,7 +204,6 @@ class SupervisedOPF(OPF):
 
                 j += 1
 
-            # Node's `i` predicted label is the same as current label
             pred_subgraph.nodes[i].predicted_label = current_label
 
             self.subgraph.mark_nodes(conqueror)
@@ -252,20 +216,24 @@ class SupervisedOPF(OPF):
 
     def learn(
         self,
-        X_train: np.array,
-        Y_train: np.array,
-        X_val: np.array,
-        Y_val: np.array,
+        X_train: np.ndarray,
+        Y_train: np.ndarray,
+        X_val: np.ndarray,
+        Y_val: np.ndarray,
         n_iterations: int = 10,
     ) -> None:
         """Learns the best classifier over a validation set.
 
         Args:
-            X_train: Array of training features.
-            Y_train: Array of training labels.
-            X_val: Array of validation features.
-            Y_val: Array of validation labels.
+            X_train: Training features exchanged in place with misclassified validation features.
+            Y_train: Training labels exchanged in place with the corresponding validation labels.
+            X_val: Validation features exchanged in place with non-prototype training features.
+            Y_val: Validation labels exchanged in place alongside their features.
             n_iterations: Number of iterations.
+
+        Notes:
+            Inputs must be writable. The best fitted state is retained, while input exchanges are not rolled back.
+            Validation accuracy follows the package's OPF scoring convention.
 
         """
 
@@ -340,20 +308,23 @@ class SupervisedOPF(OPF):
 
     def prune(
         self,
-        X_train: np.array,
-        Y_train: np.array,
-        X_val: np.array,
-        Y_val: np.array,
+        X_train: np.ndarray,
+        Y_train: np.ndarray,
+        X_val: np.ndarray,
+        Y_val: np.ndarray,
         n_iterations: int = 10,
     ) -> None:
         """Prunes a classifier over a validation set.
 
         Args:
-            X_train: Array of training features.
-            Y_train: Array of training labels.
-            X_val: Array of validation features.
-            Y_val: Array of validation labels.
+            X_train: Training features with shape (n_train, n_features), left unchanged.
+            Y_train: Training labels with shape (n_train,), left unchanged.
+            X_val: Validation features with shape (n_val, n_features), left unchanged.
+            Y_val: Validation labels with shape (n_val,), used for OPF accuracy reporting.
             n_iterations: Maximum number of iterations.
+
+        Notes:
+            Each iteration replaces the stored graph with nodes relevant to validation predictions.
 
         """
 
@@ -368,7 +339,6 @@ class SupervisedOPF(OPF):
             logger.info("Running iteration %d/%d ...", iteration + 1, n_iterations)
             X_temp, Y_temp = [], []
 
-            # Removes irrelevant nodes
             for j, n in enumerate(self.subgraph.nodes):
                 if n.relevant != c.IRRELEVANT:
                     X_temp.append(X_train[j, :])

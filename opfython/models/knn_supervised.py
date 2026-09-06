@@ -1,7 +1,10 @@
-"""KNN-Supervised Optimum-Path Forest."""
+# Copyright (c) 2020-2026 Gustavo de Rosa.
+# Licensed under the Apache License, Version 2.0.
+
+"""Provide the KNN-supervised Optimum-Path Forest classifier."""
 
 import time
-from typing import List, Optional
+from os import PathLike
 
 import numpy as np
 
@@ -10,63 +13,62 @@ import opfython.utils.constants as c
 import opfython.utils.exception as e
 from opfython.core.heap import Heap
 from opfython.core.opf import OPF
+from opfython.models._common import _predict_knn
 from opfython.subgraphs.knn import KNNSubgraph
-from opfython.utils import logging
+from opfython.utils.logging import get_logger
 
-logger = logging.get_logger(__name__)
+logger = get_logger(__name__)
 
 
 class KNNSupervisedOPF(OPF):
-    """A KNNSupervisedOPF which implements the supervised version of OPF classifier with a KNN subgraph.
-
-    References:
-        J. P. Papa and A. X. Falcão. A Learning Algorithm for the Optimum-Path Forest Classifier.
-        Graph-Based Representations in Pattern Recognition (2009).
-
-    """
+    """Classify samples with a supervised KNN Optimum-Path Forest."""
 
     def __init__(
         self,
         max_k: int = 1,
-        distance: Optional[str] = "log_squared_euclidean",
-        pre_computed_distance: Optional[str] = None,
+        distance: str = "log_squared_euclidean",
+        pre_computed_distance: str | PathLike[str] | None = None,
     ) -> None:
-        """Initialization method.
+        """Initialize the neighbourhood search and distance configuration.
 
         Args:
             max_k: Maximum `k` value for cutting the subgraph.
-            distance: An indicator of the distance metric to be used.
-            pre_computed_distance: A pre-computed distance file for feeding into OPF.
+            distance: Registered distance metric name.
+            pre_computed_distance: Optional CSV or text distance-matrix path indexed by sample identifiers.
+
+        Raises:
+            opfython.utils.exception.TypeError: The neighbourhood size is not an integer or the metric name is invalid.
+            opfython.utils.exception.ValueError: The neighbourhood bound is less than one or the file cannot be loaded.
+            opfython.utils.exception.ArgumentError: The distance file extension is unsupported.
+
+        References:
+            J. P. Papa and A. X. Falcão. A Learning Algorithm for the Optimum-Path Forest Classifier.
+            Graph-Based Representations in Pattern Recognition (2009).
 
         """
 
         logger.info("Overriding class: OPF -> KNNSupervisedOPF.")
         super().__init__(distance, pre_computed_distance)
+
         self.max_k = max_k
         logger.info("Class overrided.")
 
     @property
     def max_k(self) -> int:
-        """Maximum neighbourhood size."""
+        """Return the positive integer upper bound for neighbourhood selection."""
 
         return self._max_k
 
     @max_k.setter
     def max_k(self, max_k: int) -> None:
         if not isinstance(max_k, int):
-            raise e.TypeError("`max_k` should be an integer")
+            raise e.TypeError(f"`max_k` should be an integer, but got {type(max_k).__name__}.")
         if max_k < 1:
-            raise e.ValueError("`max_k` should be >= 1")
+            raise e.ValueError(f"`max_k` should be >= 1, but got {max_k}.")
+
         self._max_k = max_k
 
     def _clustering(self, force_prototype: bool = False) -> None:
-        """Clusters the subgraph.
-
-        Args:
-            force_prototype: Whether clustering should for each class to have at least one prototype.
-
-        """
-
         self.subgraph.idx_nodes = []
 
         for i in range(self.subgraph.n_nodes):
@@ -112,7 +114,7 @@ class KNNSupervisedOPF(OPF):
                 if h.color[q] != c.BLACK:
                     current_cost = np.minimum(h.cost[p], self.subgraph.nodes[q].density)
 
-                    # If prototypes should be forced to belong to a class
+                    # The final forest cannot propagate across known class boundaries
                     if force_prototype:
                         if self.subgraph.nodes[p].label != self.subgraph.nodes[q].label:
                             current_cost = -c.FLOAT_MAX
@@ -120,38 +122,24 @@ class KNNSupervisedOPF(OPF):
                     if current_cost > h.cost[q]:
                         self.subgraph.nodes[q].pred = p
                         self.subgraph.nodes[q].root = self.subgraph.nodes[p].root
-                        self.subgraph.nodes[q].predicted_label = self.subgraph.nodes[
-                            p
-                        ].predicted_label
+                        self.subgraph.nodes[q].predicted_label = self.subgraph.nodes[p].predicted_label
 
                         h.update(q, current_cost)
 
     def _learn(
         self,
-        X_train: np.array,
-        Y_train: np.array,
-        I_train: np.array,
-        X_val: np.array,
-        Y_val: np.array,
-        I_val: np.array,
+        X_train: np.ndarray,
+        Y_train: np.ndarray,
+        I_train: np.ndarray | None,
+        X_val: np.ndarray,
+        Y_val: np.ndarray,
+        I_val: np.ndarray | None,
     ) -> None:
-        """Learns the best `k` value over the validation set.
-
-        Args:
-            X_train: Array of training features.
-            Y_train: Array of training labels.
-            I_train: Array of training indexes.
-            X_val: Array of validation features.
-            Y_val: Array of validation labels.
-            I_val: Array of validation indexes.
-
-        """
-
         logger.info("Learning best `k` value ...")
 
         self.subgraph = KNNSubgraph(X_train, Y_train, I_train)
         if self.max_k >= self.subgraph.n_nodes:
-            raise e.ValueError("`max_k` should be < `n_nodes`")
+            raise e.ValueError(f"`max_k` should be < `n_nodes`, but got {self.max_k} >= {self.subgraph.n_nodes}.")
         self._validate_pre_distances(self.subgraph)
 
         max_acc = 0.0
@@ -160,16 +148,14 @@ class KNNSupervisedOPF(OPF):
         for k in range(1, self.max_k + 1):
             self.subgraph.best_k = k
 
-            self.subgraph.create_arcs(
-                k, self.distance_fn, self.pre_computed_distance, self.pre_distances
-            )
-            self.subgraph.calculate_pdf(
-                k, self.distance_fn, self.pre_computed_distance, self.pre_distances
-            )
+            self.subgraph.create_arcs(k, self.distance_fn, self.pre_computed_distance, self.pre_distances)
+            self.subgraph.calculate_pdf(k, self.distance_fn, self.pre_computed_distance, self.pre_distances)
 
             self._clustering()
 
-            preds = self.predict(X_val, I_val)
+            # Candidate forests are usable internally before the final fit is committed
+            predictions = _predict_knn(self, X_val, I_val)
+            preds = [node.predicted_label for node in predictions.nodes]
 
             acc = g.opf_accuracy(Y_val, preds)
             if acc > max_acc:
@@ -183,29 +169,36 @@ class KNNSupervisedOPF(OPF):
 
     def fit(
         self,
-        X_train: np.array,
-        Y_train: np.array,
-        X_val: np.array,
-        Y_val: np.array,
-        I_train: Optional[np.array] = None,
-        I_val: Optional[np.array] = None,
+        X_train: np.ndarray,
+        Y_train: np.ndarray,
+        X_val: np.ndarray,
+        Y_val: np.ndarray,
+        I_train: np.ndarray | None = None,
+        I_val: np.ndarray | None = None,
     ) -> None:
-        """Fits data in the classifier.
+        """Fit the forest using the validation accuracy to select its neighbourhood.
 
         Args:
-            X_train: Array of training features.
-            Y_train: Array of training labels.
-            X_val: Array of validation features.
-            Y_val: Array of validation labels.
-            I_train: Array of training indexes.
-            I_val: Array of validation indexes.
+            X_train: Training features with shape (n_train, n_features), retained without intentional mutation.
+            Y_train: Nonnegative training class labels with shape (n_train,).
+            X_val: Validation features with shape (n_val, n_features).
+            Y_val: Validation class labels with shape (n_val,).
+            I_train: Training distance-matrix indexes, or positional indexes when None.
+            I_val: Validation distance-matrix indexes, or positional indexes when None.
+
+        Raises:
+            opfython.utils.exception.ValueError: The training graph cannot supply the requested neighbourhood.
+            opfython.utils.exception.BuildError: Precomputed distances do not cover the accessed sample indexes.
+
+        Notes:
+            Fitting replaces the stored subgraph and returns None.
+            Accuracy follows the package's OPF scoring convention.
 
         """
 
         logger.info("Fitting classifier ...")
         start = time.time()
 
-        # Performing the learning process in order to find the best `k` value
         self._learn(X_train, Y_train, I_train, X_val, Y_val, I_val)
 
         self.subgraph.create_arcs(
@@ -232,86 +225,36 @@ class KNNSupervisedOPF(OPF):
 
     def predict(
         self,
-        X_test: np.array,
-        I_test: Optional[np.array] = None,
-    ) -> List[int]:
+        X_test: np.ndarray,
+        I_test: np.ndarray | None = None,
+    ) -> list[int]:
         """Predicts new data using the pre-trained classifier.
 
         Args:
-            X_test: Array of features.
-            I_test: Array of indexes.
+            X_test: Query features with shape (n_samples, n_features), left unchanged.
+            I_test: Query distance-matrix row indexes, or positional indexes when None.
 
         Returns:
-            Predictions for each sample.
+            Predicted class labels in query order.
+
+        Raises:
+            opfython.utils.exception.BuildError: The model is not fitted or the distance matrix misses sample indexes.
+
+        Notes:
+            Equal distances retain training order, and equal winning costs retain nearest-neighbour order.
+            Precomputed distances use query rows and training columns.
 
         """
+
+        if self.subgraph is None:
+            raise e.BuildError("`subgraph` is None; call `fit` before predicting.")
+        if not self.subgraph.trained:
+            raise e.BuildError("`subgraph.trained` is not True; call `fit` before predicting.")
 
         logger.info("Predicting data ...")
         start = time.time()
 
-        pred_subgraph = KNNSubgraph(X_test, I=I_test)
-        self._validate_pre_distances(pred_subgraph, self.subgraph)
-        best_k = self.subgraph.best_k
-
-        distances = np.zeros(best_k + 1)
-        neighbours_idx = np.zeros(best_k + 1)
-
-        for i in range(pred_subgraph.n_nodes):
-            cost = c.FLOAT_MAX * -1
-
-            distances.fill(c.FLOAT_MAX)
-
-            for j in range(self.subgraph.n_nodes):
-                if self.pre_computed_distance:
-                    distances[best_k] = self.pre_distances[pred_subgraph.nodes[i].idx][
-                        self.subgraph.nodes[j].idx
-                    ]
-                else:
-                    distances[best_k] = self.distance_fn(
-                        pred_subgraph.nodes[i].features,
-                        self.subgraph.nodes[j].features,
-                    )
-
-                neighbours_idx[best_k] = j
-                cur_k = best_k
-
-                # While current `k` is bigger than 0 and the `k` distance is smaller than `k-1` distance
-                while cur_k > 0 and distances[cur_k] < distances[cur_k - 1]:
-                    distances[cur_k], distances[cur_k - 1] = (
-                        distances[cur_k - 1],
-                        distances[cur_k],
-                    )
-
-                    neighbours_idx[cur_k], neighbours_idx[cur_k - 1] = (
-                        neighbours_idx[cur_k - 1],
-                        neighbours_idx[cur_k],
-                    )
-
-                    cur_k -= 1
-
-            density = 0.0
-            for k in range(best_k):
-                density += np.exp(-distances[k] / self.subgraph.constant)
-            density /= best_k
-
-            density = (
-                (c.MAX_DENSITY - 1)
-                * (density - self.subgraph.min_density)
-                / (self.subgraph.max_density - self.subgraph.min_density + c.EPSILON)
-            ) + 1
-
-            for k in range(best_k):
-                if distances[k] != c.FLOAT_MAX:
-                    neighbour = int(neighbours_idx[k])
-
-                    temp_cost = np.minimum(self.subgraph.nodes[neighbour].cost, density)
-                    if temp_cost > cost:
-                        cost = temp_cost
-
-                        pred_subgraph.nodes[i].predicted_label = self.subgraph.nodes[
-                            neighbour
-                        ].predicted_label
-
+        pred_subgraph = _predict_knn(self, X_test, I_test)
         preds = [pred.predicted_label for pred in pred_subgraph.nodes]
 
         logger.info("Data has been predicted.")
