@@ -3,4 +3,4 @@
 
 """Provide the OPFython package and its release version."""
 
-__version__ = "2.0.1"
+__version__ = "2.0.2"
